@@ -1,0 +1,293 @@
+@extends('layouts.app')
+
+@section('title', 'Dashboard - VivekTech Partner Network')
+
+@section('sidebar')
+    <!-- This enables the sidebar -->
+@endsection
+
+@section('content')
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+    <!-- Header -->
+    <div class="sm:flex sm:justify-between sm:items-center mb-8">
+        <div class="mb-4 sm:mb-0">
+            <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Dashboard Overview</h1>
+            <p class="text-slate-500 mt-1">Track your performance, leads, and earnings here.</p>
+        </div>
+        <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-3">
+            <a href="{{ route('partner.leads.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-medium shadow-sm transition-colors">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Submit Lead
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-indigo-200 transition-colors">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Total Earnings</h3>
+            <div class="text-3xl font-bold text-slate-900 relative z-10">₹{{ number_format($totalEarnings, 2) }}</div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-purple-200 transition-colors">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-50 to-pink-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Total Leads</h3>
+            <div class="text-3xl font-bold text-slate-900 relative z-10">{{ $totalLeads }}</div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-emerald-200 transition-colors">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Conversions</h3>
+            <div class="text-3xl font-bold text-slate-900 relative z-10">{{ $conversions }}</div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-blue-200 transition-colors">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <i data-lucide="gift" class="w-6 h-6"></i>
+                </div>
+            </div>
+            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Referral Earnings</h3>
+            <div class="text-3xl font-bold text-slate-900 relative z-10">₹{{ number_format($referralEarnings, 2) }}</div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Earnings Chart -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-lg font-bold text-slate-900 mb-6">Earnings Overview</h2>
+            <div class="h-72 w-full">
+                <canvas id="earningsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Leads vs Conversions Chart -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-lg font-bold text-slate-900 mb-6">Leads vs Conversions</h2>
+            <div class="h-72 w-full">
+                <canvas id="leadsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Table -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+        <div class="p-6 border-b border-slate-200 flex justify-between items-center">
+            <h2 class="text-lg font-bold text-slate-900">Recent Leads</h2>
+            <a href="{{ route('partner.leads.index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">View All</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Client Name</th>
+                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Service</th>
+                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-4 font-semibold text-right tracking-wider">Potential Value</th>
+                        <th scope="col" class="px-6 py-4 font-semibold text-right tracking-wider">Est. Commission</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                    @forelse($recentLeads as $lead)
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="window.location='{{ route('partner.leads.index') }}'">
+                        <td class="px-6 py-4">
+                            <div class="font-semibold text-slate-900">{{ $lead->client_name }}</div>
+                            <div class="text-slate-500 text-xs mt-1">Submitted {{ $lead->created_at->diffForHumans() }}</div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-700 font-medium">{{ $lead->service->name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4">
+                            @php
+                                $badgeClass = match($lead->status) {
+                                    'new' => 'bg-blue-100 text-blue-800',
+                                    'contacted' => 'bg-purple-100 text-purple-800',
+                                    'in_progress' => 'bg-amber-100 text-amber-800',
+                                    'approved' => 'bg-emerald-100 text-emerald-800',
+                                    'rejected' => 'bg-red-100 text-red-800',
+                                    default => 'bg-slate-100 text-slate-800'
+                                };
+                                $dotClass = match($lead->status) {
+                                    'new' => 'bg-blue-600',
+                                    'contacted' => 'bg-purple-600',
+                                    'in_progress' => 'bg-amber-600',
+                                    'approved' => 'bg-emerald-600',
+                                    'rejected' => 'bg-red-600',
+                                    default => 'bg-slate-600'
+                                };
+                            @endphp
+                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold {{ $badgeClass }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $dotClass }}"></span>
+                                {{ str_replace('_', ' ', ucfirst($lead->status)) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right text-slate-900 font-semibold">₹{{ number_format($lead->amount ?? 0, 2) }}</td>
+                        <td class="px-6 py-4 text-right text-indigo-600 font-bold">₹{{ number_format($lead->commission_amount ?? 0, 2) }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                            <i data-lucide="target" class="w-8 h-8 mx-auto text-slate-300 mb-3"></i>
+                            <p>No leads submitted yet.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        
+        // Earnings Chart
+        const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+        
+        // Gradient for Earnings Chart
+        let earningsGradient = earningsCtx.createLinearGradient(0, 0, 0, 300);
+        earningsGradient.addColorStop(0, 'rgba(79, 70, 229, 0.4)'); // Indigo-600
+        earningsGradient.addColorStop(1, 'rgba(79, 70, 229, 0.0)');
+        
+        new Chart(earningsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Earnings ($)',
+                    data: [1200, 1900, 1500, 2800, 2200, 3500, 4250],
+                    borderColor: '#4f46e5', // Indigo-600
+                    backgroundColor: earningsGradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#4f46e5',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 14, weight: 'bold' },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) { return '$' + context.parsed.y.toLocaleString(); }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [4, 4], color: '#f1f5f9', drawBorder: false },
+                        border: { display: false },
+                        ticks: {
+                            color: '#64748b',
+                            callback: function(value) { return '$' + value; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        border: { display: false },
+                        ticks: { color: '#64748b' }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+
+        // Leads vs Conversions Chart
+        const leadsCtx = document.getElementById('leadsChart').getContext('2d');
+        new Chart(leadsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [
+                    {
+                        label: 'Total Leads',
+                        data: [5, 8, 12, 10, 15, 20, 18],
+                        backgroundColor: '#e2e8f0', // Slate-200
+                        borderRadius: 6,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
+                    },
+                    {
+                        label: 'Conversions',
+                        data: [2, 3, 5, 4, 8, 12, 10],
+                        backgroundColor: '#a855f7', // Purple-500
+                        borderRadius: 6,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            color: '#64748b'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 14, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [4, 4], color: '#f1f5f9', drawBorder: false },
+                        border: { display: false },
+                        ticks: { color: '#64748b' }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        border: { display: false },
+                        ticks: { color: '#64748b' }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+    });
+</script>
+@endsection
