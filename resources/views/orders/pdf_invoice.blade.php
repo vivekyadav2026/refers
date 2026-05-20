@@ -66,7 +66,7 @@
             <tbody>
                 <tr>
                     <td>
-                        <strong>{{ $order->service->name }}</strong>
+                        <strong>{{ $order->service->name ?? $order->lead->service_needed ?? 'Custom Service' }}</strong>
                         <p style="margin-top: 5px; color: #64748b; font-size: 12px;">Service Request Fulfillment</p>
                     </td>
                     <td style="text-align: right;">

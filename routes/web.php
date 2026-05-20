@@ -9,32 +9,50 @@ use App\Http\Controllers\Admin\AdminKycController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminCommissionController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\KycController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\ReferralController;
 use App\Models\Service;
 
 Route::get('/', function () {
-    return view('welcome');
+    $banners = \App\Models\Banner::where('is_active', true)->latest()->get();
+    $popularServices = \App\Models\Service::where('is_active', true)->where('is_popular', true)->take(4)->get();
+    $servicesByCategory = \App\Models\Service::where('is_active', true)->get()->groupBy('category');
+    $categories = \App\Models\Service::where('is_active', true)->distinct()->pluck('category');
+    return view('welcome', compact('banners', 'popularServices', 'servicesByCategory', 'categories'));
 })->name('landing');
 
-// Auth Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+// ─── REFERRAL LINK ────────────────────────────────────────────────────────
+Route::get('/ref/{code}', [ReferralController::class, 'handleReferral'])->name('referral.link');
+
+// ─── AUTH ROUTES ──────────────────────────────────────────────────────────
+Route::get('/login', [AuthController::class, 'showCustomerLogin'])->name('login');
+Route::get('/partner-login', [AuthController::class, 'showPartnerLogin'])->name('partner.login');
 Route::redirect('/register', '/login')->name('register');
 
-// Partner: Phone OTP login
+// Phone OTP login (for customers + partners)
 Route::post('/login/send-otp', [AuthController::class, 'sendOtp'])->name('login.send_otp');
 Route::get('/verify', [AuthController::class, 'showVerify'])->name('verify.show');
 Route::post('/verify', [AuthController::class, 'verifyOtp'])->name('verify.check');
 
 // Admin: Email + Password login
+Route::get('/admin-login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
 Route::post('/admin-login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// PUBLIC SERVICE ROUTES
+// ─── PUBLIC SERVICE ROUTES ────────────────────────────────────────────────
 Route::get('/services', function () {
-    $servicesByCategory = Service::all()->groupBy('category');
-    return view('services.index', ['servicesByCategory' => $servicesByCategory]);
+    $query = Service::where('is_active', true);
+    if (request()->has('category')) {
+        $query->where('category', request('category'));
+    }
+    $servicesByCategory = $query->get()->groupBy('category');
+    $allCategories = Service::where('is_active', true)->distinct()->pluck('category');
+    return view('services.index', ['servicesByCategory' => $servicesByCategory, 'allCategories' => $allCategories, 'selectedCategory' => request('category')]);
 })->name('services.index');
 
 Route::get('/services/{slug}', function ($slug) {
@@ -42,60 +60,102 @@ Route::get('/services/{slug}', function ($slug) {
     return view('services.show', ['service' => $service]);
 })->name('services.show');
 
-// PARTNER ROUTES
+// ─── CUSTOMER ROUTES ──────────────────────────────────────────────────────
+Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [CustomerDashboardController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [CustomerDashboardController::class, 'orderShow'])->name('order.show');
+    Route::get('/profile', [CustomerDashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [CustomerDashboardController::class, 'updateProfile'])->name('profile.update');
+});
+
+// ─── CART ROUTES ──────────────────────────────────────────────────────────
+Route::middleware(['auth'])->prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::delete('/{cart}', [CartController::class, 'remove'])->name('remove');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [CartController::class, 'processCheckout'])->name('processCheckout');
+});
+
+// ─── PARTNER ROUTES ───────────────────────────────────────────────────────
 Route::middleware(['auth'])->prefix('partner')->name('partner.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-
-    Route::get('/leads', [\App\Http\Controllers\LeadController::class, 'index'])->name('leads.index');
-    Route::get('/leads/create', [\App\Http\Controllers\LeadController::class, 'create'])->name('leads.create');
-    Route::post('/leads', [\App\Http\Controllers\LeadController::class, 'store'])->name('leads.store');
-
-    Route::get('/services', function () {
-        $servicesByCategory = \App\Models\Service::all()->groupBy('category');
-        return view('partner.services', ['servicesByCategory' => $servicesByCategory]);
-    })->name('services');
-
-    Route::get('/earnings', function () {
-        return view('earnings.index');
-    })->name('earnings');
-
-    Route::get('/referrals', function () {
-        return view('referrals.index');
-    })->name('referrals');
-
-    Route::get('/training', function () {
-        return view('partner.training');
-    })->name('training');
-
-    Route::get('/marketing', function () {
-        return view('partner.marketing');
-    })->name('marketing');
+    // Unlocked onboarding/verification routes
+    Route::get('/apply', [\App\Http\Controllers\PartnerOnboardingController::class, 'index'])->name('apply');
+    Route::post('/apply', [\App\Http\Controllers\PartnerOnboardingController::class, 'store'])->name('apply.store');
 
     Route::get('/kyc', [\App\Http\Controllers\KycController::class, 'index'])->name('kyc');
     Route::post('/kyc', [\App\Http\Controllers\KycController::class, 'store'])->name('kyc.store');
     Route::get('/kyc/id-card/download', [\App\Http\Controllers\KycController::class, 'downloadIdCard'])->name('kyc.download');
+    Route::get('/agreement/download', [\App\Http\Controllers\KycController::class, 'downloadAgreement'])->name('agreement.download');
 
-    Route::get('/withdrawals', [\App\Http\Controllers\WithdrawalController::class, 'index'])->name('withdrawals');
-    Route::post('/withdrawals', [\App\Http\Controllers\WithdrawalController::class, 'store'])->name('withdrawals.store');
+    // Locked partner panel routes (requires Step 1 and Approved KYC)
+    Route::middleware(['partner.unlock'])->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/tickets', [\App\Http\Controllers\TicketController::class, 'index'])->name('tickets');
-    Route::get('/tickets/create', [\App\Http\Controllers\TicketController::class, 'create'])->name('tickets.create');
-    Route::post('/tickets', [\App\Http\Controllers\TicketController::class, 'store'])->name('tickets.store');
-    Route::get('/tickets/{ticket}', [\App\Http\Controllers\TicketController::class, 'show'])->name('tickets.show');
-    Route::post('/tickets/{ticket}/message', [\App\Http\Controllers\TicketController::class, 'message'])->name('tickets.message');
+        Route::get('/leads', [\App\Http\Controllers\LeadController::class, 'index'])->name('leads.index');
+        Route::get('/leads/create', [\App\Http\Controllers\LeadController::class, 'create'])->name('leads.create');
+        Route::post('/leads', [\App\Http\Controllers\LeadController::class, 'store'])->name('leads.store');
 
-    // Orders
-    Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders');
-    Route::get('/orders/create/{service}', [\App\Http\Controllers\OrderController::class, 'create'])->name('orders.create');
-    Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
-    Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderController::class, 'invoice'])->name('orders.invoice');
-    Route::post('/orders/{order}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/services', function () {
+            $servicesByCategory = \App\Models\Service::where('is_active', true)->get()->groupBy('category');
+            return view('partner.services', ['servicesByCategory' => $servicesByCategory]);
+        })->name('services');
+
+        Route::get('/earnings', function () {
+            return view('earnings.index');
+        })->name('earnings');
+
+        Route::get('/referrals', function () {
+            $user = auth()->user();
+            $referrals = \App\Models\PartnerReferral::where('partner_id', $user->id)
+                ->with(['customer', 'order.service'])
+                ->latest()
+                ->paginate(15);
+            $totalClicks = \App\Models\PartnerReferral::where('partner_id', $user->id)->count();
+            $totalRegistrations = \App\Models\PartnerReferral::where('partner_id', $user->id)->where('status', 'registered')->count();
+            $totalPurchases = \App\Models\PartnerReferral::where('partner_id', $user->id)->where('status', 'purchased')->count();
+            return view('referrals.index', compact('referrals', 'totalClicks', 'totalRegistrations', 'totalPurchases'));
+        })->name('referrals');
+
+        Route::get('/training', function () {
+            return view('partner.training');
+        })->name('training');
+
+        Route::get('/marketing', function () {
+            return view('partner.marketing');
+        })->name('marketing');
+
+        Route::get('/withdrawals', [\App\Http\Controllers\WithdrawalController::class, 'index'])->name('withdrawals');
+        Route::post('/withdrawals', [\App\Http\Controllers\WithdrawalController::class, 'store'])->name('withdrawals.store');
+
+        Route::get('/tickets', [\App\Http\Controllers\TicketController::class, 'index'])->name('tickets');
+        Route::get('/tickets/create', [\App\Http\Controllers\TicketController::class, 'create'])->name('tickets.create');
+        Route::post('/tickets', [\App\Http\Controllers\TicketController::class, 'store'])->name('tickets.store');
+        Route::get('/tickets/{ticket}', [\App\Http\Controllers\TicketController::class, 'show'])->name('tickets.show');
+        Route::post('/tickets/{ticket}/message', [\App\Http\Controllers\TicketController::class, 'message'])->name('tickets.message');
+
+        // Orders
+        Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders');
+        Route::get('/orders/create/{service}', [\App\Http\Controllers\OrderController::class, 'create'])->name('orders.create');
+        Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
+        Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderController::class, 'invoice'])->name('orders.invoice');
+        Route::post('/orders/{order}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+    });
 });
 
 // Legacy redirects so old bookmarks still work
 Route::middleware(['auth'])->group(function () {
-    Route::redirect('/dashboard', '/partner/dashboard', 301);
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        if (in_array($user->role, ['admin', 'superadmin'])) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'partner') {
+            return redirect()->route('partner.dashboard');
+        }
+        return redirect()->route('customer.dashboard');
+    });
     Route::redirect('/leads', '/partner/leads', 301);
     Route::redirect('/withdrawals', '/partner/withdrawals', 301);
     Route::redirect('/kyc', '/partner/kyc', 301);
@@ -103,12 +163,13 @@ Route::middleware(['auth'])->group(function () {
     Route::redirect('/tickets', '/partner/tickets', 301);
 });
 
-// Payment Routes
+// ─── PAYMENT ROUTES ───────────────────────────────────────────────────────
 Route::get('/payment/create/{order}', [PaymentController::class, 'createPayment'])->name('payment.create');
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
 Route::post('/webhook/razorpay', [PaymentController::class, 'webhook'])->name('payment.webhook');
+Route::post('/buy-now', [PaymentController::class, 'buyNow'])->name('payment.buyNow')->middleware('auth');
 
-// Contact Routes
+// ─── CONTACT ROUTES ───────────────────────────────────────────────────────
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
@@ -117,6 +178,7 @@ Route::post('/contact', function (\Illuminate\Http\Request $r) {
     return redirect()->route('contact')->with('success', 'Thanks! We received your message and will contact you within 24 hours.');
 })->name('contact.store');
 
+// ─── ADMIN ROUTES ─────────────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users');
@@ -143,6 +205,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/services', [AdminServiceController::class, 'store'])->name('services.store');
     Route::put('/services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{service}', [AdminServiceController::class, 'destroy'])->name('services.destroy');
+    Route::post('/services/{service}/toggle', [AdminServiceController::class, 'toggle'])->name('services.toggle');
 
     // Admin: Banners
     Route::get('/banners', [\App\Http\Controllers\Admin\AdminBannerController::class, 'index'])->name('banners.index');
@@ -165,6 +228,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/orders/{order}/status', [\App\Http\Controllers\Admin\AdminOrderController::class, 'status'])->name('orders.status');
     Route::delete('/orders/{order}', [\App\Http\Controllers\Admin\AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
+    // Admin: Commissions
+    Route::get('/commissions', [AdminCommissionController::class, 'index'])->name('commissions');
+    Route::post('/commissions/{commission}/approve', [AdminCommissionController::class, 'approve'])->name('commissions.approve');
+    Route::post('/commissions/{commission}/reject', [AdminCommissionController::class, 'reject'])->name('commissions.reject');
+    Route::post('/commissions/{commission}/paid', [AdminCommissionController::class, 'markPaid'])->name('commissions.paid');
+    Route::get('/referral-analytics', [AdminCommissionController::class, 'analytics'])->name('referral.analytics');
+
     // Admin: Support Tickets
     Route::get('/tickets', [\App\Http\Controllers\Admin\AdminTicketController::class, 'index'])->name('tickets');
     Route::get('/tickets/{ticket}', [\App\Http\Controllers\Admin\AdminTicketController::class, 'show'])->name('tickets.show');
@@ -180,6 +250,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/withdrawals/{withdrawal}/reject', [\App\Http\Controllers\Admin\AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
     Route::delete('/withdrawals/{withdrawal}', [\App\Http\Controllers\Admin\AdminWithdrawalController::class, 'destroy'])->name('withdrawals.destroy');
 
+    // Admin: Marketing Materials
+    Route::resource('marketing', \App\Http\Controllers\Admin\AdminMarketingMaterialController::class);
+
+    // Admin: Coupons
+    Route::resource('coupons', \App\Http\Controllers\Admin\AdminCouponController::class);
 
     Route::get('/settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'store'])->name('settings.store');

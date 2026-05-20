@@ -1,52 +1,57 @@
 @extends('layouts.app')
-
-@section('title', 'Verify OTP - SK Solutions')
+@section('title', 'Verify OTP — VivekTech')
 
 @section('content')
-<div class="min-h-[70vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-slate-900">
-            Verify Your Number
-        </h2>
-        <p class="mt-2 text-center text-sm text-slate-600">
-            We've sent a 4-digit OTP to +91 {{ $phone }}
-        </p>
-    </div>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200">
-            @if(session('success'))
-                <div class="mb-4 p-3 bg-green-50 text-green-700 text-sm rounded-md">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="max-w-md w-full space-y-8 bg-white/5 backdrop-blur-2xl p-10 rounded-[2.5rem] border border-white/10 shadow-2xl relative z-10 text-center">
+        <div>
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
+                <i data-lucide="shield-check" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-3xl font-black text-white tracking-tight mb-2">Verify Your Number</h2>
+            <p class="text-sm text-slate-400 font-semibold">We've sent a 4-digit verification code to <br><span class="text-white font-mono font-bold">+91 {{ $phone }}</span></p>
+        </div>
 
-            <form class="space-y-6" action="{{ route('verify.check') }}" method="POST">
+        @if(session('success'))
+            <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-bold rounded-2xl">
+                <i data-lucide="check-circle" class="w-4 h-4 inline mr-1"></i> {{ session('success') }}
+            </div>
+        @endif
+
+        <form class="space-y-6" action="{{ route('verify.check') }}" method="POST">
+            @csrf
+            <input type="hidden" name="phone" value="{{ $phone }}">
+            
+            <div>
+                <label for="otp" class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Enter 4-Digit Code</label>
+                <input id="otp" name="otp" type="text" inputmode="numeric" maxlength="4" required class="w-full bg-black/40 border border-white/15 rounded-2xl py-4 px-6 text-center text-3xl font-mono text-white tracking-[1em] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-inner transition-all" placeholder="••••">
+                @error('otp')
+                    <p class="mt-3 text-xs font-bold text-red-400 flex items-center justify-center gap-1">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            <button type="submit" class="w-full py-4 rounded-2xl text-sm font-black tracking-wider uppercase text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-xl shadow-blue-600/30 transition-all hover:-translate-y-0.5">
+                Verify & Secure Login <i data-lucide="arrow-right" class="w-4 h-4 inline ml-1.5"></i>
+            </button>
+        </form>
+        
+        <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-bold text-slate-400">
+            <span>Didn't receive code?</span>
+            <form action="{{ route('login.send_otp') }}" method="POST" class="inline">
                 @csrf
                 <input type="hidden" name="phone" value="{{ $phone }}">
-                
-                <div>
-                    <label for="otp" class="block text-sm font-medium text-slate-700 text-center">
-                        Enter 4-Digit OTP
-                    </label>
-                    <div class="mt-1">
-                        <input id="otp" name="otp" type="text" maxlength="4" required class="appearance-none block w-full px-3 py-3 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-2xl text-center tracking-widest font-mono" placeholder="••••">
-                    </div>
-                    @error('otp')
-                        <p class="mt-2 text-sm text-red-600 text-center">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
-                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Verify & Login
-                    </button>
-                </div>
+                <input type="hidden" name="login_as" value="{{ $loginAs ?? 'customer' }}">
+                <button type="submit" class="text-blue-400 hover:text-blue-300 underline font-extrabold transition-colors">Resend Code</button>
             </form>
-            
-            <div class="mt-6 text-center">
-                <a href="{{ route('login') }}" class="text-sm text-indigo-600 hover:text-indigo-500">Change Phone Number</a>
-            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ ($loginAs ?? 'customer') === 'partner' ? route('partner.login') : route('login') }}" class="text-xs text-slate-500 hover:text-slate-300 transition-colors font-semibold"><i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Change Mobile Number</a>
         </div>
     </div>
 </div>

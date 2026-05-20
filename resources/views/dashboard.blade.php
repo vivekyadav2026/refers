@@ -15,6 +15,10 @@
             <p class="text-slate-500 mt-1">Track your performance, leads, and earnings here.</p>
         </div>
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-3">
+            <a href="{{ route('partner.agreement.download') }}" class="bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-600 rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-medium shadow-sm transition-colors">
+                <i data-lucide="file-text" class="w-4 h-4"></i>
+                Download Agreement
+            </a>
             <a href="{{ route('partner.leads.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-medium shadow-sm transition-colors">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Submit Lead
@@ -23,7 +27,7 @@
     </div>
 
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <!-- Card 1 -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-indigo-200 transition-colors">
             <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
@@ -58,18 +62,6 @@
             </div>
             <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Conversions</h3>
             <div class="text-3xl font-bold text-slate-900 relative z-10">{{ $conversions }}</div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-blue-200 transition-colors">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-            <div class="flex items-center justify-between mb-4 relative z-10">
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <i data-lucide="gift" class="w-6 h-6"></i>
-                </div>
-            </div>
-            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Referral Earnings</h3>
-            <div class="text-3xl font-bold text-slate-900 relative z-10">₹{{ number_format($referralEarnings, 2) }}</div>
         </div>
     </div>
 
@@ -162,7 +154,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
         
         // Earnings Chart
         const earningsCtx = document.getElementById('earningsChart').getContext('2d');
@@ -175,10 +167,10 @@
         new Chart(earningsCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                labels: {!! $chartMonths ?? "['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']" !!},
                 datasets: [{
-                    label: 'Earnings ($)',
-                    data: [1200, 1900, 1500, 2800, 2200, 3500, 4250],
+                    label: 'Earnings (₹)',
+                    data: {!! $chartEarnings ?? '[1200, 1900, 1500, 2800, 2200, 3500, 4250]' !!},
                     borderColor: '#4f46e5', // Indigo-600
                     backgroundColor: earningsGradient,
                     borderWidth: 3,
@@ -203,7 +195,7 @@
                         bodyFont: { size: 14, weight: 'bold' },
                         displayColors: false,
                         callbacks: {
-                            label: function(context) { return '$' + context.parsed.y.toLocaleString(); }
+                            label: function(context) { return '₹' + context.parsed.y.toLocaleString(); }
                         }
                     }
                 },
@@ -214,7 +206,7 @@
                         border: { display: false },
                         ticks: {
                             color: '#64748b',
-                            callback: function(value) { return '$' + value; }
+                            callback: function(value) { return '₹' + value; }
                         }
                     },
                     x: {
@@ -232,11 +224,11 @@
         new Chart(leadsCtx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                labels: {!! $chartMonths ?? "['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']" !!},
                 datasets: [
                     {
                         label: 'Total Leads',
-                        data: [5, 8, 12, 10, 15, 20, 18],
+                        data: {!! $chartLeads ?? '[5, 8, 12, 10, 15, 20, 18]' !!},
                         backgroundColor: '#e2e8f0', // Slate-200
                         borderRadius: 6,
                         barPercentage: 0.6,
@@ -244,7 +236,7 @@
                     },
                     {
                         label: 'Conversions',
-                        data: [2, 3, 5, 4, 8, 12, 10],
+                        data: {!! $chartConversions ?? '[2, 3, 5, 4, 8, 12, 10]' !!},
                         backgroundColor: '#a855f7', // Purple-500
                         borderRadius: 6,
                         barPercentage: 0.6,

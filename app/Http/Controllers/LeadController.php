@@ -30,9 +30,9 @@ class LeadController extends Controller
 
         $stats = [
             'total'    => Lead::where('partner_id', Auth::id())->count(),
-            'new'      => Lead::where('partner_id', Auth::id())->where('status', 'new')->count(),
-            'approved' => Lead::where('partner_id', Auth::id())->where('status', 'approved')->count(),
-            'rejected' => Lead::where('partner_id', Auth::id())->where('status', 'rejected')->count(),
+            'pending'  => Lead::where('partner_id', Auth::id())->where('status', 'pending')->count(),
+            'won'      => Lead::where('partner_id', Auth::id())->where('status', 'won')->count(),
+            'lost'     => Lead::where('partner_id', Auth::id())->where('status', 'lost')->count(),
         ];
 
         return view('leads.index', compact('leads', 'stats'));
@@ -53,7 +53,11 @@ class LeadController extends Controller
             'company_name'    => 'nullable|string|max:255',
             'service_needed'  => 'required|string|max:255',
             'estimated_value' => 'nullable|numeric|min:0',
+            'notes'           => 'nullable|string|max:1000',
         ]);
+
+        $service = Service::where('name', $validated['service_needed'])->first();
+        $estimatedValue = $validated['estimated_value'] ?? ($service ? $service->min_price : 0);
 
         Lead::create([
             'partner_id'      => Auth::id(),
@@ -62,10 +66,11 @@ class LeadController extends Controller
             'client_email'    => $validated['client_email'] ?? null,
             'company_name'    => $validated['company_name'] ?? null,
             'service_needed'  => $validated['service_needed'],
-            'estimated_value' => $validated['estimated_value'] ?? 0,
-            'status'          => 'new',
+            'estimated_value' => $estimatedValue,
+            'notes'           => $validated['notes'] ?? null,
+            'status'          => 'pending',
         ]);
 
-        return redirect()->route('leads.index')->with('success', 'Lead submitted successfully! Our team will review it shortly.');
+        return redirect()->route('partner.leads.index')->with('success', 'Lead submitted successfully! Our team will review it shortly.');
     }
 }

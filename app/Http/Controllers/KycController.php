@@ -79,4 +79,14 @@ class KycController extends Controller
 
         return $pdf->download('VivekTech_Partner_ID_' . $user->id . '.pdf');
     }
+
+    public function downloadAgreement()
+    {
+        $user = auth()->user();
+
+        // Pass any necessary variables to the view
+        $pdf = Pdf::loadView('partner.agreement', compact('user'));
+
+        return $pdf->download('Partner_Agreement_' . str_pad($user->id, 5, '0', STR_PAD_LEFT) . '.pdf');
+    }
 }

@@ -3,10 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Order extends Model
 {
-    protected $fillable = ['lead_id', 'user_id', 'service_id', 'amount', 'status', 'requirements'];
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['status', 'amount'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+    protected $fillable = [
+        'lead_id', 'user_id', 'service_id', 'amount', 'status', 'requirements',
+        'customer_name', 'customer_email', 'customer_phone',
+        'company_name', 'business_type', 'file_upload',
+        'razorpay_order_id', 'razorpay_payment_id', 'referred_by_partner',
+    ];
 
     public function lead()
     {
@@ -23,6 +39,11 @@ class Order extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function commissions()
     {
         return $this->hasMany(Commission::class);
@@ -31,5 +52,15 @@ class Order extends Model
     public function review()
     {
         return $this->hasOne(Review::class);
+    }
+
+    public function referringPartner()
+    {
+        return $this->belongsTo(User::class, 'referred_by_partner');
+    }
+
+    public function partnerReferral()
+    {
+        return $this->hasOne(PartnerReferral::class);
     }
 }

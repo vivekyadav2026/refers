@@ -174,7 +174,7 @@
                                 <div class="order-date">{{ $order->created_at->format('d M Y') }}</div>
                             </td>
                             <td>
-                                <span style="font-weight:600;color:#1e293b;">{{ $order->service->name ?? '—' }}</span>
+                                <span style="font-weight:600;color:#1e293b;">{{ optional($order->service)->name ?? $order->lead->service_needed ?? '—' }}</span>
                                 <br>
                                 <span style="font-size:0.75rem;color:#94a3b8;">{{ Str::limit($order->requirements, 40) }}</span>
                             </td>

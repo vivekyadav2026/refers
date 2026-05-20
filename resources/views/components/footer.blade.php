@@ -1,53 +1,53 @@
-<footer class="bg-slate-900 text-slate-400 pt-16 pb-8">
+<footer class="bg-white text-slate-500 pt-16 pb-8 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <!-- Brand -->
             <div class="md:col-span-2">
                 <div class="flex items-center gap-2.5 mb-4">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-sm">V</div>
-                    <span class="font-extrabold text-xl tracking-tight text-white">VivekTech</span>
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">V</div>
+                    <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">VivekTech</span>
                 </div>
-                <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
-                    Earn by Bringing Clients, We Deliver the Work. Join India's fastest-growing digital service affiliate network.
+                <p class="text-slate-500 text-sm leading-relaxed max-w-sm font-medium">
+                    We deliver high-quality digital solutions to help you scale your business efficiently. Join our partner network and grow with us.
                 </p>
                 <div class="flex items-center gap-4 mt-6">
-                    <a href="https://wa.me/919999999999" target="_blank" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center transition-colors">
-                        <i data-lucide="message-circle" class="w-4 h-4 text-white"></i>
+                    <a href="https://wa.me/919999999999" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-colors text-slate-500">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
                     </a>
-                    <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-blue-600 flex items-center justify-center transition-colors">
-                        <i data-lucide="linkedin" class="w-4 h-4 text-white"></i>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors text-slate-500">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
                     </a>
-                    <a href="#" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-pink-600 flex items-center justify-center transition-colors">
-                        <i data-lucide="instagram" class="w-4 h-4 text-white"></i>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-pink-600 hover:text-white flex items-center justify-center transition-colors text-slate-500">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
 
             <!-- Links -->
             <div>
-                <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Platform</h4>
+                <h4 class="text-slate-900 font-black mb-4 text-sm uppercase tracking-wider">Platform</h4>
                 <ul class="space-y-3">
-                    <li><a href="{{ url('/') }}" class="text-sm hover:text-white transition-colors">Home</a></li>
-                    <li><a href="{{ route('services.index') }}" class="text-sm hover:text-white transition-colors">Services</a></li>
-                    <li><a href="{{ route('contact') }}" class="text-sm hover:text-white transition-colors">Contact Us</a></li>
-                    <li><a href="{{ route('register') }}" class="text-sm hover:text-white transition-colors">Become a Partner</a></li>
+                    <li><a href="{{ url('/') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Home</a></li>
+                    <li><a href="{{ route('services.index') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Services</a></li>
+                    <li><a href="{{ route('contact') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Contact Us</a></li>
+                    <li><a href="{{ route('register') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Become a Partner</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Services</h4>
+                <h4 class="text-slate-900 font-black mb-4 text-sm uppercase tracking-wider">Services</h4>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('services.show', 'website-development') }}" class="text-sm hover:text-white transition-colors">Website Development</a></li>
-                    <li><a href="{{ route('services.show', 'app-development') }}" class="text-sm hover:text-white transition-colors">App Development</a></li>
-                    <li><a href="{{ route('services.show', 'digital-marketing') }}" class="text-sm hover:text-white transition-colors">Digital Marketing</a></li>
-                    <li><a href="{{ route('services.show', 'video-editing') }}" class="text-sm hover:text-white transition-colors">Video Editing</a></li>
+                    <li><a href="{{ route('services.show', 'custom-ecommerce-website-development') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Website Development</a></li>
+                    <li><a href="{{ route('services.show', 'premium-mobile-app-development') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">App Development</a></li>
+                    <li><a href="{{ route('services.index') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Digital Marketing</a></li>
+                    <li><a href="{{ route('services.index') }}" class="text-sm font-medium hover:text-blue-600 transition-colors">Video Editing</a></li>
                 </ul>
             </div>
         </div>
 
-        <div class="border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs text-slate-500">© {{ date('Y') }} VivekTech. All rights reserved.</p>
-            <p class="text-xs text-slate-500">Built with ❤️ in India</p>
+        <div class="border-t border-slate-100 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs font-bold text-slate-400">© {{ date('Y') }} VivekTech. All rights reserved.</p>
+            <p class="text-xs font-bold text-slate-400">Built with <span class="text-red-500">❤️</span> by VivekTech</p>
         </div>
     </div>
 </footer>

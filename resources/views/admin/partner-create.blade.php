@@ -92,6 +92,30 @@
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- Referred By -->
+                <div class="sm:col-span-2">
+                    <label for="referred_by" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Referred By (Optional)
+                    </label>
+                    <div class="relative">
+                        <select id="referred_by" name="referred_by"
+                            class="w-full appearance-none border @error('referred_by') border-red-400 bg-red-50 @else border-slate-200 bg-slate-50 @enderror text-slate-900 text-sm rounded-xl px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                            <option value="">-- None --</option>
+                            @foreach($partners as $partner)
+                                <option value="{{ $partner->id }}" {{ old('referred_by') == $partner->id ? 'selected' : '' }}>
+                                    {{ $partner->name }} ({{ $partner->phone ?? $partner->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                    @error('referred_by')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </div>
 

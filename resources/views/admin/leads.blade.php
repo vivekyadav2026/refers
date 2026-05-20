@@ -121,8 +121,8 @@
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th class="px-6 py-4 font-semibold tracking-wider">Lead Details</th>
-                        <th class="px-6 py-4 font-semibold tracking-wider">Partner</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Customer / Client Details</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Submitted By Partner</th>
                         <th class="px-6 py-4 font-semibold tracking-wider">Service</th>
                         <th class="px-6 py-4 font-semibold tracking-wider text-right">Est. Value</th>
                         <th class="px-6 py-4 font-semibold tracking-wider">Status</th>
@@ -218,6 +218,13 @@
                         <!-- Actions -->
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
+                                {{-- View Details --}}
+                                <button type="button"
+                                    data-lead="{{ json_encode($lead->load('partner')) }}"
+                                    class="p-2 text-slate-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 btn-view-lead" title="View Lead Details">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+
                                 {{-- Approve (create order) for pending/contacted --}}
                                 @if(in_array($lead->status, ['pending', 'contacted', 'negotiation']))
                                     <button type="button"
@@ -339,6 +346,82 @@
     </div>
 </div>
 
+{{-- ─── VIEW DETAILS MODAL ─────────────────────────────────────────────────── --}}
+<div id="viewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg p-6 overflow-hidden">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
+                <i data-lucide="target" class="w-5 h-5 text-indigo-600"></i> Lead Profile Details
+            </h3>
+            <button onclick="closeViewModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-1.5 hover:bg-slate-100 rounded-xl">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            <!-- Client Section -->
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Client Details</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-xs text-slate-400">Name / Company</div>
+                        <div id="viewClientName" class="text-sm font-bold text-slate-900 mt-0.5"></div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">Company Name</div>
+                        <div id="viewCompanyName" class="text-sm font-semibold text-slate-700 mt-0.5">-</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">Phone Number</div>
+                        <div id="viewClientPhone" class="text-sm font-semibold text-slate-900 mt-0.5"></div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">Email Address</div>
+                        <div id="viewClientEmail" class="text-sm font-semibold text-slate-700 mt-0.5 font-sans"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Details -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-indigo-50/50 rounded-2xl p-4 border border-indigo-100/50">
+                    <div class="text-xs text-indigo-600 font-bold">Service Required</div>
+                    <div id="viewService" class="text-sm font-black text-indigo-950 mt-1"></div>
+                </div>
+                <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-100/50">
+                    <div class="text-xs text-emerald-600 font-bold">Estimated Value</div>
+                    <div id="viewValue" class="text-sm font-black text-emerald-950 mt-1"></div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">Partner Notes / Requirements</h4>
+                <p id="viewNotes" class="text-sm text-slate-600 leading-relaxed font-medium whitespace-pre-line"></p>
+            </div>
+
+            <!-- Partner Info -->
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-sm" id="viewPartnerInitials"></div>
+                <div class="min-w-0 flex-1">
+                    <div class="text-xs text-slate-400">Submitted By Partner</div>
+                    <div id="viewPartnerName" class="text-sm font-bold text-slate-900 mt-0.5"></div>
+                    <div id="viewPartnerEmail" class="text-xs text-slate-500 font-sans"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="mt-6 pt-4 border-t border-slate-100 flex gap-3">
+            <button onclick="closeViewModal()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider rounded-xl transition-colors">
+                Close Details
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 function openApproveModal(id, clientName, estimatedValue) {
     document.getElementById('approveModalDesc').textContent = 'Approving lead for: ' + clientName;
@@ -355,6 +438,53 @@ function closeApproveModal() {
 }
 document.getElementById('approveModal').addEventListener('click', function(e) {
     if (e.target === this) closeApproveModal();
+});
+
+// View Details Modal Functions
+function openViewModal(lead) {
+    document.getElementById('viewClientName').textContent = lead.client_name;
+    document.getElementById('viewCompanyName').textContent = lead.company_name || 'N/A';
+    document.getElementById('viewClientPhone').textContent = lead.client_phone || 'N/A';
+    document.getElementById('viewClientEmail').textContent = lead.client_email || 'N/A';
+    document.getElementById('viewService').textContent = lead.service_needed;
+    document.getElementById('viewValue').textContent = '₹' + parseFloat(lead.estimated_value).toLocaleString('en-IN');
+    document.getElementById('viewNotes').textContent = lead.notes || 'No notes provided by partner.';
+    
+    if (lead.partner) {
+        document.getElementById('viewPartnerName').textContent = lead.partner.name;
+        document.getElementById('viewPartnerEmail').textContent = lead.partner.email;
+        const initials = lead.partner.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        document.getElementById('viewPartnerInitials').textContent = initials;
+    } else {
+        document.getElementById('viewPartnerName').textContent = 'Deleted Partner';
+        document.getElementById('viewPartnerEmail').textContent = 'N/A';
+        document.getElementById('viewPartnerInitials').textContent = '??';
+    }
+
+    const modal = document.getElementById('viewModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
+}
+function closeViewModal() {
+    const modal = document.getElementById('viewModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+document.getElementById('viewModal').addEventListener('click', function(e) {
+    if (e.target === this) closeViewModal();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-view-lead').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const lead = JSON.parse(this.getAttribute('data-lead'));
+            openViewModal(lead);
+        });
+    });
 });
 </script>
 @endsection

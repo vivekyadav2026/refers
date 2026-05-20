@@ -159,6 +159,9 @@
                                 @if($order->service->category)
                                     <div class="text-xs text-slate-500">{{ $order->service->category }}</div>
                                 @endif
+                            @elseif($order->lead && $order->lead->service_needed)
+                                <div class="font-medium text-slate-800">{{ $order->lead->service_needed }}</div>
+                                <div class="text-xs text-slate-400 italic">Custom Service</div>
                             @else
                                 <span class="text-slate-400 text-xs italic">Service removed</span>
                             @endif

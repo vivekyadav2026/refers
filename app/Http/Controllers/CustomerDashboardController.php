@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Order;
+
+class CustomerDashboardController extends Controller
+{
+    public function index()
+    {
+        $user = auth()->user();
+
+        $orders = $user->orders()->with('service', 'items.service')->latest()->get();
+
+        $totalOrders = $orders->count();
+        $pendingOrders = $orders->where('status', 'pending')->count();
+        $paidOrders = $orders->where('status', 'paid')->count();
+        $completedOrders = $orders->where('status', 'completed')->count();
+        $totalSpent = $orders->whereIn('status', ['paid', 'completed', 'in_progress'])->sum('amount');
+
+        $recentOrders = $orders->take(5);
+
+        return view('customer.dashboard', compact(
+            'totalOrders', 'pendingOrders', 'paidOrders',
+            'completedOrders', 'totalSpent', 'recentOrders'
+        ));
+    }
+
+    public function orders(Request $request)
+    {
+        $query = auth()->user()->orders()->with('service', 'items.service')->latest();
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(10)->withQueryString();
+
+        return view('customer.orders', compact('orders'));
+    }
+
+    public function orderShow(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $order->load('service', 'items.service', 'review');
+
+        return view('customer.order-detail', compact('order'));
+    }
+
+    public function profile()
+    {
+        return view('customer.profile');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'business_type' => 'nullable|string|max:255',
+        ]);
+
+        auth()->user()->update($request->only('name', 'email', 'company_name', 'business_type'));
+
+        return back()->with('success', 'Profile updated successfully.');
+    }
+}

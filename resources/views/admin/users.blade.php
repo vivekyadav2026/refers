@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Partners Management - Admin')
+@section('title', 'Users Management - Admin')
 
 @section('sidebar')
     <!-- This enables the sidebar -->
@@ -26,8 +26,8 @@
     <!-- Header -->
     <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Partners Management</h1>
-            <p class="text-slate-500 mt-1">Manage partners, view their performance, and handle KYC approvals.</p>
+            <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Users Management</h1>
+            <p class="text-slate-500 mt-1">Manage customers, partners, view their performance, and handle KYC approvals.</p>
         </div>
         <div>
             <a href="{{ route('admin.users.create') }}"
@@ -93,6 +93,7 @@
             <div class="flex gap-2 w-full sm:w-auto flex-wrap">
                 <select name="role" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5" onchange="document.getElementById('filter-form').submit()">
                     <option value="">All Roles</option>
+                    <option value="customer" {{ request('role') === 'customer' ? 'selected' : '' }}>Customer</option>
                     <option value="partner" {{ request('role') === 'partner' ? 'selected' : '' }}>Partner</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                 </select>
@@ -169,7 +170,7 @@
                                 </span>
                             @else
                                 <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                                    Partner
+                                    {{ ucfirst($user->role) }}
                                 </span>
                             @endif
                         </td>

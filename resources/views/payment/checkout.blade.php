@@ -19,11 +19,11 @@
                 <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Order Summary</h3>
                 <div class="bg-slate-50 rounded-lg p-4 border border-slate-200 flex justify-between items-center">
                     <div>
-                        <p class="font-medium text-slate-900">{{ $order->service->name }}</p>
+                        <p class="font-medium text-slate-900">{{ $order->service->name ?? $order->lead->service_needed ?? 'Custom Service' }}</p>
                         <p class="text-sm text-slate-500">Order ID: #ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</p>
                     </div>
                     <div class="text-xl font-bold text-slate-900">
-                        ₹{{ number_format($order->service->price, 2) }}
+                        ₹{{ number_format($order->amount, 2) }}
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 <input type="hidden" name="razorpay_signature" id="razorpay_signature">
 
                 <button type="button" id="pay-button" class="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
-                    Pay ₹{{ number_format($order->service->price, 2) }} Securely
+                    Pay ₹{{ number_format($order->amount, 2) }} Securely
                 </button>
             </form>
 
@@ -53,10 +53,10 @@
 <script>
     var options = {
         "key": "{{ env('RAZORPAY_KEY') }}",
-        "amount": "{{ $order->service->price * 100 }}", 
+        "amount": "{{ $order->amount * 100 }}", 
         "currency": "INR",
         "name": "SK Solutions",
-        "description": "Payment for {{ $order->service->name }}",
+        "description": "Payment for {{ $order->service->name ?? $order->lead->service_needed ?? 'Custom Service' }}",
         "image": "https://ui-avatars.com/api/?name=SK&background=4f46e5&color=fff",
         "order_id": "{{ $razorpayOrderId }}",
         "handler": function (response){

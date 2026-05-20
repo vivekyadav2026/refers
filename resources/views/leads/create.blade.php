@@ -107,17 +107,17 @@
                         <div class="relative">
                             <select id="service_needed" name="service_needed"
                                 class="w-full appearance-none border @error('service_needed') border-red-400 bg-red-50 @else border-slate-200 bg-slate-50 @enderror text-slate-900 text-sm rounded-xl px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" required>
-                                <option value="">-- Select a service --</option>
+                                <option value="" data-price="">-- Select a service --</option>
                                 @forelse($services as $service)
-                                    <option value="{{ $service->name }}" {{ old('service_needed') === $service->name ? 'selected' : '' }}>
+                                    <option value="{{ $service->name }}" data-price="{{ $service->min_price }}" {{ old('service_needed') === $service->name ? 'selected' : '' }}>
                                         {{ $service->name }}
                                     </option>
                                 @empty
-                                    <option value="Web Development">Web Development</option>
-                                    <option value="Mobile App">Mobile App</option>
-                                    <option value="UI/UX Design">UI/UX Design</option>
-                                    <option value="Digital Marketing">Digital Marketing</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Web Development" data-price="25000">Web Development</option>
+                                    <option value="Mobile App" data-price="50000">Mobile App</option>
+                                    <option value="UI/UX Design" data-price="15000">UI/UX Design</option>
+                                    <option value="Digital Marketing" data-price="10000">Digital Marketing</option>
+                                    <option value="Other" data-price="5000">Other</option>
                                 @endforelse
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
@@ -165,4 +165,31 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const serviceSelect = document.getElementById('service_needed');
+    const estimatedValueInput = document.getElementById('estimated_value');
+
+    // Run on change
+    serviceSelect.addEventListener('change', function () {
+        const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+        const price = selectedOption.getAttribute('data-price');
+        
+        if (price) {
+            estimatedValueInput.value = price;
+        } else {
+            estimatedValueInput.value = '';
+        }
+    });
+
+    // Run on load in case of validation errors with an already selected value
+    const initialOption = serviceSelect.options[serviceSelect.selectedIndex];
+    if (initialOption && initialOption.getAttribute('data-price') && !estimatedValueInput.value) {
+        estimatedValueInput.value = initialOption.getAttribute('data-price');
+    }
+});
+</script>
+@endpush
 @endsection

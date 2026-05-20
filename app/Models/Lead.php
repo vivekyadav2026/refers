@@ -14,6 +14,7 @@ class Lead extends Model
         'company_name',
         'service_needed',
         'estimated_value',
+        'notes',
         'status',
     ];
 

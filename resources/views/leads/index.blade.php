@@ -33,9 +33,9 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         @foreach([
             ['label' => 'Total Leads', 'value' => $stats['total'], 'icon' => 'target', 'color' => 'indigo'],
-            ['label' => 'New / Pending', 'value' => $stats['new'], 'icon' => 'clock', 'color' => 'amber'],
-            ['label' => 'Approved', 'value' => $stats['approved'], 'icon' => 'check-circle', 'color' => 'emerald'],
-            ['label' => 'Rejected', 'value' => $stats['rejected'], 'icon' => 'x-circle', 'color' => 'red'],
+            ['label' => 'Pending Review', 'value' => $stats['pending'], 'icon' => 'clock', 'color' => 'amber'],
+            ['label' => 'Won / Converted', 'value' => $stats['won'], 'icon' => 'check-circle', 'color' => 'emerald'],
+            ['label' => 'Lost / Rejected', 'value' => $stats['lost'], 'icon' => 'x-circle', 'color' => 'red'],
         ] as $stat)
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
             <div class="w-11 h-11 rounded-xl bg-{{ $stat['color'] }}-50 text-{{ $stat['color'] }}-600 flex items-center justify-center shrink-0">
@@ -62,7 +62,7 @@
             </div>
 
             <div class="flex gap-2 items-center flex-wrap">
-                @foreach([''=>'All Leads','new'=>'New','in_progress'=>'In Progress','approved'=>'Approved','rejected'=>'Rejected'] as $val=>$label)
+                @foreach([''=>'All Leads','pending'=>'Pending','contacted'=>'Contacted','negotiation'=>'Negotiating','won'=>'Won','lost'=>'Lost'] as $val=>$label)
                 <a href="{{ route('partner.leads.index', array_merge(request()->query(), ['status' => $val])) }}"
                    class="px-4 py-2 text-xs font-semibold rounded-full transition-colors whitespace-nowrap {{ request('status', '') === $val ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                    {{ $label }}
@@ -92,11 +92,11 @@
                         $colors = ['bg-indigo-100 text-indigo-700','bg-purple-100 text-purple-700','bg-amber-100 text-amber-700','bg-emerald-100 text-emerald-700','bg-rose-100 text-rose-700'];
                         $color = $colors[$lead->id % count($colors)];
                         $badge = match($lead->status) {
-                            'new'         => ['bg-blue-100 text-blue-800 border-blue-200', 'bg-blue-500', 'New'],
-                            'contacted'   => ['bg-purple-100 text-purple-800 border-purple-200', 'bg-purple-500', 'Contacted'],
-                            'in_progress' => ['bg-amber-100 text-amber-800 border-amber-200', 'bg-amber-500 animate-pulse', 'In Progress'],
-                            'approved'    => ['bg-emerald-100 text-emerald-800 border-emerald-200', 'bg-emerald-500', 'Approved'],
-                            'rejected'    => ['bg-red-100 text-red-800 border-red-200', 'bg-red-500', 'Rejected'],
+                            'pending'     => ['bg-amber-100 text-amber-800 border-amber-200', 'bg-amber-500', 'Pending'],
+                            'contacted'   => ['bg-blue-100 text-blue-800 border-blue-200', 'bg-blue-500', 'Contacted'],
+                            'negotiation' => ['bg-purple-100 text-purple-800 border-purple-200', 'bg-purple-500 animate-pulse', 'Negotiating'],
+                            'won'         => ['bg-emerald-100 text-emerald-800 border-emerald-200', 'bg-emerald-500', 'Won'],
+                            'lost'        => ['bg-red-100 text-red-800 border-red-200', 'bg-red-500', 'Lost'],
                             default       => ['bg-slate-100 text-slate-700 border-slate-200', 'bg-slate-400', ucfirst($lead->status)],
                         };
                     @endphp

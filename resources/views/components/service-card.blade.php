@@ -9,13 +9,16 @@
     @endif
 
     <!-- Logo Section (Left) -->
-    <div class="w-16 h-16 shrink-0 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center p-2 group-hover:scale-105 transition-transform">
-        <!-- In a real app, you might have $service->logo_path, using icon for now -->
-        <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-8 h-8 text-blue-600"></i>
-    </div>
+    <a href="{{ url('/services/' . $service->slug) }}" class="w-16 h-16 shrink-0 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden p-0 group-hover:scale-105 transition-transform shadow-inner">
+        @if($service->banner_image)
+            <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
+        @else
+            <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-8 h-8 text-blue-600"></i>
+        @endif
+    </a>
 
     <!-- Content Section (Middle) -->
-    <div class="flex-1 min-w-0">
+    <a href="{{ url('/services/' . $service->slug) }}" class="flex-1 min-w-0">
         <h3 class="text-base font-bold text-slate-900 truncate">{{ $service->name }}</h3>
         <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">{{ $service->short_description }}</p>
         
@@ -26,19 +29,19 @@
                 </span>
             @endif
         </div>
-    </div>
+    </a>
 
     <!-- Action Section (Right) -->
     <div class="shrink-0 flex flex-col items-end justify-center">
         @if($isPartnerView)
             <button onclick="copyToClipboard('{{ url('/services/' . $service->slug) }}?ref={{ auth()->id() ?? 'test' }}')" class="flex flex-col items-center justify-center px-4 py-1.5 border border-blue-600 rounded-full text-blue-600 hover:bg-blue-50 transition-colors whitespace-nowrap">
-                <span class="text-[10px] font-medium text-slate-500 uppercase">Earn up to</span>
-                <span class="text-sm font-bold">₹{{ number_format($service->min_price) }}</span>
+                <span class="text-[10px] font-medium text-slate-500 uppercase">Earn Commission</span>
+                <span class="text-sm font-bold">₹{{ number_format($service->getCommissionAmount()) }}</span>
             </button>
         @else
             <a href="{{ url('/services/' . $service->slug) }}" class="flex flex-col items-center justify-center px-4 py-1.5 border border-blue-600 rounded-full text-blue-600 hover:bg-blue-50 transition-colors whitespace-nowrap">
-                <span class="text-[10px] font-medium text-slate-500 uppercase">Earn up to</span>
-                <span class="text-sm font-bold">₹{{ number_format($service->min_price) }}</span>
+                <span class="text-[10px] font-medium text-slate-500 uppercase">Earn Commission</span>
+                <span class="text-sm font-bold">₹{{ number_format($service->getCommissionAmount()) }}</span>
             </a>
         @endif
     </div>

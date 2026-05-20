@@ -11,11 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            \App\Http\Middleware\ReferralTrackingMiddleware::class,
+        ]);
         $middleware->validateCsrfTokens(except: [
             '/webhook/razorpay',
         ]);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'partner.unlock' => \App\Http\Middleware\PartnerUnlockMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

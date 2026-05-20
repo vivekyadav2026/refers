@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Referral;
 
 class AdminUserController extends Controller
 {
@@ -52,32 +53,44 @@ class AdminUserController extends Controller
     // ─── CREATE FORM ─────────────────────────────────────────────────────────
     public function create()
     {
-        return view('admin.partner-create');
+        $partners = User::where('role', 'partner')->orderBy('name')->get();
+        return view('admin.partner-create', compact('partners'));
     }
 
     // ─── STORE NEW PARTNER ───────────────────────────────────────────────────
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'phone'    => 'nullable|string|max:20',
-            'password' => 'required|string|min:8|confirmed',
-            'role'     => 'required|in:admin,partner',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'phone'       => 'nullable|string|max:20',
+            'password'    => 'required|string|min:8|confirmed',
+            'role'        => 'required|in:admin,partner,customer',
+            'referred_by' => 'nullable|exists:users,id',
         ]);
 
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'phone'    => $request->phone,
-            'password' => bcrypt($request->password),
-            'role'     => $request->role,
-            'status'   => 'active',
-            'kyc_status' => 'unsubmitted',
+            'name'        => $request->name,
+            'email'       => $request->email,
+            'phone'       => $request->phone,
+            'password'    => bcrypt($request->password),
+            'role'        => $request->role,
+            'status'      => 'active',
+            'kyc_status'  => 'unsubmitted',
+            'referred_by' => $request->referred_by,
         ]);
 
         // Create a wallet for the new partner
         $user->wallet()->create(['balance' => 0, 'pending_balance' => 0]);
+
+        // If referred by someone, create the Referral record
+        if ($request->referred_by) {
+            Referral::create([
+                'referrer_id' => $request->referred_by,
+                'referred_id' => $user->id,
+                'status'      => 'pending',
+            ]);
+        }
 
         return redirect()->route('admin.users.show', $user)
             ->with('success', "Partner \"" . $user->name . "\" created successfully.");
@@ -104,7 +117,7 @@ class AdminUserController extends Controller
             'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email,' . $user->id,
             'phone'      => 'nullable|string|max:20',
-            'role'       => 'required|in:admin,partner',
+            'role'       => 'required|in:admin,partner,customer',
             'kyc_status' => 'required|in:unsubmitted,pending,approved,rejected',
             'status'     => 'required|in:active,suspended',
         ]);
@@ -156,7 +169,7 @@ class AdminUserController extends Controller
     // ─── ROLE CHANGE ─────────────────────────────────────────────────────────
     public function updateRole(Request $request, User $user)
     {
-        $request->validate(['role' => 'required|in:admin,partner']);
+        $request->validate(['role' => 'required|in:admin,partner,customer']);
 
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot change your own role.');

@@ -75,16 +75,61 @@ class AdminLeadController extends Controller
         try {
             $lead->update(['status' => 'negotiation']);
 
+            // Find or create customer
+            $customer = \App\Models\User::where('role', 'customer')
+                ->where(function($q) use ($lead) {
+                    $q->where('phone', $lead->client_phone);
+                    if ($lead->client_email) {
+                        $q->orWhere('email', $lead->client_email);
+                    }
+                })->first();
+
+            if (!$customer) {
+                // Auto-create customer user
+                $customer = \App\Models\User::create([
+                    'name'         => $lead->client_name,
+                    'email'        => $lead->client_email ?? ($lead->client_phone . '@vivektech.local'),
+                    'phone'        => $lead->client_phone,
+                    'password'     => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
+                    'role'         => 'customer',
+                    'referred_by'  => $lead->partner_id,
+                ]);
+                \App\Models\Wallet::create(['user_id' => $customer->id]);
+            }
+
+            // Find service
+            $service = \App\Models\Service::where('name', $lead->service_needed)->first();
+            $serviceId = $service ? $service->id : null;
+
             $order = Order::create([
-                'lead_id' => $lead->id,
-                'amount'  => $validated['final_amount'],
-                'status'  => 'pending',
+                'lead_id'             => $lead->id,
+                'user_id'             => $customer->id,
+                'service_id'          => $serviceId,
+                'amount'              => $validated['final_amount'],
+                'status'              => 'pending',
+                'customer_name'       => $lead->client_name,
+                'customer_phone'      => $lead->client_phone,
+                'customer_email'      => $lead->client_email,
+                'company_name'        => $lead->company_name,
+                'referred_by_partner' => $lead->partner_id,
+                'requirements'        => $lead->notes ?? 'Approved lead order',
             ]);
+
+            // Create order item
+            if ($service) {
+                \App\Models\OrderItem::create([
+                    'order_id'   => $order->id,
+                    'service_id' => $service->id,
+                    'price'      => $validated['final_amount'],
+                    'quantity'   => 1,
+                    'subtotal'   => $validated['final_amount'],
+                ]);
+            }
 
             DB::commit();
 
-            return redirect()->route('payment.create', ['order' => $order->id])
-                ->with('success', 'Lead approved! Complete the payment to finalize the order.');
+            return redirect()->route('admin.leads')
+                ->with('success', 'Lead approved and order created successfully! Customer can now view and pay for the order from their dashboard.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed: ' . $e->getMessage()]);

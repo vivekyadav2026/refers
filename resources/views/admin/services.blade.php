@@ -84,8 +84,12 @@
                 <tr class="hover:bg-slate-50 transition-colors group">
                     <td class="px-6 py-4">
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                                <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-5 h-5"></i>
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                @if($service->banner_image)
+                                    <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-5 h-5 text-indigo-600"></i>
+                                @endif
                             </div>
                             <div>
                                 <div class="font-bold text-slate-900 text-base">{{ $service->name }}</div>
@@ -104,27 +108,37 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        @if($service->is_popular)
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                                <i data-lucide="star" class="w-3 h-3"></i>
-                                Popular
-                            </span>
-                        @else
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-                                Standard
-                            </span>
-                        @endif
+                        <div class="flex flex-col gap-1.5">
+                            @if($service->is_popular)
+                                <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                            @endif
+                            <form method="POST" action="{{ route('admin.services.toggle', $service) }}">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all {{ $service->is_active ? 'bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200' : 'bg-red-100 text-red-800 border border-red-200 hover:bg-red-200' }}" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $service->is_active ? 'bg-emerald-500' : 'bg-red-500' }}"></span>
+                                    {{ $service->is_active ? 'Published' : 'Draft' }}
+                                </button>
+                            </form>
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-1">
-                            <button onclick="openModal({{ json_encode([
+                             <button onclick="openModal({{ json_encode([
                                 'id' => $service->id,
                                 'name' => $service->name,
                                 'category' => $service->category,
                                 'short_description' => $service->short_description,
+                                'description' => $service->description,
                                 'min_price' => $service->min_price,
                                 'icon' => $service->icon,
                                 'is_popular' => $service->is_popular,
+                                'is_active' => $service->is_active,
+                                'delivery_timeline' => $service->delivery_timeline,
+                                'requirements_text' => $service->requirements_text,
+                                'commission_rate' => $service->commission_rate,
+                                'commission_type' => $service->commission_type,
                                 'features' => is_array($service->features) ? implode('\n', $service->features) : ''
                             ]) }})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
                                 <i data-lucide="edit-2" class="w-4 h-4"></i>
@@ -207,7 +221,7 @@
 
         <!-- Modal Body (Scrollable) -->
         <div class="overflow-y-auto p-5 sm:p-6">
-            <form id="serviceForm" method="POST" action="{{ route('admin.services.store') }}">
+            <form id="serviceForm" method="POST" action="{{ route('admin.services.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div id="methodField"></div>
                 
@@ -229,10 +243,11 @@
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Icon (Lucide name) <span class="text-red-500">*</span></label>
-                        <input type="text" name="icon" id="serviceIcon" required value="box"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                            placeholder="e.g. monitor, smartphone, search">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image <span id="bannerImageRequired" class="text-red-500">*</span></label>
+                        <input type="file" name="banner_image" id="serviceBanner" accept="image/*"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        <input type="hidden" name="icon" id="serviceIcon" value="box">
+                        <span class="text-[10px] text-slate-400 font-bold block mt-1">Compressed auto under 200KB.</span>
                     </div>
                 </div>
 
@@ -243,15 +258,58 @@
                 </div>
 
                 <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Long Description (Detailed About Page)</label>
+                    <textarea name="description" id="serviceLongDesc" rows="4"
+                        class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                        placeholder="Detailed explanation of the project/service..."></textarea>
+                </div>
+
+                <div class="mb-5">
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Features (One per line) <span class="text-red-500">*</span></label>
                     <textarea name="features" id="serviceFeatures" rows="3" required
                         class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
                         placeholder="e.g.&#10;Custom Design&#10;Responsive Layout&#10;SEO Optimized"></textarea>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                    <label for="servicePopular" class="text-sm font-medium text-slate-700">Mark as Popular Service</label>
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">What We Need From Client (Requirements Text)</label>
+                    <textarea name="requirements_text" id="serviceRequirements" rows="3"
+                        class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                        placeholder="Key access details, design references, business assets needed..."></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5 border-t border-slate-100 pt-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Delivery Timeline</label>
+                        <input type="text" name="delivery_timeline" id="serviceTimeline"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                            placeholder="e.g. 3-4 Weeks">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Rate</label>
+                        <input type="number" name="commission_rate" id="serviceCommissionRate" min="0" step="0.01"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                            placeholder="e.g. 10 or 500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Type</label>
+                        <select name="commission_type" id="serviceCommissionType"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                            <option value="percentage">Percentage (%)</option>
+                            <option value="fixed">Fixed (₹)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-6 border-t border-slate-100 pt-5">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                        <label for="servicePopular" class="text-sm font-semibold text-slate-700">Mark as Popular Service</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_active" id="serviceActive" value="1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                        <label for="serviceActive" class="text-sm font-semibold text-slate-700">Published / Active</label>
+                    </div>
                 </div>
             </form>
         </div>
@@ -287,11 +345,20 @@ function openModal(service = null) {
         document.getElementById('serviceName').value = service.name;
         document.getElementById('serviceCategory').value = service.category;
         document.getElementById('servicePrice').value = service.min_price;
-        document.getElementById('serviceIcon').value = service.icon;
+        document.getElementById('serviceIcon').value = service.icon || 'box';
+        document.getElementById('serviceBanner').value = '';
+        document.getElementById('serviceBanner').required = false;
+        document.getElementById('bannerImageRequired').classList.add('hidden');
         document.getElementById('serviceDesc').value = service.short_description;
+        document.getElementById('serviceLongDesc').value = service.description || '';
         // Parse escaped newlines back to actual newlines
         document.getElementById('serviceFeatures').value = (service.features || '').replace(/\\n/g, '\n');
+        document.getElementById('serviceRequirements').value = service.requirements_text || '';
+        document.getElementById('serviceTimeline').value = service.delivery_timeline || '';
+        document.getElementById('serviceCommissionRate').value = service.commission_rate || '';
+        document.getElementById('serviceCommissionType').value = service.commission_type || 'percentage';
         document.getElementById('servicePopular').checked = service.is_popular ? true : false;
+        document.getElementById('serviceActive').checked = service.is_active ? true : false;
     } else {
         title.textContent = 'Add New Service';
         form.action = "{{ route('admin.services.store') }}";
@@ -300,6 +367,15 @@ function openModal(service = null) {
 
         form.reset();
         document.getElementById('serviceIcon').value = 'box'; // Default icon
+        document.getElementById('serviceBanner').value = '';
+        document.getElementById('serviceBanner').required = true;
+        document.getElementById('bannerImageRequired').classList.remove('hidden');
+        document.getElementById('serviceLongDesc').value = '';
+        document.getElementById('serviceRequirements').value = '';
+        document.getElementById('serviceTimeline').value = '';
+        document.getElementById('serviceCommissionRate').value = '';
+        document.getElementById('serviceCommissionType').value = 'percentage';
+        document.getElementById('serviceActive').checked = true; // Default to checked (published)
     }
 
     const modal = document.getElementById('serviceModal');

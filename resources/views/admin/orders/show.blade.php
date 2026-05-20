@@ -102,7 +102,7 @@
                     <a href="{{ route('admin.users.show', $order->user) }}"
                        class="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:underline font-medium">
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                        View Partner Profile
+                        View {{ ucfirst($order->user->role) }} Profile
                     </a>
                 @else
                     <p class="text-slate-400 text-sm italic">Customer account has been deleted.</p>
@@ -125,6 +125,16 @@
                                 <div class="text-xs text-slate-500">{{ $order->service->category }}</div>
                             @endif
                             <div class="text-xs text-slate-500 mt-1">{{ $order->service->short_description }}</div>
+                        </div>
+                    </div>
+                @elseif($order->lead && $order->lead->service_needed)
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                            <i data-lucide="box" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-slate-900">{{ $order->lead->service_needed }}</div>
+                            <div class="text-xs text-slate-500">Custom Service</div>
                         </div>
                     </div>
                 @else
@@ -244,6 +254,29 @@
                     @endif
                 </div>
             </div>
+
+            <!-- Payment Details -->
+            @if($order->razorpay_order_id || $order->razorpay_payment_id)
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Razorpay Payment Info
+                </h2>
+                <div class="space-y-3 text-sm">
+                    @if($order->razorpay_order_id)
+                    <div>
+                        <p class="text-slate-500 text-xs font-medium mb-0.5">Razorpay Order ID</p>
+                        <p class="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded inline-block">{{ $order->razorpay_order_id }}</p>
+                    </div>
+                    @endif
+                    @if($order->razorpay_payment_id)
+                    <div>
+                        <p class="text-slate-500 text-xs font-medium mb-0.5">Razorpay Payment ID</p>
+                        <p class="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded inline-block">{{ $order->razorpay_payment_id }}</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
 
             <!-- Commissions -->
             @if($order->commissions->count() > 0)

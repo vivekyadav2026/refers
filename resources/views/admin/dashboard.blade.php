@@ -1,102 +1,105 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Dashboard - VivekTech Partner Network')
+@section('title', 'Admin Dashboard — VivekTech Platform')
 
 @section('sidebar')
     <!-- This enables the sidebar -->
 @endsection
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto bg-slate-50 min-h-screen">
     <!-- Header -->
     <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Admin Dashboard</h1>
-            <p class="text-slate-500 mt-1">Platform overview, revenue metrics, and system activity.</p>
+            <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full mb-2">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Admin Control Center
+            </div>
+            <h1 class="text-3xl text-slate-900 font-black tracking-tight">Platform Overview</h1>
+            <p class="text-slate-500 font-medium mt-1">Live revenue metrics, partner signups, and system activity.</p>
         </div>
         <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-3">
-            <button class="bg-white border border-slate-200 text-slate-600 hover:text-slate-900 rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-medium shadow-sm transition-colors">
-                <i data-lucide="download" class="w-4 h-4"></i>
-                Export Report
+            <button onclick="window.print()" class="bg-white border border-slate-200 text-slate-700 hover:text-blue-600 hover:border-blue-200 rounded-2xl px-5 py-3 flex items-center gap-2 text-xs font-black uppercase tracking-wider shadow-sm transition-all duration-300 hover:-translate-y-0.5">
+                <i data-lucide="download" class="w-4 h-4"></i> Export Report
             </button>
         </div>
     </div>
 
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <!-- Card 1: Total Revenue -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-emerald-200 transition-colors">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-100 text-emerald-600 flex items-center justify-center border border-emerald-200 group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="coins" class="w-7 h-7"></i>
                 </div>
-                <div class="flex items-center gap-1 text-sm font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                    <i data-lucide="trending-up" class="w-3 h-3"></i>
-                    +24.5%
+                <div class="flex items-center gap-1 text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full shadow-xs uppercase tracking-wider">
+                    <i data-lucide="trending-up" class="w-3 h-3 text-emerald-600"></i> Live Value
                 </div>
             </div>
-            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Platform Revenue (YTD)</h3>
-            <div class="text-3xl font-bold text-slate-900 relative z-10">$124,500.00</div>
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 relative z-10">Total Platform Revenue</h3>
+            <div class="text-3xl font-black text-slate-900 relative z-10">₹{{ number_format($totalRevenue) }}</div>
         </div>
 
         <!-- Card 2: Active Partners -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-indigo-200 transition-colors">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-indigo-300 transition-all duration-300 hover:-translate-y-1">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                    <i data-lucide="users" class="w-6 h-6"></i>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-100 text-indigo-600 flex items-center justify-center border border-indigo-200 group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="users" class="w-7 h-7"></i>
                 </div>
-                <div class="flex items-center gap-1 text-sm font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                    <i data-lucide="trending-up" class="w-3 h-3"></i>
-                    +12
+                <div class="flex items-center gap-1 text-[11px] font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full shadow-xs uppercase tracking-wider">
+                    Total: {{ $totalPartners }}
                 </div>
             </div>
-            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Active Partners</h3>
-            <div class="text-3xl font-bold text-slate-900 relative z-10">142</div>
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 relative z-10">Active V-Partners</h3>
+            <div class="text-3xl font-black text-slate-900 relative z-10">{{ $activePartners }}</div>
         </div>
 
         <!-- Card 3: Pending Leads -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-amber-200 transition-colors">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-amber-50 to-orange-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-amber-300 transition-all duration-300 hover:-translate-y-1">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-amber-50 to-orange-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
-                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <i data-lucide="target" class="w-6 h-6"></i>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 text-amber-600 flex items-center justify-center border border-amber-200 group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="target" class="w-7 h-7"></i>
                 </div>
-                <div class="flex items-center gap-1 text-sm font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">
-                    Action Required
+                <div class="flex items-center gap-1 text-[11px] font-black text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full shadow-xs uppercase tracking-wider">
+                    Requires Action
                 </div>
             </div>
-            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Pending Leads</h3>
-            <div class="text-3xl font-bold text-slate-900 relative z-10">28</div>
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 relative z-10">Pending Leads</h3>
+            <div class="text-3xl font-black text-slate-900 relative z-10">{{ $pendingLeads }}</div>
         </div>
 
         <!-- Card 4: Total Paid Out -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-blue-200 transition-colors">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4 relative z-10">
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <i data-lucide="arrow-up-right" class="w-6 h-6"></i>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-100 text-blue-600 flex items-center justify-center border border-blue-200 group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="arrow-up-right" class="w-7 h-7"></i>
+                </div>
+                <div class="flex items-center gap-1 text-[11px] font-black text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full shadow-xs uppercase tracking-wider">
+                    Payouts
                 </div>
             </div>
-            <h3 class="text-slate-500 text-sm font-medium mb-1 relative z-10">Total Commissions Paid</h3>
-            <div class="text-3xl font-bold text-slate-900 relative z-10">$32,850.00</div>
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 relative z-10">Total Commissions Paid</h3>
+            <div class="text-3xl font-black text-slate-900 relative z-10">₹{{ number_format($totalPaidOut) }}</div>
         </div>
     </div>
 
     <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         <!-- Revenue Chart -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-lg font-bold text-slate-900 mb-6">Revenue Growth</h2>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+            <h2 class="text-xl font-black text-slate-900 mb-6 tracking-tight">Revenue Growth (Last 6 Months)</h2>
             <div class="h-72 w-full">
                 <canvas id="adminRevenueChart"></canvas>
             </div>
         </div>
 
         <!-- Partner Signups Chart -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-lg font-bold text-slate-900 mb-6">Partner Signups</h2>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
+            <h2 class="text-xl font-black text-slate-900 mb-6 tracking-tight">Partner Signups (Last 6 Months)</h2>
             <div class="h-72 w-full">
                 <canvas id="adminSignupsChart"></canvas>
             </div>
@@ -104,66 +107,55 @@
     </div>
 
     <!-- System Activity Table -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-        <div class="p-6 border-b border-slate-200 flex justify-between items-center">
-            <h2 class="text-lg font-bold text-slate-900">Recent System Activity</h2>
-            <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">View All Logs</a>
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-10">
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">Recent Orders & Activity</h2>
+            <a href="{{ route('admin.orders') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 uppercase tracking-wider transition-colors">View All Orders <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
-                <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                <thead class="text-[11px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/80 border-b border-slate-200">
                     <tr>
-                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Time</th>
-                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Event</th>
-                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">User/Partner</th>
-                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Details</th>
+                        <th scope="col" class="px-8 py-4">Time</th>
+                        <th scope="col" class="px-8 py-4">Customer</th>
+                        <th scope="col" class="px-8 py-4">Service</th>
+                        <th scope="col" class="px-8 py-4 text-right">Amount</th>
+                        <th scope="col" class="px-8 py-4 text-center">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-200 bg-white">
+                <tbody class="divide-y divide-slate-100 bg-white font-medium">
+                    @forelse($recentOrders as $order)
                     <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-6 py-4 text-slate-500 whitespace-nowrap">2 mins ago</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800">
-                                <i data-lucide="plus-circle" class="w-3 h-3"></i>
-                                New Lead
+                        <td class="px-8 py-5 text-slate-500 text-xs">{{ $order->created_at->diffForHumans() }}</td>
+                        <td class="px-8 py-5">
+                            <div class="font-bold text-slate-900">{{ $order->user->name ?? 'Guest' }}</div>
+                            <div class="text-xs text-slate-400 font-semibold">{{ $order->user->email ?? '' }}</div>
+                        </td>
+                        <td class="px-8 py-5 text-slate-800 font-bold">{{ $order->service->name ?? 'Digital Service' }}</td>
+                        <td class="px-8 py-5 text-right font-black text-slate-900 text-base">₹{{ number_format($order->amount) }}</td>
+                        <td class="px-8 py-5 text-center">
+                            @php
+                                $statusColors = [
+                                    'pending' => 'bg-amber-100 text-amber-800 border-amber-200',
+                                    'paid' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                    'in_progress' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
+                                    'completed' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                    'cancelled' => 'bg-red-100 text-red-800 border-red-200',
+                                ];
+                            @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
+                                {{ str_replace('_', ' ', $order->status) }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 font-medium text-slate-900">John Smith</td>
-                        <td class="px-6 py-4 text-slate-600">Submitted "TechFlow iOS App" ($12,000 est.)</td>
                     </tr>
-                    <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-6 py-4 text-slate-500 whitespace-nowrap">15 mins ago</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                                <i data-lucide="user-check" class="w-3 h-3"></i>
-                                KYC Approved
-                            </span>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-8 py-16 text-center text-slate-400 font-semibold">
+                            <i data-lucide="inbox" class="w-12 h-12 mx-auto text-slate-300 mb-3"></i>
+                            No recent orders found.
                         </td>
-                        <td class="px-6 py-4 font-medium text-slate-900">System (Admin)</td>
-                        <td class="px-6 py-4 text-slate-600">Approved KYC for "Emma Watson"</td>
                     </tr>
-                    <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-6 py-4 text-slate-500 whitespace-nowrap">1 hour ago</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                                <i data-lucide="user-plus" class="w-3 h-3"></i>
-                                Partner Signup
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 font-medium text-slate-900">Michael Johnson</td>
-                        <td class="px-6 py-4 text-slate-600">Signed up via referral link (Ref: JS-8X4J)</td>
-                    </tr>
-                    <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-6 py-4 text-slate-500 whitespace-nowrap">3 hours ago</td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                                <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
-                                Withdrawal Request
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 font-medium text-slate-900">Sarah Davis</td>
-                        <td class="px-6 py-4 text-slate-600">Requested withdrawal of $1,500.00</td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -185,10 +177,10 @@
         new Chart(revenueCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: {!! $chartMonths ?? "['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']" !!},
                 datasets: [{
-                    label: 'Platform Revenue ($)',
-                    data: [15000, 22000, 18000, 31000, 26000, 42000],
+                    label: 'Platform Revenue (₹)',
+                    data: {!! $chartRevenue ?? '[15000, 22000, 18000, 31000, 26000, 42000]' !!},
                     borderColor: '#10b981', // Emerald-500
                     backgroundColor: revGradient,
                     borderWidth: 3,
@@ -213,7 +205,7 @@
                         bodyFont: { size: 14, weight: 'bold' },
                         displayColors: false,
                         callbacks: {
-                            label: function(context) { return '$' + context.parsed.y.toLocaleString(); }
+                            label: function(context) { return '₹' + context.parsed.y.toLocaleString(); }
                         }
                     }
                 },
@@ -222,7 +214,7 @@
                         beginAtZero: true,
                         grid: { borderDash: [4, 4], color: '#f1f5f9', drawBorder: false },
                         border: { display: false },
-                        ticks: { color: '#64748b', callback: function(value) { return '$' + (value/1000) + 'k'; } }
+                        ticks: { color: '#64748b', callback: function(value) { return '₹' + (value/1000) + 'k'; } }
                     },
                     x: {
                         grid: { display: false, drawBorder: false },
@@ -239,11 +231,11 @@
         new Chart(signupsCtx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: {!! $chartMonths ?? "['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']" !!},
                 datasets: [
                     {
                         label: 'New Partners',
-                        data: [12, 19, 15, 25, 22, 30],
+                        data: {!! $chartPartners ?? '[12, 19, 15, 25, 22, 30]' !!},
                         backgroundColor: '#6366f1', // Indigo-500
                         borderRadius: 6,
                         barPercentage: 0.6,

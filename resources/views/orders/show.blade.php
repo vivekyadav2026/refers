@@ -269,7 +269,7 @@
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Service</span>
-                    <span class="summary-value" style="text-align:right;max-width:180px;">{{ $order->service->name ?? '—' }}</span>
+                    <span class="summary-value" style="text-align:right;max-width:180px;">{{ optional($order->service)->name ?? $order->lead->service_needed ?? '—' }}</span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Status</span>
