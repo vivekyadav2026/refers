@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+<div class="py-4 sm:py-6">
     <!-- Header -->
     <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <div class="mb-4 sm:mb-0">
@@ -27,7 +27,7 @@
     </div>
 
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
         <!-- Card 1 -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-indigo-200 transition-colors">
             <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
@@ -68,29 +68,83 @@
     <!-- Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Earnings Chart -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-lg font-bold text-slate-900 mb-6">Earnings Overview</h2>
-            <div class="h-72 w-full">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
+            <h2 class="text-lg font-bold text-slate-900 mb-4 sm:mb-6">Earnings Overview</h2>
+            <div class="h-52 sm:h-72 w-full">
                 <canvas id="earningsChart"></canvas>
             </div>
         </div>
 
         <!-- Leads vs Conversions Chart -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-lg font-bold text-slate-900 mb-6">Leads vs Conversions</h2>
-            <div class="h-72 w-full">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6">
+            <h2 class="text-lg font-bold text-slate-900 mb-4 sm:mb-6">Leads vs Conversions</h2>
+            <div class="h-52 sm:h-72 w-full">
                 <canvas id="leadsChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Recent Activity Table -->
+    <!-- Recent Activity Section -->
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-        <div class="p-6 border-b border-slate-200 flex justify-between items-center">
-            <h2 class="text-lg font-bold text-slate-900">Recent Leads</h2>
-            <a href="{{ route('partner.leads.index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">View All</a>
+        <div class="p-4 sm:p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">Recent Leads</h2>
+            <a href="{{ route('partner.leads.index') }}" class="text-xs sm:text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm">View All</a>
         </div>
-        <div class="overflow-x-auto">
+
+        <!-- Mobile view (cards) -->
+        <div class="block sm:hidden divide-y divide-slate-100">
+            @forelse($recentLeads as $lead)
+            <div class="p-4 hover:bg-slate-50 transition-colors cursor-pointer" onclick="window.location='{{ route('partner.leads.index') }}'">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-bold text-slate-900">{{ $lead->client_name }}</div>
+                    @php
+                        $badgeClass = match($lead->status) {
+                            'new' => 'bg-blue-100 text-blue-800 border-blue-200',
+                            'contacted' => 'bg-purple-100 text-purple-800 border-purple-200',
+                            'in_progress' => 'bg-amber-100 text-amber-800 border-amber-200',
+                            'approved' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                            'rejected' => 'bg-red-100 text-red-800 border-red-200',
+                            default => 'bg-slate-100 text-slate-800 border-slate-200'
+                        };
+                        $dotClass = match($lead->status) {
+                            'new' => 'bg-blue-600',
+                            'contacted' => 'bg-purple-600',
+                            'in_progress' => 'bg-amber-600',
+                            'approved' => 'bg-emerald-600',
+                            'rejected' => 'bg-red-600',
+                            default => 'bg-slate-600'
+                        };
+                    @endphp
+                    <span class="inline-flex items-center gap-1 py-0.5 px-2 rounded-full text-[10px] font-semibold border {{ $badgeClass }}">
+                        <span class="w-1 h-1 rounded-full {{ $dotClass }}"></span>
+                        {{ str_replace('_', ' ', ucfirst($lead->status)) }}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-slate-500 mb-3">
+                    <div class="font-semibold text-slate-700">{{ $lead->service->name ?? 'N/A' }}</div>
+                    <div>{{ $lead->created_at->diffForHumans() }}</div>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-dashed border-slate-100 text-xs">
+                    <div>
+                        <span class="text-slate-400">Value:</span>
+                        <span class="font-bold text-slate-800 ml-1">₹{{ number_format($lead->amount ?? 0, 2) }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400">Commission:</span>
+                        <span class="font-black text-indigo-600 ml-1">₹{{ number_format($lead->commission_amount ?? 0, 2) }}</span>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="p-8 text-center text-slate-500">
+                <i data-lucide="target" class="w-8 h-8 mx-auto text-slate-300 mb-3"></i>
+                <p class="text-sm font-medium">No leads submitted yet.</p>
+            </div>
+            @endforelse
+        </div>
+
+        <!-- Desktop view (table) -->
+        <div class="hidden sm:block overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
@@ -112,12 +166,12 @@
                         <td class="px-6 py-4">
                             @php
                                 $badgeClass = match($lead->status) {
-                                    'new' => 'bg-blue-100 text-blue-800',
-                                    'contacted' => 'bg-purple-100 text-purple-800',
-                                    'in_progress' => 'bg-amber-100 text-amber-800',
-                                    'approved' => 'bg-emerald-100 text-emerald-800',
-                                    'rejected' => 'bg-red-100 text-red-800',
-                                    default => 'bg-slate-100 text-slate-800'
+                                    'new' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                    'contacted' => 'bg-purple-100 text-purple-800 border-purple-200',
+                                    'in_progress' => 'bg-amber-100 text-amber-800 border-amber-200',
+                                    'approved' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                    'rejected' => 'bg-red-100 text-red-800 border-red-200',
+                                    default => 'bg-slate-100 text-slate-800 border-slate-200'
                                 };
                                 $dotClass = match($lead->status) {
                                     'new' => 'bg-blue-600',
@@ -128,7 +182,7 @@
                                     default => 'bg-slate-600'
                                 };
                             @endphp
-                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold {{ $badgeClass }}">
+                            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold border {{ $badgeClass }}">
                                 <span class="w-1.5 h-1.5 rounded-full {{ $dotClass }}"></span>
                                 {{ str_replace('_', ' ', ucfirst($lead->status)) }}
                             </span>

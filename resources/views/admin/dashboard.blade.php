@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto bg-slate-50 min-h-screen">
+<div class="py-4 sm:py-6">
     <!-- Header -->
     <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <div class="mb-4 sm:mb-0">
@@ -112,8 +112,45 @@
             <h2 class="text-xl font-black text-slate-900 tracking-tight">Recent Orders & Activity</h2>
             <a href="{{ route('admin.orders') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 uppercase tracking-wider transition-colors">View All Orders <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
         </div>
-        <div class="overflow-x-auto">
-                            <table class="min-w-full text-sm text-left">
+        <!-- Mobile view (cards) -->
+        <div class="block sm:hidden divide-y divide-slate-100">
+            @forelse($recentOrders as $order)
+            <div class="p-4 hover:bg-slate-50 transition-colors">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-bold text-slate-900">{{ $order->user->name ?? 'Guest' }}</div>
+                    @php
+                        $statusColors = [
+                            'pending' => 'bg-amber-100 text-amber-800 border-amber-200',
+                            'paid' => 'bg-blue-100 text-blue-800 border-blue-200',
+                            'in_progress' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
+                            'completed' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                            'cancelled' => 'bg-red-100 text-red-800 border-red-200',
+                        ];
+                    @endphp
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
+                        {{ str_replace('_', ' ', $order->status) }}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-slate-500 mb-3">
+                    <div class="font-bold text-slate-800">{{ Str::limit($order->service->name ?? 'Digital Service', 25) }}</div>
+                    <div>{{ $order->created_at->diffForHumans() }}</div>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-dashed border-slate-100 text-xs">
+                    <div class="text-slate-400 font-semibold">{{ $order->user->email ?? '' }}</div>
+                    <div class="font-black text-slate-900 text-sm">₹{{ number_format($order->amount) }}</div>
+                </div>
+            </div>
+            @empty
+            <div class="p-8 text-center text-slate-500">
+                <i data-lucide="inbox" class="w-10 h-10 mx-auto text-slate-300 mb-3"></i>
+                <p class="text-sm font-medium">No recent orders found.</p>
+            </div>
+            @endforelse
+        </div>
+
+        <!-- Desktop view (table) -->
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="min-w-full text-sm text-left">
                 <thead class="text-[11px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/80 border-b border-slate-200">
                     <tr>
                         <th scope="col" class="px-4 sm:px-6 py-4 whitespace-nowrap">Time</th>
