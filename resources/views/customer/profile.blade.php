@@ -15,7 +15,7 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     {{-- Left Sidebar Profile Summary --}}
-    <div class="space-y-6">
+    <div class="space-y-6 mb-6 lg:mb-0">
         <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8 text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-bl-full -z-10 blur-xl"></div>
             
