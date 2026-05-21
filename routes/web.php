@@ -315,3 +315,20 @@ Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->gr
         return back()->with('success', 'All notifications marked as read.');
     })->name('read.all');
 });
+
+// Temporary Route to Fix Storage Links on Live Server without SSH Access
+Route::get('/fix-storage', function () {
+    try {
+        // Delete the broken public/storage symlink if it exists
+        if (file_exists(public_path('storage'))) {
+            unlink(public_path('storage'));
+        }
+        
+        // Run the artisan command
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        
+        return 'Storage link fixed! Images should now display correctly. Please delete this route from routes/web.php once confirmed.';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
