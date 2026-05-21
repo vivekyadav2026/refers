@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'VivekTech — Premium Digital Agency')
+@section('title', 'SKSolutions — Premium Digital Agency')
 @section('content')
 
 <style>
@@ -64,7 +64,7 @@
           </h1>
 
           <p class="fade-up delay-2 text-base sm:text-lg text-slate-500 max-w-xl leading-relaxed mb-10 font-medium">
-            From stunning websites to high-converting ad campaigns — VivekTech delivers end-to-end digital solutions that grow your revenue and brand authority.
+            From stunning websites to high-converting ad campaigns — SKSolutions delivers end-to-end digital solutions that grow your revenue and brand authority.
           </p>
 
           {{-- Ultra Tactile CTA Buttons --}}
@@ -145,7 +145,7 @@
                      x-transition:leave-start="opacity-100"
                      x-transition:leave-end="opacity-0"
                      class="absolute inset-0 w-full h-full">
-                  <img :src="slide" alt="VivekTech Banner" class="w-full h-full object-cover">
+                  <img :src="slide" alt="SKSolutions Banner" class="w-full h-full object-cover">
                 </div>
               </template>
 
@@ -334,7 +334,7 @@
     <div class="max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div>
-          <p class="text-purple-600 font-bold text-sm uppercase tracking-widest mb-3">Why VivekTech</p>
+          <p class="text-purple-600 font-bold text-sm uppercase tracking-widest mb-3">Why SKSolutions</p>
           <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-6 leading-tight">Built for Results,<br>Not Just Aesthetics</h2>
           <p class="text-gray-500 text-lg leading-relaxed mb-8">We combine creative design with performance engineering to build digital experiences that don't just look great — they convert and grow.</p>
 
@@ -448,7 +448,7 @@
       <div x-data="{ active: 0, total: 3, init(){ setInterval(()=>{ this.active=(this.active+1)%this.total },5000) } }">
         @php
           $testimonials = [
-            ['name'=>'Rajesh Kumar',    'role'=>'CEO, FashionMart',        'text'=>'VivekTech built our e-commerce platform from scratch. Sales increased by 340% in just 3 months. The team is incredibly professional and responsive.', 'rating'=>5, 'avatar'=>'R'],
+            ['name'=>'Rajesh Kumar',    'role'=>'CEO, FashionMart',        'text'=>'SKSolutions built our e-commerce platform from scratch. Sales increased by 340% in just 3 months. The team is incredibly professional and responsive.', 'rating'=>5, 'avatar'=>'R'],
             ['name'=>'Priya Sharma',    'role'=>'Founder, HealthPlus',     'text'=>'Their Facebook Ads expertise is unmatched. We went from ₹50k to ₹8L monthly revenue in 6 months. Best investment we ever made.', 'rating'=>5, 'avatar'=>'P'],
             ['name'=>'Amit Patel',      'role'=>'Director, TechStartup',   'text'=>'The mobile app they built for us has 50,000+ downloads and 4.8 rating on Play Store. Exceptional quality, on-time delivery.', 'rating'=>5, 'avatar'=>'A'],
           ];

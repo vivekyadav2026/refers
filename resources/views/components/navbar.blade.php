@@ -163,8 +163,8 @@
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <a href="{{ url('/') }}" class="flex items-center gap-2.5">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">V</div>
-                <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">VivekTech</span>
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">S</div>
+                <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">SKSolutions</span>
             </a>
 
             <!-- Desktop Nav -->

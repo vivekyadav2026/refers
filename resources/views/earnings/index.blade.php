@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'My Earnings — VivekTech Partner')
+@section('title', 'My Earnings — SKSolutions Partner')
 @section('sidebar')<!-- enable sidebar -->@endsection
 
 @section('content')

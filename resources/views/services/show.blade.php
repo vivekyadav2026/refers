@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $service->name . ' — VivekTech Partner Network')
+@section('title', $service->name . ' — SKSolutions Partner Network')
 @section('content')
 
 <div x-data="{ buyNowModal: false, isProcessing: false }" 
@@ -304,7 +304,7 @@
                     "key": data.key,
                     "amount": data.amount * 100, 
                     "currency": "INR",
-                    "name": "VivekTech",
+                    "name": "SKSolutions",
                     "description": "Payment for " + data.service_name,
                     "order_id": data.razorpay_order_id,
                     "handler": function (response){

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Order #ORD-' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' — VivekTech')
+@section('title', 'Order #ORD-' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' — SKSolutions')
 @section('sidebar')
     <!-- enable sidebar -->
 @endsection

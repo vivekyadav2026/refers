@@ -179,7 +179,7 @@ class AuthController extends Controller
 
             $user = User::create([
                 'name'         => 'User ' . substr($phone, -4),
-                'email'        => $phone . '@vivektech.local',
+                'email'        => $phone . '@sksolution.local',
                 'phone'        => $phone,
                 'password'     => Hash::make(Str::random(16)),
                 'pin'          => Hash::make($request->pin),

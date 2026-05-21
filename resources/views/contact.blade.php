@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Contact Us — VivekTech')
+@section('title', 'Contact Us — SKSolutions')
 @section('content')
 
 <style>
@@ -77,7 +77,7 @@
           <h2 class="text-xl font-black text-gray-900 mb-5">Reach Us Directly</h2>
 
           {{-- WhatsApp --}}
-          <a href="https://wa.me/919999999999?text=Hi VivekTech, I need help with a project."
+          <a href="https://wa.me/919999999999?text=Hi SKSolutions, I need help with a project."
              target="_blank"
              class="flex items-center gap-5 p-6 rounded-3xl bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:shadow-xl hover:shadow-green-500/20 hover:-translate-y-0.5 transition-all duration-300 mb-4 group relative overflow-hidden shadow-lg shadow-green-500/10">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(255,255,255,0.15),transparent_70%)] pointer-events-none"></div>
@@ -94,7 +94,7 @@
           {{-- Info cards --}}
           @php
             $infoCards = [
-              ['icon'=>'mail',  'label'=>'Email',         'val'=>'hello@vivektech.in',          'href'=>'mailto:hello@vivektech.in', 'bg'=>'bg-purple-50',  'text'=>'text-purple-600', 'border'=>'border-purple-100'],
+              ['icon'=>'mail',  'label'=>'Email',         'val'=>'hello@sksolution.in',          'href'=>'mailto:hello@sksolution.in', 'bg'=>'bg-purple-50',  'text'=>'text-purple-600', 'border'=>'border-purple-100'],
               ['icon'=>'phone', 'label'=>'Phone',         'val'=>'+91 99999 99999',             'href'=>'tel:+919999999999',         'bg'=>'bg-blue-50',    'text'=>'text-blue-600',   'border'=>'border-blue-100'],
               ['icon'=>'clock', 'label'=>'Working Hours', 'val'=>'Mon–Sat: 9 AM – 7 PM IST',    'href'=>null,                        'bg'=>'bg-amber-50',   'text'=>'text-amber-600',  'border'=>'border-amber-100'],
             ];

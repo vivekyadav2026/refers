@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>VivekTech Partner ID Card</title>
+    <title>SKSolutions Partner ID Card</title>
     <style>
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
@@ -106,7 +106,7 @@
         <div class="validity">VERIFIED</div>
         
         <div class="header">
-            <h1>VivekTech Partner</h1>
+            <h1>SKSolutions Partner</h1>
             <p>Official Sales Representative</p>
         </div>
 
@@ -121,7 +121,7 @@
 
             <div class="info-row">
                 <span class="label">Partner ID:</span>
-                <span class="value">VT-{{ str_pad($user->id, 5, '0', STR_PAD_LEFT) }}</span>
+                <span class="value">SK-{{ str_pad($user->id, 5, '0', STR_PAD_LEFT) }}</span>
             </div>
             
             <div class="info-row">
@@ -136,8 +136,8 @@
         </div>
 
         <div class="footer">
-            This card is the property of VivekTech Networks.<br>
-            If found, please return to support@vivektech.com
+            This card is the property of SKSolutions Networks.<br>
+            If found, please return to support@sksolution.com
         </div>
     </div>
 

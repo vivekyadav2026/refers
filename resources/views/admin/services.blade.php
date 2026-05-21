@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Services Management - VivekTech Admin')
+@section('title', 'Services Management - SKSolutions Admin')
 
 @section('sidebar')
     <!-- This enables the sidebar -->

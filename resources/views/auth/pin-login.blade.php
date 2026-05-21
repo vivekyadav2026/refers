@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Enter PIN — VivekTech')
+@section('title', 'Enter PIN — SKSolutions')
 @section('hide_nav_footer', true)
 
 @push('styles')

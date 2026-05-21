@@ -9,12 +9,12 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-$u = User::where('email', 'admin@vivektech.in')->first();
+$u = User::where('email', 'admin@sksolution.in')->first();
 
 if (!$u) {
     $u = User::create([
         'name' => 'Super Admin',
-        'email' => 'admin@vivektech.in',
+        'email' => 'admin@sksolution.in',
         'password' => Hash::make('admin123'),
         'role' => 'admin',
     ]);
@@ -26,7 +26,7 @@ if (!$u) {
     echo "✅ Admin user updated. Role: " . $u->role . "\n";
 }
 
-echo "📧 Email: admin@vivektech.in\n";
+echo "📧 Email: admin@sksolution.in\n";
 echo "🔑 Password: admin123\n";
 echo "🔗 Login URL: http://localhost:8000/login\n";
 echo "🔗 Admin Panel: http://localhost:8000/admin/dashboard\n";

@@ -1,6 +1,6 @@
 <div class="flex h-20 shrink-0 items-center gap-3.5 border-b border-slate-100/80 -mx-6 px-8 mb-6">
-    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30 tracking-wider">V</div>
-    <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">VivekTech</span>
+    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30 tracking-wider">S</div>
+    <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">SKSolutions</span>
 </div>
 
 <nav class="flex flex-1 flex-col">

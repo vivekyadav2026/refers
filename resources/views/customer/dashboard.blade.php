@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Customer Dashboard — VivekTech')
+@section('title', 'Customer Dashboard — SKSolutions')
 @section('sidebar')
     <!-- enable sidebar -->
 @endsection

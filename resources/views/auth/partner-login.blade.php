@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Partner Login — VivekTech')
+@section('title', 'Partner Login — SKSolutions')
 @section('hide_nav_footer', true)
 
 @push('styles')

@@ -88,7 +88,7 @@ class AdminLeadController extends Controller
                 // Auto-create customer user
                 $customer = \App\Models\User::create([
                     'name'         => $lead->client_name,
-                    'email'        => $lead->client_email ?? ($lead->client_phone . '@vivektech.local'),
+                    'email'        => $lead->client_email ?? ($lead->client_phone . '@sksolution.local'),
                     'phone'        => $lead->client_phone,
                     'password'     => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
                     'role'         => 'customer',

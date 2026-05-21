@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Verify OTP — VivekTech')
+@section('title', 'Verify OTP — SKSolutions')
 @section('hide_nav_footer', true)
 
 @section('content')

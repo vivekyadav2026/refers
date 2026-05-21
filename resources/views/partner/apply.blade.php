@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Partner Onboarding & Unlock Portal - VivekTech')
+@section('title', 'Partner Onboarding & Unlock Portal - SKSolutions')
 
 @section('sidebar')
     <!-- Enables Sidebar -->
@@ -11,7 +11,7 @@
     <!-- Header -->
     <div class="text-center max-w-3xl mx-auto mb-12">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-            <i data-lucide="shield-check" class="w-4 h-4 text-indigo-600"></i> VivekTech Partner Security & Onboarding
+            <i data-lucide="shield-check" class="w-4 h-4 text-indigo-600"></i> SKSolutions Partner Security & Onboarding
         </div>
         <h1 class="text-3xl md:text-4xl text-slate-900 font-extrabold tracking-tight mb-3">Unlock Your Partner Panel</h1>
         <p class="text-slate-600 text-base md:text-lg leading-relaxed">
@@ -123,7 +123,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Email Address <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" value="{{ old('email', str_contains($user->email, '@vivektech.local') ? '' : $user->email) }}" placeholder="yourname@domain.com" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                        <input type="email" name="email" value="{{ old('email', str_contains($user->email, '@sksolution.local') ? '' : $user->email) }}" placeholder="yourname@domain.com" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Company / Agency Name <span class="text-red-500">*</span></label>

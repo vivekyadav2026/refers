@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Services — VivekTech Digital Agency')
+@section('title', 'Services — SKSolutions Digital Agency')
 @section('content')
 
 <style>
@@ -211,7 +211,7 @@
   <section class="py-16 px-4 bg-white border-t border-gray-100">
     <div class="max-w-5xl mx-auto">
       <div class="text-center mb-10">
-        <h2 class="text-2xl sm:text-3xl font-black text-gray-900">Why VivekTech</h2>
+        <h2 class="text-2xl sm:text-3xl font-black text-gray-900">Why SKSolutions</h2>
       </div>
       @php
         $whyCards = [

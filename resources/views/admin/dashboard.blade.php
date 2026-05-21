@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Dashboard — VivekTech Platform')
+@section('title', 'Admin Dashboard — SKSolutions Platform')
 
 @section('sidebar')
     <!-- This enables the sidebar -->

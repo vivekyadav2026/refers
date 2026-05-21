@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'KYC Verification - VivekTech Partner Network')
+@section('title', 'KYC Verification - SKSolutions Partner Network')
 
 @section('sidebar')
     <!-- This enables the sidebar -->

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Marketing Assets - VivekTech Partner Network')
+@section('title', 'Marketing Assets - SKSolutions Partner Network')
 
 @section('sidebar')
     <!-- This enables the sidebar -->

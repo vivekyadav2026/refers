@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Shopping Cart — VivekTech')
+@section('title', 'Shopping Cart — SKSolutions')
 @section('sidebar')
     <!-- enable sidebar -->
 @endsection

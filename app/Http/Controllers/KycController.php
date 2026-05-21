@@ -77,7 +77,7 @@ class KycController extends Controller
             'kyc' => $user->kycDocument
         ]);
 
-        return $pdf->download('VivekTech_Partner_ID_' . $user->id . '.pdf');
+        return $pdf->download('SKSolutions_Partner_ID_' . $user->id . '.pdf');
     }
 
     public function downloadAgreement()

@@ -4,8 +4,8 @@
             <!-- Brand -->
             <div class="md:col-span-2">
                 <div class="flex items-center gap-2.5 mb-4">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">V</div>
-                    <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">VivekTech</span>
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">S</div>
+                    <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">SKSolutions</span>
                 </div>
                 <p class="text-slate-500 text-sm leading-relaxed max-w-sm font-medium">
                     We deliver high-quality digital solutions to help you scale your business efficiently. Join our partner network and grow with us.
@@ -46,8 +46,8 @@
         </div>
 
         <div class="border-t border-slate-100 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs font-bold text-slate-400">© {{ date('Y') }} VivekTech. All rights reserved.</p>
-            <p class="text-xs font-bold text-slate-400">Built with <span class="text-red-500">❤️</span> by VivekTech</p>
+            <p class="text-xs font-bold text-slate-400">© {{ date('Y') }} SKSolutions. All rights reserved.</p>
+            <p class="text-xs font-bold text-slate-400">Built with <span class="text-red-500">❤️</span> by SKSolutions</p>
         </div>
     </div>
 </footer>
