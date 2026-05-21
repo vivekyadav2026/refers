@@ -93,8 +93,8 @@
                     @if(!empty($aadhaar['front']))
                     <div>
                         <p class="text-xs text-slate-500 font-medium mb-2">Front Side</p>
-                        <a href="{{ Storage::url($aadhaar['front']) }}" target="_blank">
-                            <img src="{{ Storage::url($aadhaar['front']) }}" alt="Aadhaar Front"
+                        <a href="{{ asset('storage/' . $aadhaar['front']) }}" target="_blank">
+                            <img src="{{ asset('storage/' . $aadhaar['front']) }}" alt="Aadhaar Front"
                                 class="w-full rounded-xl border border-slate-200 object-cover max-h-40 hover:opacity-90 transition-opacity cursor-pointer">
                         </a>
                     </div>
@@ -102,8 +102,8 @@
                     @if(!empty($aadhaar['back']))
                     <div>
                         <p class="text-xs text-slate-500 font-medium mb-2">Back Side</p>
-                        <a href="{{ Storage::url($aadhaar['back']) }}" target="_blank">
-                            <img src="{{ Storage::url($aadhaar['back']) }}" alt="Aadhaar Back"
+                        <a href="{{ asset('storage/' . $aadhaar['back']) }}" target="_blank">
+                            <img src="{{ asset('storage/' . $aadhaar['back']) }}" alt="Aadhaar Back"
                                 class="w-full rounded-xl border border-slate-200 object-cover max-h-40 hover:opacity-90 transition-opacity cursor-pointer">
                         </a>
                     </div>
@@ -123,8 +123,8 @@
                 @endif
             </h2>
             @if(!empty($pan['image']))
-                <a href="{{ Storage::url($pan['image']) }}" target="_blank">
-                    <img src="{{ Storage::url($pan['image']) }}" alt="PAN Card"
+                <a href="{{ asset('storage/' . $pan['image']) }}" target="_blank">
+                    <img src="{{ asset('storage/' . $pan['image']) }}" alt="PAN Card"
                         class="w-full max-w-sm rounded-xl border border-slate-200 object-cover max-h-44 hover:opacity-90 transition-opacity cursor-pointer">
                 </a>
             @else
@@ -140,12 +140,12 @@
             </h2>
             @php $ext = strtolower(pathinfo($bank['proof_path'], PATHINFO_EXTENSION)); @endphp
             @if(in_array($ext, ['jpg','jpeg','png','gif','webp']))
-                <a href="{{ Storage::url($bank['proof_path']) }}" target="_blank">
-                    <img src="{{ Storage::url($bank['proof_path']) }}" alt="Bank Proof"
+                <a href="{{ asset('storage/' . $bank['proof_path']) }}" target="_blank">
+                    <img src="{{ asset('storage/' . $bank['proof_path']) }}" alt="Bank Proof"
                         class="w-full max-w-sm rounded-xl border border-slate-200 max-h-44 object-cover hover:opacity-90 transition-opacity cursor-pointer">
                 </a>
             @else
-                <a href="{{ Storage::url($bank['proof_path']) }}" target="_blank"
+                <a href="{{ asset('storage/' . $bank['proof_path']) }}" target="_blank"
                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-semibold rounded-xl border border-indigo-200 transition-colors">
                     <i data-lucide="file-text" class="w-4 h-4"></i> View Bank Proof PDF
                 </a>
@@ -164,8 +164,8 @@
                 <i data-lucide="camera" class="w-4 h-4"></i> Selfie / Photo
             </h2>
             @if($kyc->photo_path)
-                <a href="{{ Storage::url($kyc->photo_path) }}" target="_blank">
-                    <img src="{{ Storage::url($kyc->photo_path) }}" alt="Selfie"
+                <a href="{{ asset('storage/' . $kyc->photo_path) }}" target="_blank">
+                    <img src="{{ asset('storage/' . $kyc->photo_path) }}" alt="Selfie"
                         class="w-full rounded-2xl border border-slate-200 object-cover hover:opacity-90 transition-opacity cursor-pointer">
                 </a>
             @else

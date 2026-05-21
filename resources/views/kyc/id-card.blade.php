@@ -111,8 +111,18 @@
         </div>
 
         <div class="photo-container">
-            <!-- Using public_path to ensure dompdf can access the image locally -->
-            <img src="{{ public_path('storage/' . $kyc->photo_path) }}" alt="Partner Photo" class="photo">
+            @php
+                $path = public_path('storage/' . $kyc->photo_path);
+                if (file_exists($path)) {
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $data = file_get_contents($path);
+                    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                } else {
+                    $base64 = ''; // Fallback if image is missing
+                }
+            @endphp
+            <!-- Embedded directly as base64 to ensure DOMPDF compatibility across all environments -->
+            <img src="{{ $base64 }}" alt="Partner Photo" class="photo">
         </div>
 
         <div class="details">
