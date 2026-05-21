@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Partner Login — VivekTech')
+@section('hide_nav_footer', true)
 
 @push('styles')
 <style>
@@ -11,9 +12,9 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-        padding: 2rem 1rem;
+        padding: 4rem 1rem;
         position: relative;
-        overflow: hidden;
+        overflow-y: auto;
     }
     .login-page::before {
         content: '';
@@ -269,9 +270,9 @@
             By continuing, you agree to our <a href="#" style="color:#8b5cf6;text-decoration:none;">Terms of Service</a>.
         </p>
 
-        <p style="margin-top:1rem;color:#64748b;font-size:0.9rem;text-align:center;">
+        <!-- <p style="margin-top:1rem;color:#64748b;font-size:0.9rem;text-align:center;">
             Are you a Customer? <a href="{{ route('login') }}" style="color:#6366f1;font-weight:600;text-decoration:none;">Login here</a>
-        </p>
+        </p> -->
 
     </div><!-- /.login-card -->
 </div><!-- /.login-page -->

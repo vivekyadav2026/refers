@@ -1,8 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Verify OTP — VivekTech')
+@section('hide_nav_footer', true)
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 py-16 px-4 sm:px-6 lg:px-8 relative overflow-y-auto">
     <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -33,6 +34,38 @@
                         <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> {{ $message }}
                     </p>
                 @enderror
+            </div>
+
+            <div class="border-t border-white/10 pt-6 space-y-4">
+                <div class="text-left">
+                    <h3 class="text-sm font-bold text-slate-300">Set Security PIN</h3>
+                    <p class="text-xs text-slate-500">Create a 4-digit PIN to log in instantly next time without SMS OTP.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="pin" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">New PIN</label>
+                        <input id="pin" name="pin" type="password" inputmode="numeric" maxlength="4" required 
+                               class="w-full bg-black/40 border border-white/15 rounded-xl py-3 px-4 text-center text-xl font-mono text-white tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                               placeholder="••••">
+                        @error('pin')
+                            <p class="mt-2 text-left text-[11px] font-semibold text-red-400">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="pin_confirmation" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Confirm PIN</label>
+                        <input id="pin_confirmation" name="pin_confirmation" type="password" inputmode="numeric" maxlength="4" required 
+                               class="w-full bg-black/40 border border-white/15 rounded-xl py-3 px-4 text-center text-xl font-mono text-white tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                               placeholder="••••">
+                        @error('pin_confirmation')
+                            <p class="mt-2 text-left text-[11px] font-semibold text-red-400">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+                </div>
             </div>
 
             <button type="submit" class="w-full py-4 rounded-2xl text-sm font-black tracking-wider uppercase text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-xl shadow-blue-600/30 transition-all hover:-translate-y-0.5">

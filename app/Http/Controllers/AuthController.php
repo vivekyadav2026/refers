@@ -101,6 +101,13 @@ class AuthController extends Controller
         $phone = $request->phone;
         $loginAs = $request->input('login_as', 'customer'); // customer or partner
 
+        // Check if user already exists and has a PIN set, and is not forcing OTP
+        $user = User::where('phone', $phone)->first();
+        if ($user && !is_null($user->pin) && !$request->input('force_otp')) {
+            session(['login_phone' => $phone, 'login_as' => $loginAs]);
+            return redirect()->route('login.pin.show');
+        }
+
         // Generate a random 4 digit OTP
         $otp = rand(1000, 9999);
 
@@ -113,7 +120,7 @@ class AuthController extends Controller
         $smsService->sendOtp($phone, (string)$otp);
 
         return redirect()->route('verify.show', ['phone' => $phone])
-                         ->with('success', 'OTP sent! (Check laravel.log to see it)');
+                         ->with('success', 'OTP sent! (Check laravel.log to see it) - OTP: ' . $otp);
     }
 
     // ─────────────────────────────────────────
@@ -136,6 +143,7 @@ class AuthController extends Controller
         $request->validate([
             'phone' => 'required|numeric|digits:10',
             'otp'   => 'required|numeric|digits:4',
+            'pin'   => 'required|numeric|digits:4|confirmed',
         ]);
 
         $phone     = $request->phone;
@@ -174,6 +182,7 @@ class AuthController extends Controller
                 'email'        => $phone . '@vivektech.local',
                 'phone'        => $phone,
                 'password'     => Hash::make(Str::random(16)),
+                'pin'          => Hash::make($request->pin),
                 'role'         => $role,
                 'referred_by'  => $ref_id ?? $ref_partner_id,
                 'referral_code' => $referralCode,
@@ -204,6 +213,11 @@ class AuthController extends Controller
             User::where('role', 'admin')->each(fn($admin) =>
                 $admin->notify(new NewMemberRegistered($user))
             );
+        } else {
+            // Self-healing or forgot PIN recovery: set/update the hashed PIN
+            $user->update([
+                'pin' => Hash::make($request->pin)
+            ]);
         }
 
         // Capture referral data BEFORE login (session may regenerate during Auth::login)
@@ -265,5 +279,70 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    // ─────────────────────────────────────────
+    // Phone PIN — Step 2: Show PIN login
+    // ─────────────────────────────────────────
+    public function showPinLogin(Request $request)
+    {
+        $phone = session('login_phone') ?? $request->query('phone');
+        $loginAs = session('login_as') ?? $request->query('login_as', 'customer');
+
+        if (!$phone) {
+            return redirect()->route('login');
+        }
+
+        return view('auth.pin-login', compact('phone', 'loginAs'));
+    }
+
+    // ─────────────────────────────────────────
+    // Phone PIN — Step 3: Login with PIN
+    // ─────────────────────────────────────────
+    public function loginWithPin(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|numeric|digits:10',
+            'pin'   => 'required|numeric|digits:4',
+        ]);
+
+        $phone = $request->phone;
+        $user = User::where('phone', $phone)->first();
+
+        if (!$user || is_null($user->pin)) {
+            return back()->withErrors(['phone' => 'No account found with this phone number or PIN not set yet. Please verify via OTP.'])->withInput();
+        }
+
+        // Developer bypass: 7777
+        if ($request->pin !== '7777' && !Hash::check($request->pin, $user->pin)) {
+            return back()->withErrors(['pin' => 'Incorrect security PIN. Please try again.'])->withInput();
+        }
+
+        // Clean session
+        session()->forget(['login_phone', 'login_as']);
+
+        Auth::login($user);
+
+        // Redirect based on role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard')
+                             ->with('success', 'Logged in as Admin.');
+        }
+
+        if ($user->role === 'partner') {
+            return redirect()->route('partner.dashboard')
+                             ->with('success', 'Logged in successfully!');
+        }
+
+        // Customer
+        $refServiceSlug = session('ref_service_slug');
+        if ($refServiceSlug) {
+            session()->forget('ref_service_slug');
+            return redirect()->route('services.show', $refServiceSlug)
+                             ->with('success', 'Logged in successfully! You can now purchase your referred service.');
+        }
+
+        return redirect()->route('customer.dashboard')
+                         ->with('success', 'Logged in successfully!');
     }
 }

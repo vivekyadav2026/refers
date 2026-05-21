@@ -37,6 +37,8 @@ Route::redirect('/register', '/login')->name('register');
 Route::post('/login/send-otp', [AuthController::class, 'sendOtp'])->name('login.send_otp');
 Route::get('/verify', [AuthController::class, 'showVerify'])->name('verify.show');
 Route::post('/verify', [AuthController::class, 'verifyOtp'])->name('verify.check');
+Route::get('/login/pin', [AuthController::class, 'showPinLogin'])->name('login.pin.show');
+Route::post('/login/pin', [AuthController::class, 'loginWithPin'])->name('login.pin.submit');
 
 // Admin: Email + Password login
 Route::get('/admin-login', [AuthController::class, 'showAdminLogin'])->name('admin.login');

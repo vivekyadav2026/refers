@@ -2,10 +2,7 @@
 @section('title', 'Contact Us — VivekTech')
 @section('content')
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
-* { font-family: 'Inter', sans-serif; }
 .glass-form {
   background: rgba(255,255,255,0.85);
   backdrop-filter: blur(24px);
@@ -30,11 +27,6 @@
   box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
 }
 .input-field::placeholder { color: #9ca3af; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-.fade-up { animation: fadeUp 0.6s ease both; }
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 .float-anim { animation: float 5s ease-in-out infinite; }
 </style>
@@ -42,17 +34,33 @@
 <div class="bg-[#FAFAFA] min-h-screen">
 
   {{-- ══════ HERO ══════ --}}
-  <div class="relative bg-gradient-to-br from-purple-900 via-violet-800 to-indigo-900 pt-28 pb-24 overflow-hidden">
-    <div class="absolute inset-0" style="background:radial-gradient(ellipse at 30% 50%, rgba(167,139,250,0.3) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(99,102,241,0.2) 0%, transparent 60%);"></div>
+  <div class="relative pt-36 pb-20 overflow-hidden bg-slate-50/30 border-b border-slate-100">
+    {{-- Precision Grid Overlay --}}
+    <div class="absolute inset-0 bg-[radial-gradient(#e2d9f3_1.2px,transparent_1.2px)] bg-[size:32px_32px] opacity-75 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0"></div>
 
-    {{-- Floating shapes --}}
-    <div class="absolute top-16 right-16 w-24 h-24 rounded-full bg-purple-400/20 float-anim hidden lg:block"></div>
-    <div class="absolute bottom-10 left-20 w-16 h-16 rounded-2xl bg-violet-400/20 float-anim hidden lg:block" style="animation-delay:1.5s"></div>
+    {{-- Floating Glassmorphic Physical Orbs --}}
+    <div class="absolute top-16 right-16 w-24 h-24 rounded-full bg-purple-200/10 border border-purple-300/20 float-anim hidden lg:block backdrop-blur-md"></div>
+    <div class="absolute bottom-10 left-20 w-16 h-16 rounded-2xl bg-indigo-200/10 border border-indigo-300/20 float-anim hidden lg:block backdrop-blur-md" style="animation-delay:1.5s"></div>
+
+    {{-- Ambient mesh glowing gradients --}}
+    <div class="absolute top-[-20%] right-[-10%] w-[550px] h-[550px] rounded-full pointer-events-none z-0" style="background:radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%); filter: blur(40px);"></div>
+    <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none z-0" style="background:radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%); filter: blur(40px);"></div>
 
     <div class="max-w-3xl mx-auto px-4 text-center relative z-10">
-      <p class="text-purple-300 font-bold text-sm uppercase tracking-widest mb-4 fade-up">Contact Us</p>
-      <h1 class="text-3xl sm:text-5xl font-black text-white mb-6 leading-tight fade-up delay-1">Let's Build Something <span class="text-purple-300">Amazing Together</span></h1>
-      <p class="text-purple-200 text-lg leading-relaxed fade-up delay-2">Have a project in mind? Our team responds within 24 hours — often much faster. Let's talk.</p>
+      {{-- Elegant Tech Badge --}}
+      <div class="fade-up inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-black uppercase tracking-widest mb-6 shadow-sm hover:scale-105 transition-transform duration-300">
+        ✦ Connect With Us
+      </div>
+      
+      {{-- Bold typographic Slate Title with Signature Gradient --}}
+      <h1 class="text-4xl sm:text-6xl font-black text-slate-900 mb-6 leading-[1.05] tracking-tight fade-up delay-1">
+        Let's Build Something <br class="hidden sm:inline">
+        <span class="animated-gradient drop-shadow-[0_2px_10px_rgba(124,58,237,0.12)]">Amazing Together</span>
+      </h1>
+      
+      <p class="text-slate-500 text-base sm:text-lg leading-relaxed font-medium fade-up delay-2">
+        Have a project in mind? Our expert team responds within 24 hours — often much faster. Let's start the conversation.
+      </p>
     </div>
   </div>
 

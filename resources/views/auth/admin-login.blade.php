@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Admin Login — SK Solutions')
+@section('hide_nav_footer', true)
 
 @push('styles')
 <style>
@@ -11,9 +12,9 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-        padding: 2rem 1rem;
+        padding: 4rem 1rem;
         position: relative;
-        overflow: hidden;
+        overflow-y: auto;
     }
     .login-page::before {
         content: '';

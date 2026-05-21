@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Customer Login — VivekTech')
+@section('title', 'Enter PIN — VivekTech')
 @section('hide_nav_footer', true)
 
 @push('styles')
@@ -83,24 +83,16 @@
         margin-bottom: 0.45rem;
     }
     .input-wrap { position: relative; }
-    .input-icon {
-        position: absolute;
-        left: 0.85rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #475569;
-        pointer-events: none;
-        display: flex;
-        align-items: center;
-    }
     .form-input {
         width: 100%;
         background: rgba(255,255,255,0.06);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 0.6rem;
-        padding: 0.7rem 0.85rem 0.7rem 2.5rem;
+        padding: 0.8rem 1rem;
         color: #f1f5f9;
-        font-size: 0.9rem;
+        font-size: 1.5rem;
+        letter-spacing: 0.5em;
+        text-align: center;
         transition: border-color 0.2s, box-shadow 0.2s;
         box-sizing: border-box;
     }
@@ -111,17 +103,18 @@
         box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
         background: rgba(255,255,255,0.08);
     }
-    .phone-prefix {
+
+    /* ── Eye Icon for PIN Toggle ── */
+    .pin-toggle {
         position: absolute;
-        left: 0.85rem;
+        right: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #6366f1;
-        font-size: 0.9rem;
-        font-weight: 600;
-        pointer-events: none;
+        color: #64748b;
+        cursor: pointer;
+        transition: color 0.15s;
     }
-    .form-input.phone-field { padding-left: 3rem; }
+    .pin-toggle:hover { color: #f1f5f9; }
 
     /* ── Error messages ── */
     .field-error {
@@ -130,6 +123,7 @@
         color: #f87171;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.3rem;
     }
 
@@ -145,7 +139,6 @@
     }
     .alert-success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; }
     .alert-error   { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.25);  color: #fca5a5; }
-    .alert-ref     { background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); color: #a5b4fc; }
 
     /* ── Submit Button ── */
     .btn-primary {
@@ -169,30 +162,6 @@
     }
     .btn-primary:active { transform: translateY(0); opacity: 0.9; }
 
-    /* ── Role Toggle ── */
-    .role-tab {
-        flex: 1;
-        padding: 0.65rem 1rem;
-        border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(255,255,255,0.04);
-        border-radius: 0.6rem;
-        color: #94a3b8;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
-    }
-    .role-tab:hover { background: rgba(255,255,255,0.08); }
-    .role-tab.active {
-        background: rgba(99,102,241,0.15);
-        border-color: rgba(99,102,241,0.4);
-        color: #a5b4fc;
-    }
-
 </style>
 @endpush
 
@@ -204,11 +173,11 @@
         <div class="login-logo">
             <div class="brand-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
             </div>
-            <h1>Customer Login</h1>
-            <p>Login with your mobile number</p>
+            <h1>Enter Security PIN</h1>
+            <p>Welcome back! Enter your 4-digit PIN for <br><span class="text-white font-mono font-bold">+91 ******{{ substr($phone, -4) }}</span></p>
         </div>
 
         {{-- Alerts --}}
@@ -218,7 +187,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        
+
         @if($errors->has('phone') || $errors->first() && !$errors->has('email') && !$errors->has('password'))
             <div class="alert alert-error">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -226,55 +195,25 @@
             </div>
         @endif
 
-        {{-- Referral Banner --}}
-        @if(request()->has('ref'))
-            @php session(['ref_id' => request()->query('ref')]); @endphp
-            <div class="alert alert-ref">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
-                You've been referred! Sign up as a Partner to continue.
-            </div>
-        @endif
-
-        <form action="{{ route('login.send_otp') }}" method="POST">
+        <form action="{{ route('login.pin.submit') }}" method="POST">
             @csrf
-            @if(request()->has('ref'))
-                <input type="hidden" name="ref_id" value="{{ request()->query('ref') }}">
-            @endif
-
-            <input type="hidden" name="login_as" value="customer">
+            <input type="hidden" name="phone" value="{{ $phone }}">
 
             <div class="form-group">
-                <label class="form-label" for="phone">Mobile Number</label>
+                <label class="form-label" for="pin">Security PIN</label>
                 <div class="input-wrap">
-                    <span class="phone-prefix">+91</span>
-                    <input id="phone" name="phone" type="tel" inputmode="numeric"
-                           maxlength="10" autocomplete="tel"
-                           class="form-input phone-field"
-                           placeholder="9876543210"
-                           value="{{ old('phone') }}" required>
-                </div>
-                @error('phone')
-                    <div class="field-error">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        {{ $message }}
-                    </div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="referral_code">Referral Code (Optional)</label>
-                <div class="input-wrap">
-                    <span class="phone-prefix">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="w-4 h-4 text-indigo-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    <input id="pin" name="pin" type="password" inputmode="numeric"
+                           maxlength="4" autocomplete="one-time-code"
+                           class="form-input"
+                           placeholder="••••" required autofocus>
+                    <span class="pin-toggle" onclick="togglePinVisibility()">
+                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
                     </span>
-                    <input id="referral_code" name="referral_code" type="text"
-                           class="form-input phone-field"
-                           placeholder="Referral Code"
-                           value="{{ old('referral_code', session('ref_code') ?? request()->cookie('ref_code') ?? request()->query('ref')) }}">
                 </div>
-                @error('referral_code')
+                @error('pin')
                     <div class="field-error">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         {{ $message }}
@@ -282,19 +221,49 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn-primary" id="btn-send-otp">
-                Continue with OTP →
+            <button type="submit" class="btn-primary">
+                Verify & Login →
             </button>
         </form>
 
-        <p style="margin-top:1.5rem;color:#64748b;font-size:0.8rem;text-align:center;">
-            By continuing, you agree to our <a href="#" style="color:#8b5cf6;text-decoration:none;">Terms of Service</a>.
-        </p>
-        
-        <!-- <p style="margin-top:1rem;color:#64748b;font-size:0.9rem;text-align:center;">
-            Are you a Partner? <a href="{{ route('partner.login') }}" style="color:#6366f1;font-weight:600;text-decoration:none;">Login here</a>
-        </p> -->
+        {{-- Forgot PIN Fallback (Triggers OTP send with force_otp=1) --}}
+        <form id="otp-fallback-form" action="{{ route('login.send_otp') }}" method="POST" style="display:none;">
+            @csrf
+            <input type="hidden" name="phone" value="{{ $phone }}">
+            <input type="hidden" name="login_as" value="{{ $loginAs }}">
+            <input type="hidden" name="force_otp" value="1">
+        </form>
+
+        <div style="margin-top:1.5rem; display:flex; align-items:center; justify-content:between; border-top:1px solid rgba(255,255,255,0.08); padding-top:1.2rem;">
+            <a href="#" onclick="event.preventDefault(); document.getElementById('otp-fallback-form').submit();" style="font-size:0.8rem; color:#8b5cf6; text-decoration:none; font-weight:600; transition:color 0.15s;" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#8b5cf6'">
+                Login with OTP instead
+            </a>
+
+            <a href="{{ $loginAs === 'partner' ? route('partner.login') : route('login') }}" style="font-size:0.8rem; color:#64748b; text-decoration:none; font-weight:500; transition:color 0.15s;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#64748b'">
+                Change Number
+            </a>
+        </div>
 
     </div><!-- /.login-card -->
 </div><!-- /.login-page -->
+
+<script>
+    function togglePinVisibility() {
+        const pinField = document.getElementById('pin');
+        const eyeIcon = document.getElementById('eye-icon');
+        
+        if (pinField.type === 'password') {
+            pinField.type = 'text';
+            eyeIcon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            `;
+        } else {
+            pinField.type = 'password';
+            eyeIcon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            `;
+        }
+    }
+</script>
 @endsection

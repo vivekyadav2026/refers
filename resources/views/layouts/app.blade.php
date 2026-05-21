@@ -8,7 +8,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -43,6 +43,45 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        /* ── GLOBAL PREMIUM STYLING & ANIMATIONS ───────────────── */
+        @keyframes gradient-shift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-gradient {
+            background: linear-gradient(270deg, #7C3AED, #A855F7, #EC4899, #7C3AED);
+            background-size: 400% 400%;
+            animation: gradient-shift 4s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50%      { transform: translateY(-16px) scale(1.02); }
+        }
+        @keyframes float-slow2 {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50%      { transform: translateY(12px) scale(0.98); }
+        }
+        .blob1 { animation: float-slow 8s ease-in-out infinite; }
+        .blob2 { animation: float-slow2 10s ease-in-out infinite; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
 
         /* ── GLOBAL RESPONSIVE TABLE FIX ────────────────────────── */
         /* Any table inside a .table-responsive wrapper scrolls on mobile */
@@ -292,11 +331,15 @@
     @else
         <!-- Landing Page Layout (No Sidebar) -->
         <div class="min-h-screen flex flex-col">
-            @include('components.navbar')
+            @unless(View::hasSection('hide_nav_footer'))
+                @include('components.navbar')
+            @endunless
             <main class="flex-1">
                 @yield('content')
             </main>
-            @include('components.footer')
+            @unless(View::hasSection('hide_nav_footer'))
+                @include('components.footer')
+            @endunless
         </div>
     @endif
 

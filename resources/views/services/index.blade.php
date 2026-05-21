@@ -2,27 +2,39 @@
 @section('title', 'Services — VivekTech Digital Agency')
 @section('content')
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
-* { font-family: 'Inter', sans-serif; }
 .svc-card { transition: all 0.3s cubic-bezier(.4,0,.2,1); }
 .svc-card:hover { transform: translateY(-4px); box-shadow: 0 24px 48px -12px rgba(124,58,237,0.2); }
 .icon-box { transition: transform 0.3s ease; }
 .svc-card:hover .icon-box { transform: scale(1.1) rotate(-3deg); }
-@keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-.fade-up { animation: fadeUp 0.6s ease both; }
 </style>
 
 <div class="bg-[#FAFAFA] min-h-screen pb-24">
 
   {{-- ══════ HERO HEADER ══════ --}}
-  <div class="relative bg-gradient-to-br from-purple-900 via-violet-800 to-indigo-900 pt-28 pb-20 overflow-hidden">
-    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 25% 50%, #a855f7 0%, transparent 50%), radial-gradient(circle at 75% 50%, #6366f1 0%, transparent 50%);"></div>
+  <div class="relative pt-36 pb-20 overflow-hidden bg-slate-50/30 border-b border-slate-100">
+    {{-- Precision Grid Overlay --}}
+    <div class="absolute inset-0 bg-[radial-gradient(#e2d9f3_1.2px,transparent_1.2px)] bg-[size:32px_32px] opacity-75 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0"></div>
+
+    {{-- Soft Ambient Glows --}}
+    <div class="absolute top-[-20%] right-[-10%] w-[550px] h-[550px] rounded-full pointer-events-none z-0" style="background:radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%); filter: blur(40px);"></div>
+    <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none z-0" style="background:radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%); filter: blur(40px);"></div>
+
     <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-      <p class="text-purple-300 font-bold text-sm uppercase tracking-widest mb-4">What We Offer</p>
-      <h1 class="text-3xl sm:text-5xl font-black text-white mb-6 leading-tight">Services That Drive <span class="text-purple-300">Real Growth</span></h1>
-      <p class="text-purple-200 text-lg max-w-2xl mx-auto leading-relaxed">From full-stack development to digital marketing — every service is engineered for ROI and delivered by seasoned professionals.</p>
+      {{-- Elegant Tech Badge --}}
+      <div class="fade-up inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-black uppercase tracking-widest mb-6 shadow-sm hover:scale-105 transition-transform duration-300">
+        ✦ What We Offer
+      </div>
+      
+      {{-- Bold typographic Slate Title with Signature Gradient --}}
+      <h1 class="text-4xl sm:text-6xl font-black text-slate-900 mb-6 leading-[1.05] tracking-tight">
+        Services That Drive <br class="hidden sm:inline">
+        <span class="animated-gradient drop-shadow-[0_2px_10px_rgba(124,58,237,0.12)]">Real Growth</span>
+      </h1>
+      
+      <p class="text-slate-500 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-medium">
+        From full-stack development to high-impact digital marketing — every service is engineered for premium ROI and delivered by seasoned professionals.
+      </p>
     </div>
   </div>
 

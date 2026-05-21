@@ -158,8 +158,8 @@
 </div>
 @else
 {{-- ===================== PUBLIC LANDING NAVBAR ===================== --}}
-<div class="fixed top-0 w-full z-50 px-4 sm:px-6 lg:px-8 pt-6 transition-all duration-300" x-data="{ scrolled: false, mobileOpen: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
-    <nav class="max-w-7xl mx-auto transition-all duration-300" :class="scrolled ? 'bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_10px_40px_-10px_rgba(109,40,217,0.15)] rounded-2xl py-3 px-6' : 'bg-transparent py-4'">
+<div class="fixed top-0 w-full z-50 px-0 md:px-6 lg:px-8 pt-0 md:pt-6 transition-all duration-300" x-data="{ scrolled: false, mobileOpen: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
+    <nav class="relative max-w-7xl mx-auto transition-all duration-300" :class="scrolled ? 'bg-white/90 backdrop-blur-xl border-b md:border border-slate-200/85 shadow-[0_10px_40px_-10px_rgba(109,40,217,0.15)] md:rounded-2xl py-3 px-4 md:px-6' : 'bg-white/70 backdrop-blur-md border-b border-slate-200/40 md:border-none md:bg-transparent md:backdrop-blur-none py-4 px-4 md:px-0'">
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <a href="{{ url('/') }}" class="flex items-center gap-2.5">
@@ -169,9 +169,9 @@
 
             <!-- Desktop Nav -->
             <div class="hidden md:flex items-center gap-8 bg-white border border-slate-200 shadow-sm rounded-full px-6 py-2.5">
-                <a href="{{ url('/') }}" class="text-sm font-bold text-purple-700 hover:text-purple-800 transition-colors">Home</a>
-                <a href="{{ route('services.index') }}" class="text-sm font-bold text-slate-600 hover:text-purple-600 transition-colors">Services</a>
-                <a href="{{ route('contact') }}" class="text-sm font-bold text-slate-600 hover:text-purple-600 transition-colors">Contact</a>
+                <a href="{{ route('landing') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('landing') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Home</a>
+                <a href="{{ route('services.index') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('services.index') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Services</a>
+                <a href="{{ route('contact') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('contact') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Contact</a>
             </div>
 
             <!-- Auth Buttons -->
@@ -202,20 +202,37 @@
             </div>
 
             <!-- Mobile Toggle -->
-            <button class="md:hidden p-2 rounded-xl text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm" @click="mobileOpen = !mobileOpen">
+            <button class="md:hidden p-2 rounded-xl text-slate-600 bg-white/80 border border-slate-200/80 hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20" @click="mobileOpen = !mobileOpen">
                 <i data-lucide="menu" class="w-5 h-5" x-show="!mobileOpen"></i>
                 <i data-lucide="x" class="w-5 h-5" x-show="mobileOpen" style="display:none"></i>
             </button>
         </div>
 
         <!-- Mobile Menu -->
-        <div x-show="mobileOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="md:hidden absolute top-full left-0 right-0 mt-4 bg-white border border-slate-200 rounded-2xl p-4 shadow-2xl backdrop-blur-xl" style="display:none">
-            <div class="space-y-2">
-                <a href="{{ url('/') }}" class="block px-4 py-3 rounded-xl text-sm font-bold text-purple-700 bg-purple-50 transition-colors">Home</a>
-                <a href="{{ route('services.index') }}" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-purple-600 transition-colors">Services</a>
-                <a href="{{ route('contact') }}" class="block px-4 py-3 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-purple-600 transition-colors">Contact</a>
+        <div x-show="mobileOpen" 
+             x-transition:enter="transition ease-out duration-300" 
+             x-transition:enter-start="opacity-0 -translate-y-4 scale-95" 
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             x-transition:leave="transition ease-in duration-200" 
+             x-transition:leave-start="opacity-100 translate-y-0 scale-100" 
+             x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+             class="md:hidden absolute top-full left-4 right-4 mt-2 bg-white border border-slate-200/80 rounded-3xl p-5 shadow-2xl z-50" 
+             style="display:none; background-color: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 25px 50px -12px rgba(109, 40, 217, 0.18); border: 1px solid rgba(226, 232, 240, 0.9);">
+            <div class="space-y-1.5">
+                <a href="{{ route('landing') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all {{ request()->routeIs('landing') ? 'text-purple-700 bg-purple-50/80' : 'text-slate-600 hover:bg-slate-50 hover:text-purple-600' }}">
+                    <i data-lucide="home" class="w-5 h-5 {{ request()->routeIs('landing') ? 'text-purple-600' : 'text-slate-400' }}"></i>
+                    Home
+                </a>
+                <a href="{{ route('services.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all {{ request()->routeIs('services.index') ? 'text-purple-700 bg-purple-50/80' : 'text-slate-600 hover:bg-slate-50 hover:text-purple-600' }}">
+                    <i data-lucide="briefcase" class="w-5 h-5 {{ request()->routeIs('services.index') ? 'text-purple-600' : 'text-slate-400' }}"></i>
+                    Services
+                </a>
+                <a href="{{ route('contact') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all {{ request()->routeIs('contact') ? 'text-purple-700 bg-purple-50/80' : 'text-slate-600 hover:bg-slate-50 hover:text-purple-600' }}">
+                    <i data-lucide="mail" class="w-5 h-5 {{ request()->routeIs('contact') ? 'text-purple-600' : 'text-slate-400' }}"></i>
+                    Contact
+                </a>
             </div>
-            <div class="pt-4 mt-2 border-t border-slate-100 flex flex-col gap-3">
+            <div class="pt-4 mt-3 border-t border-slate-100/80 flex flex-col gap-2.5">
                 @auth
                     @php
                         $dashUrlMobile = match(auth()->user()->role) {
@@ -224,11 +241,22 @@
                             default => route('customer.dashboard'),
                         };
                     @endphp
-                    <a href="{{ route('cart.index') }}" class="block w-full text-center px-4 py-3 rounded-xl text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200">My Cart ({{ auth()->user()->cartItems->count() }})</a>
-                    <a href="{{ $dashUrlMobile }}" class="block w-full text-center px-4 py-3 rounded-xl text-sm font-bold text-white bg-purple-700 hover:bg-purple-800 transition-colors shadow-md">Dashboard</a>
+                    <a href="{{ route('cart.index') }}" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-all border border-slate-200/60">
+                        <i data-lucide="shopping-cart" class="w-4 h-4 text-slate-500"></i>
+                        My Cart ({{ auth()->user()->cartItems->count() }})
+                    </a>
+                    <a href="{{ $dashUrlMobile }}" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all shadow-[0_4px_15px_-4px_rgba(109,40,217,0.4)]">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4 text-white"></i>
+                        Dashboard
+                    </a>
                 @else
-                    <a href="{{ route('login') }}" class="block w-full text-center px-4 py-3 rounded-xl text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200">Log in</a>
-                    <a href="{{ route('register') }}" class="block w-full text-center px-4 py-3 rounded-xl text-sm font-bold text-white bg-purple-700 hover:bg-purple-800 transition-colors shadow-md">Start Earning Free</a>
+                    <a href="{{ route('login') }}" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-all border border-slate-200/60">
+                        <i data-lucide="log-in" class="w-4 h-4 text-slate-500"></i>
+                        Log in
+                    </a>
+                    <a href="{{ route('register') }}" class="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all shadow-[0_4px_15px_-4px_rgba(109,40,217,0.4)]">
+                        Start Free <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
                 @endauth
             </div>
         </div>
