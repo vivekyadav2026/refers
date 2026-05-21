@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
         
         <!-- Main Referral Link Card -->
         <div class="lg:col-span-2 bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl shadow-lg border border-slate-800 p-6 sm:p-8 relative overflow-hidden group">

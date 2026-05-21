@@ -18,7 +18,7 @@
 </div>
 
 {{-- ── Stats Cards ── --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
     @foreach([
         ['label' => 'Wallet Balance',    'value' => '₹'.number_format($walletBalance,2),  'icon' => 'wallet',        'color' => 'emerald', 'gradient' => 'from-emerald-50 to-teal-50',   'desc' => 'Available to withdraw'],
         ['label' => 'Total Earned',      'value' => '₹'.number_format($totalEarned,2),    'icon' => 'trending-up',   'color' => 'blue',    'gradient' => 'from-blue-50 to-indigo-50',    'desc' => 'Cleared + paid commissions'],

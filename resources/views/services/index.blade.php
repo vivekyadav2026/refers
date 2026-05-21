@@ -79,7 +79,7 @@
       <a href="{{ route('services.index') }}" class="mt-4 inline-block px-6 py-2.5 bg-purple-700 text-white rounded-xl font-semibold text-sm hover:bg-purple-800 transition-colors">View All</a>
     </div>
     @else
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       @foreach($allSvcs as $idx => $svc)
       @php $p = $palette[$idx % count($palette)]; @endphp
       <a href="{{ route('services.show', $svc->slug) }}"
@@ -91,7 +91,7 @@
         <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
         {{-- Card Image / Gradient Header --}}
-        <div class="relative h-44 overflow-hidden rounded-t-[32px]">
+        <div class="relative h-28 sm:h-44 overflow-hidden rounded-t-[32px]">
           @if($svc->banner_image)
             <img src="{{ asset('storage/'.$svc->banner_image) }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
@@ -117,13 +117,13 @@
         </div>
 
         {{-- Content --}}
-        <div class="p-6 flex-1 flex flex-col">
-          <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-purple-700 transition-colors leading-snug tracking-tight">{{ $svc->name }}</h3>
-          <p class="text-sm text-slate-500 leading-relaxed flex-1 line-clamp-3 font-normal">{{ $svc->short_description }}</p>
+        <div class="p-3 sm:p-6 flex-1 flex flex-col">
+          <h3 class="text-xs sm:text-lg font-bold text-slate-800 mb-1 sm:mb-2 group-hover:text-purple-700 transition-colors leading-snug tracking-tight line-clamp-2">{{ $svc->name }}</h3>
+          <p class="text-[11px] sm:text-sm text-slate-500 leading-relaxed flex-1 line-clamp-2 font-normal hidden sm:block">{{ $svc->short_description }}</p>
 
-          {{-- Features --}}
+          {{-- Features (desktop only) --}}
           @if(is_array($svc->features) && count($svc->features) > 0)
-          <ul class="mt-4 space-y-1.5">
+          <ul class="mt-4 space-y-1.5 hidden sm:block">
             @foreach(array_slice($svc->features, 0, 3) as $f)
             <li class="flex items-center gap-2 text-xs text-slate-600 font-medium">
               <svg class="w-3.5 h-3.5 text-purple-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -222,7 +222,7 @@
         ];
       @endphp
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         @foreach($whyCards as $w)
         <div class="bg-white rounded-3xl p-6 border border-slate-100/80 hover:border-purple-200/60 shadow-sm hover:shadow-md transition-all duration-300 group ring-1 ring-slate-900/5">
           <div class="w-12 h-12 rounded-xl {{ $w['bg-color'] }} border {{ $w['border-color'] }} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">

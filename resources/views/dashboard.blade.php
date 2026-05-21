@@ -27,7 +27,7 @@
     </div>
 
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
         <!-- Card 1 -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-indigo-200 transition-colors">
             <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
