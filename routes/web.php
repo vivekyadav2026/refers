@@ -319,9 +319,9 @@ Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->gr
 // Temporary Route to Fix Storage Links on Live Server without SSH Access
 Route::get('/fix-storage', function () {
     try {
-        // Delete the broken public/storage symlink if it exists
+        // Delete the broken public/storage directory or symlink
         if (file_exists(public_path('storage'))) {
-            unlink(public_path('storage'));
+            \Illuminate\Support\Facades\File::deleteDirectory(public_path('storage'));
         }
         
         // Run the artisan command
