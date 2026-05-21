@@ -25,6 +25,7 @@
             ['route'=>'admin.leads','icon'=>'target','label'=>'Lead Management'],
             ['route'=>'admin.kyc','icon'=>'shield-check','label'=>'KYC Approvals'],
             ['route'=>'admin.services','icon'=>'box','label'=>'Services Catalog'],
+            ['route'=>'admin.training.index','icon'=>'graduation-cap','label'=>'Training Center'],
             ['route'=>'admin.cms.index','icon'=>'file-text','label'=>'CMS Content'],
             ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'],
             ['route'=>'admin.coupons.index','icon'=>'tag','label'=>'Coupons Manager'],
@@ -44,7 +45,7 @@
         <li class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-3 py-2 mt-2">Customer Menu</li>
         @foreach([
             ['route'=>'customer.dashboard','icon'=>'layout-dashboard','label'=>'Dashboard Overview'],
-            ['route'=>'services.index','icon'=>'grid-3x3','label'=>'Explore Services'],
+            ['route'=>'customer.services','icon'=>'grid-3x3','label'=>'Explore Services'],
             ['route'=>'cart.index','icon'=>'shopping-cart','label'=>'My Cart', 'count' => auth()->user()->cartItems->count()],
             ['route'=>'customer.orders','icon'=>'package','label'=>'Order History', 'count' => auth()->user()->orders()->whereIn('status', ['pending', 'in_progress'])->count()],
             ['route'=>'customer.profile','icon'=>'user','label'=>'Account Settings'],
@@ -91,6 +92,8 @@
             ['route'=>'partner.dashboard','icon'=>'layout-dashboard','label'=>'Dashboard Overview'],
             ['route'=>'partner.services','icon'=>'grid-3x3','label'=>'Services Catalog'],
             ['route'=>'partner.leads.index','icon'=>'target','label'=>'Lead Management'],
+            ['route'=>'partner.referrals','icon'=>'link','label'=>'Referrals'],
+            ['route'=>'partner.earnings','icon'=>'coins','label'=>'Earnings'],
             ['route'=>'partner.withdrawals','icon'=>'wallet','label'=>'Wallet & Payouts'],
             ['route'=>'partner.tickets','icon'=>'headphones','label'=>'Support Desk'],
             ['route'=>'partner.training','icon'=>'graduation-cap','label'=>'Training Center'],

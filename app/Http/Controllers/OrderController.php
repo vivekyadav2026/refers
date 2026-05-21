@@ -36,12 +36,29 @@ class OrderController extends Controller
 
         $service = Service::findOrFail($request->service_id);
 
+        // Resolve referring partner: session → cookie → user's referred_by
+        $referredByPartner = session('ref_partner_id')
+            ?? $request->cookie('ref_partner_id')
+            ?? auth()->user()->referred_by;
+
+        // Validate the partner actually exists and is active
+        if ($referredByPartner) {
+            $partnerExists = \App\Models\User::where('id', $referredByPartner)
+                ->where('role', 'partner')
+                ->where('status', 'active')
+                ->exists();
+            if (!$partnerExists) {
+                $referredByPartner = null;
+            }
+        }
+
         $order = Order::create([
-            'user_id'      => auth()->id(),
-            'service_id'   => $service->id,
-            'amount'       => $service->min_price,
-            'status'       => 'pending',
-            'requirements' => $request->requirements,
+            'user_id'              => auth()->id(),
+            'service_id'           => $service->id,
+            'amount'               => $service->min_price,
+            'status'               => 'pending',
+            'requirements'         => $request->requirements,
+            'referred_by_partner'  => $referredByPartner,
         ]);
 
         return redirect()->route('payment.create', $order)

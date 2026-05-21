@@ -121,41 +121,74 @@ class PaymentController extends Controller
     {
         $partnerId = $order->referred_by_partner;
 
-        // Check through lead as well
+        // Fallback: check through lead
         if (!$partnerId && $order->lead_id && $order->lead && $order->lead->partner_id) {
             $partnerId = $order->lead->partner_id;
         }
 
         if (!$partnerId) {
+            Log::info('Commission skipped: no partner linked to order #' . $order->id);
             return;
         }
 
-        // Get commission rate from service or global settings
+        // Prevent duplicate commission for the same order
+        $alreadyExists = \App\Models\Commission::where('order_id', $order->id)
+            ->where('user_id', $partnerId)
+            ->exists();
+        if ($alreadyExists) {
+            Log::info('Commission already exists for order #' . $order->id . ', skipping.');
+            return;
+        }
+
+        // Load the service — fall back to first order item's service if not set
         $service = $order->service;
-        $commissionRate = $service->commission_rate ?? Setting::get_val('default_commission', 20);
-        $commissionType = $service->commission_type ?? 'percentage';
+        if (!$service && $order->items->isNotEmpty()) {
+            $service = $order->items->first()->service;
+        }
+
+        // Get commission rate: service-level → global setting → default 10%
+        $commissionRate = null;
+        $commissionType = 'percentage';
+
+        if ($service) {
+            $commissionRate = $service->commission_rate;
+            $commissionType = $service->commission_type ?? 'percentage';
+        }
+
+        if (!$commissionRate) {
+            $commissionRate = Setting::get_val('default_commission', 10);
+            $commissionType = 'percentage';
+        }
 
         if ($commissionType === 'fixed') {
             $commissionAmount = (float) $commissionRate;
         } else {
-            $commissionAmount = $order->amount * ($commissionRate / 100);
+            $commissionAmount = round($order->amount * ($commissionRate / 100), 2);
         }
 
-        \App\Models\Commission::create([
-            'user_id' => $partnerId,
-            'order_id' => $order->id,
-            'type' => $commissionType,
+        // Safety: don't create a ₹0 commission
+        if ($commissionAmount <= 0) {
+            Log::warning('Commission amount is 0 for order #' . $order->id . '. Rate: ' . $commissionRate . '%. Skipping.');
+            return;
+        }
+
+        $commission = \App\Models\Commission::create([
+            'user_id'    => $partnerId,
+            'order_id'   => $order->id,
+            'type'       => $commissionType,
             'percentage' => $commissionType === 'percentage' ? $commissionRate : 0,
-            'amount' => $commissionAmount,
-            'status' => 'pending'
+            'amount'     => $commissionAmount,
+            'status'     => 'pending',
         ]);
 
-        // Update referral tracking
+        Log::info('Commission of ₹' . $commissionAmount . ' created for partner #' . $partnerId . ' on order #' . $order->id);
+
+        // Update referral tracking record
         PartnerReferral::where('partner_id', $partnerId)
             ->where('customer_id', $order->user_id)
             ->update([
                 'order_id' => $order->id,
-                'status' => 'purchased',
+                'status'   => 'purchased',
             ]);
     }
 
@@ -187,7 +220,21 @@ class PaymentController extends Controller
         $service = \App\Models\Service::findOrFail($request->service_id);
         $total = $service->min_price;
 
-        $referredByPartner = session('ref_partner_id');
+        // Resolve the referring partner with proper fallback chain
+        $referredByPartner = session('ref_partner_id')
+            ?? request()->cookie('ref_partner_id')
+            ?? auth()->user()->referred_by;
+
+        // Validate the partner actually exists and is active
+        if ($referredByPartner) {
+            $partnerExists = \App\Models\User::where('id', $referredByPartner)
+                ->where('role', 'partner')
+                ->where('status', 'active')
+                ->exists();
+            if (!$partnerExists) {
+                $referredByPartner = null;
+            }
+        }
 
         // Update user's name if they are using the default placeholder
         $user = auth()->user();

@@ -20,6 +20,8 @@ class WithdrawalController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:10',
+            'payment_method' => 'required|in:upi,bank',
+            'payment_details' => 'required|string',
         ]);
 
         $wallet = auth()->user()->wallet;
@@ -34,6 +36,8 @@ class WithdrawalController extends Controller
         Withdrawal::create([
             'user_id' => auth()->id(),
             'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'payment_details' => $request->payment_details,
             'status' => 'pending',
         ]);
 

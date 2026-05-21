@@ -29,7 +29,7 @@
             <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Users Management</h1>
             <p class="text-slate-500 mt-1">Manage customers, partners, view their performance, and handle KYC approvals.</p>
         </div>
-        <div>
+        <div class="mt-3 sm:mt-0">
             <a href="{{ route('admin.users.create') }}"
                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors">
                 <i data-lucide="user-plus" class="w-4 h-4"></i>
@@ -39,7 +39,7 @@
     </div>
 
     <!-- Summary Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center gap-4">
             <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                 <i data-lucide="users" class="w-5 h-5"></i>
@@ -117,7 +117,7 @@
 
     <!-- Data Table -->
     <div class="bg-white border-x border-b border-slate-200 rounded-b-2xl shadow-sm overflow-hidden mb-8">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
             <table class="w-full text-sm text-left">
                 <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
@@ -127,6 +127,7 @@
                         <th scope="col" class="px-6 py-4 font-semibold tracking-wider">KYC Status</th>
                         <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Account Status</th>
                         <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-right">Wallet Balance</th>
+                        <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Referred By</th>
                         <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-right">Leads</th>
                         <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-right">Actions</th>
                     </tr>
@@ -226,6 +227,18 @@
                                 @endif
                             @else
                                 <span class="text-slate-400 text-xs">No wallet</span>
+                            @endif
+                        </td>
+
+                        <!-- Referred By -->
+                        <td class="px-6 py-4">
+                            @if($user->referrer)
+                                <div class="font-semibold text-slate-900">{{ $user->referrer->name }}</div>
+                                <div class="text-xs text-slate-500">Partner</div>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                                    Direct
+                                </span>
                             @endif
                         </td>
 

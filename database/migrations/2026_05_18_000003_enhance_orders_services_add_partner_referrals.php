@@ -23,7 +23,9 @@ return new class extends Migration
         });
 
         // Update order status enum to include more statuses
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','paid','in_progress','completed','cancelled') DEFAULT 'pending'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','paid','in_progress','completed','cancelled') DEFAULT 'pending'");
+        }
 
         // Enhance services table
         Schema::table('services', function (Blueprint $table) {
@@ -62,7 +64,9 @@ return new class extends Migration
             ]);
         });
 
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','paid') DEFAULT 'pending'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','paid') DEFAULT 'pending'");
+        }
 
         Schema::table('orders', function (Blueprint $table) {
             $table->dropForeign(['referred_by_partner']);

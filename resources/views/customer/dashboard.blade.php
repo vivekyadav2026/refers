@@ -15,18 +15,19 @@
 </div>
 
 {{-- Stats Grid --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
     @foreach([
-        ['label' => 'Total Orders', 'value' => $totalOrders, 'icon' => 'shopping-bag', 'color' => 'blue', 'gradient' => 'from-blue-50 to-indigo-50'],
-        ['label' => 'Pending', 'value' => $pendingOrders, 'icon' => 'clock', 'color' => 'amber', 'gradient' => 'from-amber-50 to-orange-50'],
-        ['label' => 'Completed', 'value' => $completedOrders, 'icon' => 'check-circle', 'color' => 'emerald', 'gradient' => 'from-emerald-50 to-teal-50'],
-        ['label' => 'Total Spent', 'value' => '₹' . number_format($totalSpent), 'icon' => 'wallet', 'color' => 'purple', 'gradient' => 'from-purple-50 to-fuchsia-50'],
+        ['label' => 'Total Orders',  'value' => $totalOrders,                         'icon' => 'shopping-bag',  'color' => 'blue',   'gradient' => 'from-blue-50 to-indigo-50'],
+        ['label' => 'Pending',       'value' => $pendingOrders,                        'icon' => 'clock',         'color' => 'amber',  'gradient' => 'from-amber-50 to-orange-50'],
+        ['label' => 'In Progress',   'value' => $inProgressOrders,                     'icon' => 'loader',        'color' => 'indigo', 'gradient' => 'from-indigo-50 to-violet-50'],
+        ['label' => 'Completed',     'value' => $completedOrders,                      'icon' => 'check-circle',  'color' => 'emerald','gradient' => 'from-emerald-50 to-teal-50'],
+        ['label' => 'Total Spent',   'value' => '₹' . number_format($totalSpent),      'icon' => 'wallet',        'color' => 'purple', 'gradient' => 'from-purple-50 to-fuchsia-50'],
     ] as $stat)
     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-{{ $stat['color'] }}-300 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
         <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br {{ $stat['gradient'] }} rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
         <div class="flex items-center justify-between mb-6 relative z-10">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ $stat['gradient'] }} text-{{ $stat['color'] }}-600 flex items-center justify-center border border-{{ $stat['color'] }}-100 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="{{ $stat['icon'] }}" class="w-7 h-7"></i>
+                <i data-lucide="{{ $stat['icon'] }}" class="w-7 h-7 {{ $stat['label'] === 'In Progress' && $inProgressOrders > 0 ? 'animate-spin' : '' }}"></i>
             </div>
         </div>
         <div class="text-3xl font-black text-slate-900 mb-1 relative z-10">{{ $stat['value'] }}</div>
@@ -37,7 +38,7 @@
 
 {{-- Quick Actions --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-    <a href="{{ route('services.index') }}" class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+    <a href="{{ route('customer.services') }}" class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
         <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-6 border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors">
             <i data-lucide="grid-3x3" class="w-7 h-7"></i>
@@ -115,6 +116,45 @@
         <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
             <i data-lucide="grid-3x3" class="w-5 h-5"></i> Browse Services
         </a>
+    </div>
+    @endif
+</div>
+
+{{-- Recommended Services / Explore Website --}}
+<div class="mb-10">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">Explore Services</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Discover what else we can do for your business.</p>
+        </div>
+        <a href="{{ route('customer.services') }}" class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors bg-blue-50 px-4 py-2 rounded-xl">View Catalog <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+    </div>
+
+    @if(isset($recommendedServices) && $recommendedServices->count())
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        @foreach($recommendedServices as $svc)
+        <a href="{{ route('services.show', $svc->slug) }}" class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col">
+            @if($svc->banner_image)
+                <div class="h-32 w-full overflow-hidden">
+                    <img src="{{ asset('storage/' . $svc->banner_image) }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                </div>
+            @else
+                <div class="h-32 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                    <i data-lucide="{{ $svc->icon ?? 'box' }}" class="w-10 h-10 text-blue-600 group-hover:scale-125 transition-transform duration-500"></i>
+                </div>
+            @endif
+            <div class="p-5 flex-1 flex flex-col">
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-black text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{{ $svc->name }}</h3>
+                    <span class="text-emerald-600 font-black text-sm bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">₹{{ number_format($svc->min_price) }}</span>
+                </div>
+                <p class="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">{{ $svc->short_description }}</p>
+                <div class="w-full py-2.5 rounded-xl bg-slate-50 text-slate-700 text-sm font-black text-center border border-slate-200 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-colors">
+                    View Details
+                </div>
+            </div>
+        </a>
+        @endforeach
     </div>
     @endif
 </div>

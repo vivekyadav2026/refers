@@ -37,6 +37,11 @@ class ReferralTrackingMiddleware
                     'ref_partner_id' => $partner->id
                 ]);
 
+                // Track if they were referred to a specific service
+                if ($request->is('services/*')) {
+                    session(['ref_service_slug' => $request->segment(2)]);
+                }
+
                 // Track the click if not already tracked in this session
                 $sessionKey = 'ref_tracked_' . $partner->id;
                 if (!session()->has($sessionKey)) {

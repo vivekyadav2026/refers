@@ -118,13 +118,14 @@
 
     <!-- Table -->
     <div class="bg-white border-x border-b border-slate-200 rounded-b-2xl shadow-sm overflow-hidden mb-8">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
+        <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+            <table class="min-w-full text-sm text-left">
                 <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                     <tr>
                         <th class="px-6 py-4 font-semibold tracking-wider">ID</th>
                         <th class="px-6 py-4 font-semibold tracking-wider">Partner</th>
                         <th class="px-6 py-4 font-semibold tracking-wider text-right">Amount</th>
+                        <th class="px-6 py-4 font-semibold tracking-wider">Method & Details</th>
                         <th class="px-6 py-4 font-semibold tracking-wider">Status</th>
                         <th class="px-6 py-4 font-semibold tracking-wider">Admin Notes</th>
                         <th class="px-6 py-4 font-semibold tracking-wider">Date</th>
@@ -168,6 +169,12 @@
                         <!-- Amount -->
                         <td class="px-6 py-4 text-right">
                             <div class="text-lg font-bold text-slate-900">₹{{ number_format($w->amount, 2) }}</div>
+                        </td>
+
+                        <!-- Method & Details -->
+                        <td class="px-6 py-4 max-w-xs">
+                            <div class="font-bold text-slate-900 uppercase text-xs">{{ $w->payment_method ?? 'N/A' }}</div>
+                            <div class="text-xs text-slate-600 break-all whitespace-pre-wrap mt-0.5">{{ $w->payment_details ?? '-' }}</div>
                         </td>
 
                         <!-- Status -->

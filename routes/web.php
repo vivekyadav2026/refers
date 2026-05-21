@@ -67,10 +67,25 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
     Route::get('/orders/{order}', [CustomerDashboardController::class, 'orderShow'])->name('order.show');
     Route::get('/profile', [CustomerDashboardController::class, 'profile'])->name('profile');
     Route::put('/profile', [CustomerDashboardController::class, 'updateProfile'])->name('profile.update');
+
+    // Customer service catalog — inside the dashboard layout with sidebar
+    Route::get('/services', function () {
+        $query = \App\Models\Service::where('is_active', true);
+        if (request('category')) {
+            $query->where('category', request('category'));
+        }
+        $servicesByCategory = $query->orderBy('name')->get()->groupBy('category');
+        $allCategories = \App\Models\Service::where('is_active', true)->distinct()->pluck('category');
+        return view('customer.services', [
+            'servicesByCategory' => $servicesByCategory,
+            'allCategories'      => $allCategories,
+            'selectedCategory'   => request('category'),
+        ]);
+    })->name('services');
 });
 
 // ─── CART ROUTES ──────────────────────────────────────────────────────────
-Route::middleware(['auth'])->prefix('cart')->name('cart.')->group(function () {
+Route::middleware(['auth', 'customer.only'])->prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
     Route::post('/add', [CartController::class, 'add'])->name('add');
     Route::delete('/{cart}', [CartController::class, 'remove'])->name('remove');
@@ -103,7 +118,22 @@ Route::middleware(['auth'])->prefix('partner')->name('partner.')->group(function
         })->name('services');
 
         Route::get('/earnings', function () {
-            return view('earnings.index');
+            $user = auth()->user();
+
+            $commissions = \App\Models\Commission::with(['order.service', 'order.user'])
+                ->where('user_id', $user->id)
+                ->latest()
+                ->paginate(15);
+
+            $totalEarned    = \App\Models\Commission::where('user_id', $user->id)->whereIn('status', ['cleared', 'paid'])->sum('amount');
+            $pendingAmount  = \App\Models\Commission::where('user_id', $user->id)->where('status', 'pending')->sum('amount');
+            $paidAmount     = \App\Models\Commission::where('user_id', $user->id)->where('status', 'paid')->sum('amount');
+            $walletBalance  = $user->wallet?->balance ?? 0;
+            $totalSales     = \App\Models\Commission::where('user_id', $user->id)->count();
+
+            return view('earnings.index', compact(
+                'commissions', 'totalEarned', 'pendingAmount', 'paidAmount', 'walletBalance', 'totalSales'
+            ));
         })->name('earnings');
 
         Route::get('/referrals', function () {
@@ -119,11 +149,13 @@ Route::middleware(['auth'])->prefix('partner')->name('partner.')->group(function
         })->name('referrals');
 
         Route::get('/training', function () {
-            return view('partner.training');
+            $trainings = \App\Models\Training::where('is_active', true)->orderBy('order_column')->get();
+            return view('partner.training', compact('trainings'));
         })->name('training');
 
         Route::get('/marketing', function () {
-            return view('partner.marketing');
+            $materials = \App\Models\MarketingMaterial::where('is_active', true)->latest()->get();
+            return view('partner.marketing', compact('materials'));
         })->name('marketing');
 
         Route::get('/withdrawals', [\App\Http\Controllers\WithdrawalController::class, 'index'])->name('withdrawals');
@@ -253,9 +285,31 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Admin: Marketing Materials
     Route::resource('marketing', \App\Http\Controllers\Admin\AdminMarketingMaterialController::class);
 
+    // Admin: Training Center
+    Route::get('/training', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'index'])->name('training.index');
+    Route::post('/training', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'store'])->name('training.store');
+    Route::put('/training/{training}', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'update'])->name('training.update');
+    Route::delete('/training/{training}', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'destroy'])->name('training.destroy');
+    Route::post('/training/{training}/toggle', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'toggle'])->name('training.toggle');
+
     // Admin: Coupons
     Route::resource('coupons', \App\Http\Controllers\Admin\AdminCouponController::class);
 
     Route::get('/settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'store'])->name('settings.store');
+});
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────
+Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->group(function () {
+    Route::post('/{id}/read', function ($id) {
+        auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+        $notif = auth()->user()->notifications()->where('id', $id)->first();
+        $url = $notif?->data['url'] ?? url('/');
+        return redirect($url);
+    })->name('read');
+
+    Route::post('/read-all', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'All notifications marked as read.');
+    })->name('read.all');
 });

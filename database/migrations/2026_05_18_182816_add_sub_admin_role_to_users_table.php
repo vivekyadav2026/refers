@@ -11,7 +11,9 @@ return new class extends Migration
     public function up(): void
     {
         // Add sub_admin to the role ENUM
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'sub_admin', 'partner', 'customer') DEFAULT 'customer'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'sub_admin', 'partner', 'customer') DEFAULT 'customer'");
+        }
     }
 
     /**
@@ -21,6 +23,8 @@ return new class extends Migration
     {
         // This down migration will fail if there are any sub_admin users, 
         // so we'll just leave it as is or reset to original.
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'partner', 'customer') DEFAULT 'customer'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'partner', 'customer') DEFAULT 'customer'");
+        }
     }
 };

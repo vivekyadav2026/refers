@@ -200,10 +200,11 @@
                     <div class="relative">
                         <select name="status"
                             class="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
-                            <option value="pending"   {{ $order->status === 'pending'   ? 'selected' : '' }}>Pending</option>
-                            <option value="paid"      {{ $order->status === 'paid'      ? 'selected' : '' }}>Paid</option>
-                            <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="pending"     {{ $order->status === 'pending'     ? 'selected' : '' }}>Pending</option>
+                            <option value="paid"        {{ $order->status === 'paid'        ? 'selected' : '' }}>Paid</option>
+                            <option value="in_progress" {{ $order->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="completed"   {{ $order->status === 'completed'   ? 'selected' : '' }}>Completed</option>
+                            <option value="cancelled"   {{ $order->status === 'cancelled'   ? 'selected' : '' }}>Cancelled</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                             <i data-lucide="chevron-down" class="w-4 h-4"></i>

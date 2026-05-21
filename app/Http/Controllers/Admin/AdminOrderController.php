@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Service;
+use App\Notifications\OrderStatusNotification;
 
 class AdminOrderController extends Controller
 {
@@ -36,11 +37,12 @@ class AdminOrderController extends Controller
         $totalOrders     = Order::count();
         $pendingCount    = Order::where('status', 'pending')->count();
         $paidCount       = Order::where('status', 'paid')->count();
+        $inProgressCount = Order::where('status', 'in_progress')->count();
         $completedCount  = Order::where('status', 'completed')->count();
         $totalRevenue    = Order::where('status', '!=', 'pending')->sum('amount');
 
         return view('admin.orders.index', compact(
-            'orders', 'totalOrders', 'pendingCount', 'paidCount', 'completedCount', 'totalRevenue'
+            'orders', 'totalOrders', 'pendingCount', 'paidCount', 'inProgressCount', 'completedCount', 'totalRevenue'
         ));
     }
 
@@ -63,13 +65,17 @@ class AdminOrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $request->validate([
-            'status'       => 'required|in:pending,paid,completed,cancelled',
+            'status'       => 'required|in:pending,paid,in_progress,completed,cancelled',
             'amount'       => 'required|numeric|min:0',
             'requirements' => 'nullable|string|max:3000',
             'service_id'   => 'nullable|exists:services,id',
         ]);
 
         $order->update($request->only('status', 'amount', 'requirements', 'service_id'));
+
+        if ($request->filled('status') && $order->user) {
+            $order->user->notify(new OrderStatusNotification($order));
+        }
 
         return redirect()->route('admin.orders.show', $order)
             ->with('success', 'Order #' . str_pad($order->id, 5, '0', STR_PAD_LEFT) . ' updated successfully.');
@@ -79,10 +85,14 @@ class AdminOrderController extends Controller
     public function status(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,paid,completed,cancelled',
+            'status' => 'required|in:pending,paid,in_progress,completed,cancelled',
         ]);
 
         $order->update(['status' => $request->status]);
+
+        if ($order->user) {
+            $order->user->notify(new OrderStatusNotification($order));
+        }
 
         return back()->with('success', 'Order status updated.');
     }

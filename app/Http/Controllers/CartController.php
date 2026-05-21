@@ -6,22 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Service;
 use App\Models\Coupon;
+use App\Models\User;
+use App\Notifications\NewOrderPlaced;
 
 class CartController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (auth()->check() && !auth()->user()->isCustomer()) {
-                if (auth()->user()->isAdmin()) {
-                    return redirect()->route('admin.dashboard')->with('error', 'Only customers can access the shopping cart.');
-                }
-                return redirect()->route('partner.dashboard')->with('error', 'Only customers can access the shopping cart.');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display the cart.
      */
@@ -142,8 +131,22 @@ class CartController extends Controller
             $filePath = $request->file('file_upload')->store('order-uploads', 'public');
         }
 
-        // Get referral partner from session/cookie
-        $referredByPartner = session('ref_partner_id');
+        // Resolve the referring partner:
+        // Priority: 1) Active session ref_partner_id, 2) Cookie ref_partner_id, 3) User's permanent referred_by
+        $referredByPartner = session('ref_partner_id')
+            ?? request()->cookie('ref_partner_id')
+            ?? auth()->user()->referred_by;
+
+        // Make sure the partner ID actually belongs to an active partner
+        if ($referredByPartner) {
+            $partnerExists = \App\Models\User::where('id', $referredByPartner)
+                ->whereIn('role', ['partner'])
+                ->where('status', 'active')
+                ->exists();
+            if (!$partnerExists) {
+                $referredByPartner = null;
+            }
+        }
 
         // Create order
         $order = \App\Models\Order::create([
@@ -174,6 +177,11 @@ class CartController extends Controller
 
         // Clear cart
         auth()->user()->cartItems()->delete();
+
+        // Notify all admins about the new order
+        User::where('role', 'admin')->each(fn($admin) =>
+            $admin->notify(new NewOrderPlaced($order))
+        );
 
         // Update user profile if new info provided
         $user = auth()->user();

@@ -11,10 +11,102 @@
             <input class="block h-full w-full border-0 py-0 pl-8 pr-0 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm bg-transparent outline-none" placeholder="Search..." type="search" name="search">
         </form>
         <div class="flex items-center gap-x-4 lg:gap-x-6">
-            <button type="button" class="-m-2.5 p-2.5 text-slate-400 hover:text-slate-500 relative">
-                <i data-lucide="bell" class="h-6 w-6"></i>
-                <span class="absolute top-2.5 right-2.5 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
-            </button>
+            {{-- ── Notification Bell ── --}}
+            @auth
+            @php $unread = auth()->user()->unreadNotifications->take(10); @endphp
+            <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+                <button type="button" @click="notifOpen = !notifOpen"
+                    class="-m-2.5 p-2.5 text-slate-400 hover:text-slate-600 relative transition-colors">
+                    <i data-lucide="bell" class="h-6 w-6"></i>
+                    @if($unread->count() > 0)
+                    <span class="absolute top-2 right-2 flex h-4 w-4">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-white text-[9px] font-black items-center justify-center">
+                            {{ $unread->count() > 9 ? '9+' : $unread->count() }}
+                        </span>
+                    </span>
+                    @endif
+                </button>
+
+                {{-- Dropdown Panel --}}
+                <div x-show="notifOpen"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                    class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 z-50 overflow-hidden"
+                    style="display:none">
+
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/50">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="bell" class="w-4 h-4 text-slate-500"></i>
+                            <span class="text-sm font-black text-slate-800">Notifications</span>
+                            @if($unread->count() > 0)
+                            <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[10px] font-black">{{ $unread->count() }} new</span>
+                            @endif
+                        </div>
+                        @if($unread->count() > 0)
+                        <form method="POST" action="{{ route('notifications.read.all') }}">
+                            @csrf
+                            <button type="submit" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Mark all read</button>
+                        </form>
+                        @endif
+                    </div>
+
+                    {{-- Notification List --}}
+                    <div class="max-h-[420px] overflow-y-auto divide-y divide-slate-50">
+                        @forelse($unread as $notif)
+                        @php
+                            $iconMap = [
+                                'new_order'          => ['icon' => 'shopping-bag',  'bg' => 'bg-blue-100',   'text' => 'text-blue-600'],
+                                'new_member'         => ['icon' => 'user-plus',     'bg' => 'bg-emerald-100','text' => 'text-emerald-600'],
+                                'commission_credited'=> ['icon' => 'indian-rupee',  'bg' => 'bg-emerald-100','text' => 'text-emerald-600'],
+                                'kyc_status' => [
+                                    'icon' => $notif->data['icon'] ?? 'shield-check',
+                                    'bg'   => ($notif->data['color'] ?? 'emerald') === 'red' ? 'bg-red-100'   : 'bg-emerald-100',
+                                    'text' => ($notif->data['color'] ?? 'emerald') === 'red' ? 'text-red-600' : 'text-emerald-600',
+                                ],
+                            ];
+                            $style = $iconMap[$notif->data['type']] ?? ['icon' => 'bell', 'bg' => 'bg-slate-100', 'text' => 'text-slate-600'];
+                        @endphp
+                        <form method="POST" action="{{ route('notifications.read', $notif->id) }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left flex items-start gap-3 px-5 py-4 hover:bg-slate-50 transition-colors group">
+                                <div class="w-9 h-9 rounded-xl {{ $style['bg'] }} {{ $style['text'] }} flex items-center justify-center shrink-0 mt-0.5">
+                                    <i data-lucide="{{ $style['icon'] }}" class="w-4 h-4"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-bold text-slate-900 truncate">{{ $notif->data['title'] ?? 'Notification' }}</div>
+                                    <div class="text-xs font-medium text-slate-500 mt-0.5 line-clamp-2">{{ $notif->data['message'] ?? '' }}</div>
+                                    <div class="text-[10px] text-slate-400 mt-1 font-medium">{{ $notif->created_at->diffForHumans() }}</div>
+                                </div>
+                                <div class="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-2 group-hover:bg-blue-400 transition-colors"></div>
+                            </button>
+                        </form>
+                        @empty
+                        <div class="px-5 py-12 text-center">
+                            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+                                <i data-lucide="bell-off" class="w-5 h-5 text-slate-400"></i>
+                            </div>
+                            <p class="text-sm font-bold text-slate-500">All caught up!</p>
+                            <p class="text-xs text-slate-400 mt-1">No new notifications</p>
+                        </div>
+                        @endforelse
+                    </div>
+
+                    {{-- Footer --}}
+                    @if(auth()->user()->notifications->count() > 0)
+                    <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/50 text-center">
+                        <span class="text-xs text-slate-400 font-medium">Showing {{ $unread->count() }} unread of {{ auth()->user()->notifications->count() }} total</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endauth
+
             @if(auth()->check())
             <a href="{{ route('cart.index') }}" class="-m-2.5 p-2.5 text-slate-400 hover:text-slate-500 relative">
                 <i data-lucide="shopping-cart" class="h-6 w-6"></i>

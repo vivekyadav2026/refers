@@ -16,10 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->validateCsrfTokens(except: [
             '/webhook/razorpay',
+            '/payment/verify',
         ]);
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin'          => \App\Http\Middleware\AdminMiddleware::class,
             'partner.unlock' => \App\Http\Middleware\PartnerUnlockMiddleware::class,
+            'customer.only'  => \App\Http\Middleware\CustomerOnlyMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

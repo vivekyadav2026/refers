@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\KycDocument;
 use App\Models\User;
+use App\Notifications\KycStatusChanged;
 
 class AdminKycController extends Controller
 {
@@ -55,6 +56,9 @@ class AdminKycController extends Controller
         $kyc->update(['status' => 'approved', 'rejection_reason' => null]);
         $kyc->user->update(['kyc_status' => 'approved']);
 
+        // Notify the partner
+        $kyc->user->notify(new KycStatusChanged($kyc, 'approved'));
+
         return back()->with('success', "KYC for {$kyc->user->name} approved successfully.");
     }
 
@@ -70,6 +74,9 @@ class AdminKycController extends Controller
             'rejection_reason' => $request->reason,
         ]);
         $kyc->user->update(['kyc_status' => 'rejected']);
+
+        // Notify the partner
+        $kyc->user->notify(new KycStatusChanged($kyc, 'rejected'));
 
         return back()->with('success', "KYC for {$kyc->user->name} rejected. Partner has been notified.");
     }

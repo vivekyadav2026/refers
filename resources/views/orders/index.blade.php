@@ -9,29 +9,35 @@
 @push('styles')
 <style>
     /* ── Stats Strip ── */
-    .stats-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .stats-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+    @media (min-width: 640px) { .stats-strip { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; } }
+    .stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem; padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    @media (min-width: 640px) { .stat-card { padding: 1.25rem 1.5rem; } }
     .stat-card .stat-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; }
-    .stat-card .stat-value { font-size: 1.75rem; font-weight: 800; color: #0f172a; line-height: 1; }
+    .stat-card .stat-value { font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1; }
+    @media (min-width: 640px) { .stat-card .stat-value { font-size: 1.75rem; } }
     .stat-card .stat-sub { font-size: 0.78rem; color: #64748b; }
 
     /* ── Page Header ── */
-    .page-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
-    .page-header h1 { font-size: 1.6rem; font-weight: 800; color: #0f172a; margin: 0 0 0.25rem; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .page-header h1 { font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 0.25rem; }
+    @media (min-width: 640px) { .page-header h1 { font-size: 1.6rem; } }
     .page-header p  { font-size: 0.875rem; color: #64748b; margin: 0; }
 
     /* ── Filter Bar ── */
-    .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
-    .filter-btn { padding: 0.4rem 1rem; border-radius: 999px; border: 1px solid #e2e8f0; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: #fff; color: #64748b; text-decoration: none; transition: all 0.15s; }
+    .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-btn { padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid #e2e8f0; font-size: 0.8rem; font-weight: 600; cursor: pointer; background: #fff; color: #64748b; text-decoration: none; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
     .filter-btn:hover, .filter-btn.active { background: #6366f1; border-color: #6366f1; color: #fff; }
 
     /* ── Table ── */
-    .orders-table { width: 100%; border-collapse: collapse; }
-    .orders-table thead th { padding: 0.75rem 1.25rem; text-align: left; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+    .orders-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+    .orders-table thead th { padding: 0.65rem 1rem; text-align: left; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; background: #f8fafc; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
     .orders-table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.12s; }
     .orders-table tbody tr:last-child { border-bottom: none; }
     .orders-table tbody tr:hover { background: #f8fafc; }
-    .orders-table tbody td { padding: 1rem 1.25rem; font-size: 0.875rem; color: #334155; vertical-align: middle; }
+    .orders-table tbody td { padding: 0.85rem 1rem; font-size: 0.875rem; color: #334155; vertical-align: middle; }
+
 
     /* ── Status Badges ── */
     .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }

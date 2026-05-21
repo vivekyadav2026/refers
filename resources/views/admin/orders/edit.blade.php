@@ -118,10 +118,11 @@
                     <div class="relative">
                         <select id="status" name="status"
                             class="w-full appearance-none border @error('status') border-red-400 bg-red-50 @else border-slate-200 bg-slate-50 @enderror text-slate-900 text-sm rounded-xl px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
-                            <option value="pending"   {{ old('status', $order->status) === 'pending'   ? 'selected' : '' }}>Pending</option>
-                            <option value="paid"      {{ old('status', $order->status) === 'paid'      ? 'selected' : '' }}>Paid</option>
-                            <option value="completed" {{ old('status', $order->status) === 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ old('status', $order->status) === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="pending"     {{ old('status', $order->status) === 'pending'     ? 'selected' : '' }}>Pending</option>
+                            <option value="paid"        {{ old('status', $order->status) === 'paid'        ? 'selected' : '' }}>Paid</option>
+                            <option value="in_progress" {{ old('status', $order->status) === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="completed"   {{ old('status', $order->status) === 'completed'   ? 'selected' : '' }}>Completed</option>
+                            <option value="cancelled"   {{ old('status', $order->status) === 'cancelled'   ? 'selected' : '' }}>Cancelled</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
                             <i data-lucide="chevron-down" class="w-4 h-4"></i>

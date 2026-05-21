@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Withdrawal;
+use App\Notifications\WithdrawalStatusNotification;
 
 class AdminWithdrawalController extends Controller
 {
@@ -60,6 +61,10 @@ class AdminWithdrawalController extends Controller
             'admin_notes' => $request->admin_notes,
         ]);
 
+        if ($withdrawal->user) {
+            $withdrawal->user->notify(new WithdrawalStatusNotification($withdrawal));
+        }
+
         return back()->with('success', "Withdrawal of ₹" . number_format($withdrawal->amount, 2) . " approved for {$withdrawal->user->name}.");
     }
 
@@ -78,6 +83,10 @@ class AdminWithdrawalController extends Controller
             'status'      => 'rejected',
             'admin_notes' => $request->admin_notes,
         ]);
+
+        if ($withdrawal->user) {
+            $withdrawal->user->notify(new WithdrawalStatusNotification($withdrawal));
+        }
 
         // Refund the amount back to wallet
         if ($withdrawal->user && $withdrawal->user->wallet) {

@@ -16,12 +16,16 @@ return new class extends Migration
         });
 
         // For MySQL: alter the role enum to include 'customer'
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin','partner','customer') DEFAULT 'customer'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin','partner','customer') DEFAULT 'customer'");
+        }
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin','partner') DEFAULT 'partner'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin','partner') DEFAULT 'partner'");
+        }
 
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['referral_code', 'company_name', 'business_type']);

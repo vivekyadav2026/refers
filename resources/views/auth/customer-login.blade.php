@@ -260,6 +260,27 @@
                 @enderror
             </div>
 
+            <div class="form-group">
+                <label class="form-label" for="referral_code">Referral Code (Optional)</label>
+                <div class="input-wrap">
+                    <span class="phone-prefix">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="w-4 h-4 text-indigo-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </span>
+                    <input id="referral_code" name="referral_code" type="text"
+                           class="form-input phone-field"
+                           placeholder="Referral Code"
+                           value="{{ old('referral_code', session('ref_code') ?? request()->cookie('ref_code') ?? request()->query('ref')) }}">
+                </div>
+                @error('referral_code')
+                    <div class="field-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+
             <button type="submit" class="btn-primary" id="btn-send-otp">
                 Continue with OTP →
             </button>

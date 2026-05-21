@@ -25,7 +25,7 @@
     </div>
 
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
         <!-- Card 1: Total Revenue -->
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1">
             <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
@@ -92,7 +92,7 @@
         <!-- Revenue Chart -->
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
             <h2 class="text-xl font-black text-slate-900 mb-6 tracking-tight">Revenue Growth (Last 6 Months)</h2>
-            <div class="h-72 w-full">
+            <div class="h-52 sm:h-72 w-full">
                 <canvas id="adminRevenueChart"></canvas>
             </div>
         </div>
@@ -100,7 +100,7 @@
         <!-- Partner Signups Chart -->
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
             <h2 class="text-xl font-black text-slate-900 mb-6 tracking-tight">Partner Signups (Last 6 Months)</h2>
-            <div class="h-72 w-full">
+            <div class="h-52 sm:h-72 w-full">
                 <canvas id="adminSignupsChart"></canvas>
             </div>
         </div>
@@ -113,27 +113,27 @@
             <a href="{{ route('admin.orders') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 uppercase tracking-wider transition-colors">View All Orders <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
+                            <table class="min-w-full text-sm text-left">
                 <thead class="text-[11px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/80 border-b border-slate-200">
                     <tr>
-                        <th scope="col" class="px-8 py-4">Time</th>
-                        <th scope="col" class="px-8 py-4">Customer</th>
-                        <th scope="col" class="px-8 py-4">Service</th>
-                        <th scope="col" class="px-8 py-4 text-right">Amount</th>
-                        <th scope="col" class="px-8 py-4 text-center">Status</th>
+                        <th scope="col" class="px-4 sm:px-6 py-4 whitespace-nowrap">Time</th>
+                        <th scope="col" class="px-4 sm:px-6 py-4 whitespace-nowrap">Customer</th>
+                        <th scope="col" class="px-4 sm:px-6 py-4 whitespace-nowrap">Service</th>
+                        <th scope="col" class="px-4 sm:px-6 py-4 text-right whitespace-nowrap">Amount</th>
+                        <th scope="col" class="px-4 sm:px-6 py-4 text-center whitespace-nowrap">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 bg-white font-medium">
                     @forelse($recentOrders as $order)
                     <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-8 py-5 text-slate-500 text-xs">{{ $order->created_at->diffForHumans() }}</td>
-                        <td class="px-8 py-5">
-                            <div class="font-bold text-slate-900">{{ $order->user->name ?? 'Guest' }}</div>
+                        <td class="px-4 sm:px-6 py-4 text-slate-500 text-xs whitespace-nowrap">{{ $order->created_at->diffForHumans() }}</td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <div class="font-bold text-slate-900 whitespace-nowrap">{{ $order->user->name ?? 'Guest' }}</div>
                             <div class="text-xs text-slate-400 font-semibold">{{ $order->user->email ?? '' }}</div>
                         </td>
-                        <td class="px-8 py-5 text-slate-800 font-bold">{{ $order->service->name ?? 'Digital Service' }}</td>
-                        <td class="px-8 py-5 text-right font-black text-slate-900 text-base">₹{{ number_format($order->amount) }}</td>
-                        <td class="px-8 py-5 text-center">
+                        <td class="px-4 sm:px-6 py-4 text-slate-800 font-bold whitespace-nowrap">{{ Str::limit($order->service->name ?? 'Digital Service', 25) }}</td>
+                        <td class="px-4 sm:px-6 py-4 text-right font-black text-slate-900">₹{{ number_format($order->amount) }}</td>
+                        <td class="px-4 sm:px-6 py-4 text-center">
                             @php
                                 $statusColors = [
                                     'pending' => 'bg-amber-100 text-amber-800 border-amber-200',
@@ -143,14 +143,14 @@
                                     'cancelled' => 'bg-red-100 text-red-800 border-red-200',
                                 ];
                             @endphp
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
                                 {{ str_replace('_', ' ', $order->status) }}
                             </span>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-8 py-16 text-center text-slate-400 font-semibold">
+                        <td colspan="5" class="px-6 py-16 text-center text-slate-400 font-semibold">
                             <i data-lucide="inbox" class="w-12 h-12 mx-auto text-slate-300 mb-3"></i>
                             No recent orders found.
                         </td>

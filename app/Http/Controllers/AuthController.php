@@ -10,11 +10,11 @@ use App\Models\Referral;
 use App\Models\PartnerReferral;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use App\Services\SmsService;
+use App\Notifications\NewMemberRegistered;
 
 class AuthController extends Controller
 {
@@ -77,7 +77,26 @@ class AuthController extends Controller
     {
         $request->validate([
             'phone' => 'required|numeric|digits:10',
+            'referral_code' => 'nullable|string|max:50',
         ]);
+
+        if ($request->filled('referral_code')) {
+            $refCode = trim($request->input('referral_code'));
+            $partner = User::where('referral_code', $refCode)
+                ->where('role', 'partner')
+                ->where('status', 'active')
+                ->first();
+
+            if ($partner) {
+                session([
+                    'ref_id' => $partner->id,
+                    'ref_code' => $refCode,
+                    'ref_partner_id' => $partner->id
+                ]);
+            } else {
+                return back()->withErrors(['referral_code' => 'Invalid or inactive referral code.'])->withInput();
+            }
+        }
 
         $phone = $request->phone;
         $loginAs = $request->input('login_as', 'customer'); // customer or partner
@@ -173,16 +192,29 @@ class AuthController extends Controller
             // Track referral registration
             if ($ref_partner_id) {
                 PartnerReferral::create([
-                    'partner_id' => $ref_partner_id,
-                    'customer_id' => $user->id,
+                    'partner_id'    => $ref_partner_id,
+                    'customer_id'   => $user->id,
                     'referral_code' => $ref_code ?? '',
-                    'ip_address' => request()->ip(),
-                    'status' => 'registered',
+                    'ip_address'    => request()->ip(),
+                    'status'        => 'registered',
                 ]);
             }
+
+            // Notify all admins about the new member
+            User::where('role', 'admin')->each(fn($admin) =>
+                $admin->notify(new NewMemberRegistered($user))
+            );
         }
 
+        // Capture referral data BEFORE login (session may regenerate during Auth::login)
+        $refPartnerId = session('ref_partner_id') ?? request()->cookie('ref_partner_id') ?? null;
+
         Auth::login($user);
+
+        // Re-save referral session data so it survives until checkout
+        if ($refPartnerId) {
+            session(['ref_partner_id' => $refPartnerId]);
+        }
 
         // Redirect based on role
         if ($user->role === 'admin') {
@@ -196,6 +228,13 @@ class AuthController extends Controller
         }
 
         // Customer
+        $refServiceSlug = session('ref_service_slug');
+        if ($refServiceSlug) {
+            session()->forget('ref_service_slug');
+            return redirect()->route('services.show', $refServiceSlug)
+                             ->with('success', 'Logged in successfully! You can now purchase your referred service.');
+        }
+
         return redirect()->route('customer.dashboard')
                          ->with('success', 'Logged in successfully!');
     }

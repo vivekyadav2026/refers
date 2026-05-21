@@ -43,6 +43,142 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
+        /* ── GLOBAL RESPONSIVE TABLE FIX ────────────────────────── */
+        /* Any table inside a .table-responsive wrapper scrolls on mobile */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Auto-wrap ALL tables inside cards */
+        .bg-white table, .bg-white .overflow-x-auto {
+            min-width: 0;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        /* Prevent table cell overflow on mobile */
+        @media (max-width: 640px) {
+            td, th {
+                white-space: nowrap;
+            }
+        }
+
+        /* ── DASHBOARD CONTENT PADDING ───────────────────────────── */
+        @media (max-width: 640px) {
+            main > div {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        /* ── CARD GRID: 2-col on small, 1-col on xs ─────────────── */
+        @media (max-width: 480px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+            }
+        }
+
+        /* ── FORMS: Full width inputs on mobile ─────────────────── */
+        @media (max-width: 640px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="number"],
+            input[type="url"],
+            input[type="password"],
+            input[type="search"],
+            select,
+            textarea {
+                width: 100%;
+                font-size: 16px; /* prevent iOS zoom */
+            }
+        }
+
+        /* ── STAT CARDS: Label truncation ────────────────────────── */
+        .stat-label-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── ACTION BUTTONS: Wrap on mobile ─────────────────────── */
+        @media (max-width: 640px) {
+            .page-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            .page-actions a,
+            .page-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ── MOBILE BOTTOM NAV BAR (dashboard users) ────────────── */
+        .mobile-bottom-nav {
+            display: none;
+        }
+        @media (max-width: 1024px) {
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                border-top: 1px solid #e2e8f0;
+                z-index: 40;
+                padding: 6px 0 env(safe-area-inset-bottom, 0);
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            }
+            /* Add bottom padding to main content so it doesn't hide behind nav */
+            main {
+                padding-bottom: 5rem !important;
+            }
+        }
+        @media (min-width: 1024px) {
+            .mobile-bottom-nav {
+                display: none !important;
+            }
+        }
+
+        /* ── SIDEBAR SCROLLBAR HIDE ──────────────────────────────── */
+        .lg\:overflow-y-auto::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lg\:overflow-y-auto::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .lg\:overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        /* ── HIDE SCROLLBAR FOR HORIZONTAL SCROLL ───────────────── */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── NOTIFICATION DROPDOWN: Full width on mobile ─────────── */
+        @media (max-width: 480px) {
+            [x-data*="notifOpen"] > div[x-show] {
+                position: fixed !important;
+                left: 1rem !important;
+                right: 1rem !important;
+                width: auto !important;
+            }
+        }
+
+        /* ── MODAL FIX: Full screen on mobile ────────────────────── */
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 1rem;
+                max-height: calc(100vh - 2rem);
+                overflow-y: auto;
+            }
+        }
+
+        /* ── FORCE TEXT WRAP IN TIGHT CELLS ─────────────────────── */
+        .allow-wrap { white-space: normal !important; }
     </style>
 </head>
 <body class="h-full text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white" x-data="{ sidebarOpen: false }">
@@ -82,13 +218,77 @@
                 @include('components.navbar')
 
                 <!-- Main Content -->
-                <main class="py-10 flex-1">
+                <main class="py-6 sm:py-10 flex-1">
                     <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                         @yield('content')
                     </div>
                 </main>
             </div>
+
+            <!-- Mobile Bottom Navigation Bar -->
+            @auth
+            <nav class="mobile-bottom-nav lg:hidden">
+                @php
+                    $isAdmin = auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin';
+                    $isPartner = auth()->user()->role === 'partner';
+                @endphp
+                @if($isAdmin)
+                    <a href="{{ route('admin.dashboard') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('admin.dashboard') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i> Home
+                    </a>
+                    <a href="{{ route('admin.users') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('admin.users') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="users" class="w-5 h-5 mb-0.5"></i> Users
+                    </a>
+                    <a href="{{ route('admin.orders') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('admin.orders') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 mb-0.5"></i> Orders
+                    </a>
+                    <a href="{{ route('admin.commissions') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('admin.commissions') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="coins" class="w-5 h-5 mb-0.5"></i> Commissions
+                    </a>
+                    <button @click="sidebarOpen = true" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold text-slate-500">
+                        <i data-lucide="menu" class="w-5 h-5 mb-0.5"></i> More
+                    </button>
+                @elseif($isPartner)
+                    <a href="{{ route('partner.dashboard') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('partner.dashboard') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i> Home
+                    </a>
+                    <a href="{{ route('partner.leads.index') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('partner.leads.*') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="target" class="w-5 h-5 mb-0.5"></i> Leads
+                    </a>
+                    <a href="{{ route('partner.referrals') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('partner.referrals') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="link" class="w-5 h-5 mb-0.5"></i> Referrals
+                    </a>
+                    <a href="{{ route('partner.withdrawals') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('partner.withdrawals') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="wallet" class="w-5 h-5 mb-0.5"></i> Wallet
+                    </a>
+                    <button @click="sidebarOpen = true" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold text-slate-500">
+                        <i data-lucide="menu" class="w-5 h-5 mb-0.5"></i> More
+                    </button>
+                @else
+                    <a href="{{ route('customer.dashboard') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('customer.dashboard') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i> Home
+                    </a>
+                    <a href="{{ route('customer.services') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('customer.services') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="grid-3x3" class="w-5 h-5 mb-0.5"></i> Services
+                    </a>
+                    <a href="{{ route('cart.index') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('cart.index') ? 'text-indigo-600' : 'text-slate-500' }} relative">
+                        <i data-lucide="shopping-cart" class="w-5 h-5 mb-0.5"></i>
+                        @if(auth()->user()->cartItems->count() > 0)
+                        <span class="absolute top-1 right-5 w-4 h-4 bg-indigo-600 text-white text-[9px] font-black rounded-full flex items-center justify-center">{{ auth()->user()->cartItems->count() }}</span>
+                        @endif
+                        Cart
+                    </a>
+                    <a href="{{ route('customer.orders') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('customer.orders') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="package" class="w-5 h-5 mb-0.5"></i> Orders
+                    </a>
+                    <a href="{{ route('customer.profile') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('customer.profile') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="user" class="w-5 h-5 mb-0.5"></i> Profile
+                    </a>
+                @endif
+            </nav>
+            @endauth
         </div>
+
     @else
         <!-- Landing Page Layout (No Sidebar) -->
         <div class="min-h-screen flex flex-col">

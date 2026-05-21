@@ -8,6 +8,7 @@ use App\Models\Commission;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\PartnerReferral;
+use App\Notifications\CommissionCredited;
 
 class AdminCommissionController extends Controller
 {
@@ -58,6 +59,11 @@ class AdminCommissionController extends Controller
         // Credit to partner's wallet
         if ($commission->user && $commission->user->wallet) {
             $commission->user->wallet->increment('balance', $commission->amount);
+        }
+
+        // Notify partner that commission was credited
+        if ($commission->user) {
+            $commission->user->notify(new CommissionCredited($commission));
         }
 
         return back()->with('success', 'Commission of ₹' . number_format($commission->amount, 2) . ' approved and credited to ' . $commission->user->name . '.');

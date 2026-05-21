@@ -59,9 +59,39 @@
 </div>
 
 <script>
-    function copyToClipboard(text) {
+    function copyServiceLink(btn, text) {
         navigator.clipboard.writeText(text).then(() => {
-            alert('Affiliate link copied to clipboard!');
+            const labelText = btn.querySelector('.label-text');
+            const amountText = btn.querySelector('.amount-text');
+            
+            // Save original HTML
+            const originalLabel = labelText.innerHTML;
+            const originalAmount = amountText.innerHTML;
+            
+            // Switch style to green/success
+            btn.classList.remove('border-indigo-600', 'text-indigo-600', 'hover:bg-indigo-50');
+            btn.classList.add('border-emerald-500', 'text-emerald-500', 'bg-emerald-50');
+            
+            labelText.innerHTML = 'Copied Link!';
+            labelText.classList.add('text-emerald-600');
+            
+            amountText.innerHTML = '<i data-lucide="check" class="w-4.5 h-4.5 inline-block align-text-bottom text-emerald-600"></i>';
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            
+            setTimeout(() => {
+                btn.classList.add('border-indigo-600', 'text-indigo-600', 'hover:bg-indigo-50');
+                btn.classList.remove('border-emerald-500', 'text-emerald-500', 'bg-emerald-50');
+                
+                labelText.innerHTML = originalLabel;
+                labelText.classList.remove('text-emerald-600');
+                
+                amountText.innerHTML = originalAmount;
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }, 2000);
         });
     }
 </script>

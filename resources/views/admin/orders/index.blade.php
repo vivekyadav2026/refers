@@ -94,10 +94,11 @@
             <div class="flex gap-2 w-full sm:w-auto flex-wrap">
                 <select name="status" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5" onchange="document.getElementById('filter-form').submit()">
                     <option value="">All Status</option>
-                    <option value="pending"   {{ request('status') === 'pending'   ? 'selected' : '' }}>Pending</option>
-                    <option value="paid"      {{ request('status') === 'paid'      ? 'selected' : '' }}>Paid</option>
-                    <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                    <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                    <option value="pending"     {{ request('status') === 'pending'     ? 'selected' : '' }}>Pending</option>
+                    <option value="paid"        {{ request('status') === 'paid'        ? 'selected' : '' }}>Paid</option>
+                    <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="completed"   {{ request('status') === 'completed'   ? 'selected' : '' }}>Completed</option>
+                    <option value="cancelled"   {{ request('status') === 'cancelled'   ? 'selected' : '' }}>Cancelled</option>
                 </select>
                 <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Search</button>
                 @if(request()->hasAny(['search','status']))
@@ -188,10 +189,11 @@
                                 @csrf
                                 <select name="status" onchange="this.form.submit()"
                                     class="text-xs rounded-full px-3 py-1.5 border-0 font-semibold cursor-pointer focus:ring-2 focus:ring-indigo-400 outline-none {{ $statusConfig[0] }}">
-                                    <option value="pending"   {{ $order->status === 'pending'   ? 'selected' : '' }}>Pending</option>
-                                    <option value="paid"      {{ $order->status === 'paid'      ? 'selected' : '' }}>Paid</option>
-                                    <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Completed</option>
-                                    <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    <option value="pending"     {{ $order->status === 'pending'     ? 'selected' : '' }}>Pending</option>
+                                    <option value="paid"        {{ $order->status === 'paid'        ? 'selected' : '' }}>Paid</option>
+                                    <option value="in_progress" {{ $order->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                                    <option value="completed"   {{ $order->status === 'completed'   ? 'selected' : '' }}>Completed</option>
+                                    <option value="cancelled"   {{ $order->status === 'cancelled'   ? 'selected' : '' }}>Cancelled</option>
                                 </select>
                             </form>
                         </td>

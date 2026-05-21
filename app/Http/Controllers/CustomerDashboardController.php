@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Service;
 
 class CustomerDashboardController extends Controller
 {
@@ -13,17 +14,24 @@ class CustomerDashboardController extends Controller
 
         $orders = $user->orders()->with('service', 'items.service')->latest()->get();
 
-        $totalOrders = $orders->count();
-        $pendingOrders = $orders->where('status', 'pending')->count();
-        $paidOrders = $orders->where('status', 'paid')->count();
+        $totalOrders     = $orders->count();
+        $pendingOrders   = $orders->where('status', 'pending')->count();
+        $inProgressOrders = $orders->where('status', 'in_progress')->count();
+        $paidOrders      = $orders->where('status', 'paid')->count();
         $completedOrders = $orders->where('status', 'completed')->count();
-        $totalSpent = $orders->whereIn('status', ['paid', 'completed', 'in_progress'])->sum('amount');
+        $totalSpent      = $orders->whereIn('status', ['paid', 'completed', 'in_progress'])->sum('amount');
 
         $recentOrders = $orders->take(5);
 
+        // Fetch some recommended/active services for them to explore
+        $recommendedServices = Service::where('is_active', true)
+                                      ->inRandomOrder()
+                                      ->take(3)
+                                      ->get();
+
         return view('customer.dashboard', compact(
-            'totalOrders', 'pendingOrders', 'paidOrders',
-            'completedOrders', 'totalSpent', 'recentOrders'
+            'totalOrders', 'pendingOrders', 'inProgressOrders', 'paidOrders',
+            'completedOrders', 'totalSpent', 'recentOrders', 'recommendedServices'
         ));
     }
 
