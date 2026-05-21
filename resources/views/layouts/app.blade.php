@@ -111,12 +111,7 @@
             }
         }
 
-        /* ── CARD GRID: 2-col on small, 1-col on xs ─────────────── */
-        @media (max-width: 480px) {
-            .grid-cols-2 {
-                grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-            }
-        }
+
 
         /* ── FORMS: Full width inputs on mobile ─────────────────── */
         @media (max-width: 640px) {
