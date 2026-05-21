@@ -215,23 +215,23 @@
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
         @foreach($recommendedServices as $svc)
-        <a href="{{ route('services.show', $svc->slug) }}" class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col">
+        <a href="{{ route('services.show', $svc->slug) }}" class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col">
             @if($svc->banner_image)
-                <div class="h-32 w-full overflow-hidden">
+                <div class="h-24 sm:h-32 w-full overflow-hidden">
                     <img src="{{ asset('storage/' . $svc->banner_image) }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 </div>
             @else
-                <div class="h-32 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                    <i data-lucide="{{ $svc->icon ?? 'box' }}" class="w-10 h-10 text-blue-500 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="h-24 sm:h-32 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                    <i data-lucide="{{ $svc->icon ?? 'box' }}" class="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 group-hover:scale-125 transition-transform duration-500"></i>
                 </div>
             @endif
-            <div class="p-4 flex-1 flex flex-col">
-                <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">{{ $svc->category }}</span>
-                <h3 class="font-black text-base text-slate-900 group-hover:text-blue-600 transition-colors mb-1 leading-snug">{{ $svc->name }}</h3>
-                <p class="text-xs text-slate-500 line-clamp-2 mb-3 flex-1">{{ $svc->short_description }}</p>
-                <div class="flex items-center justify-between">
-                    <span class="text-emerald-600 font-black text-sm bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">₹{{ number_format($svc->min_price) }}</span>
-                    <span class="text-xs font-black text-blue-600 flex items-center gap-1">View <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+            <div class="p-3 sm:p-4 flex-1 flex flex-col">
+                <span class="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase tracking-widest mb-0.5">{{ $svc->category }}</span>
+                <h3 class="font-black text-xs sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors mb-1 leading-snug line-clamp-2">{{ $svc->name }}</h3>
+                <p class="text-[11px] text-slate-500 line-clamp-2 mb-2 flex-1 hidden sm:block">{{ $svc->short_description }}</p>
+                <div class="flex items-center justify-between mt-auto">
+                    <span class="text-emerald-600 font-black text-xs sm:text-sm bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">₹{{ number_format($svc->min_price) }}</span>
+                    <span class="text-[10px] sm:text-xs font-black text-blue-600 flex items-center gap-0.5 sm:gap-1">View <i data-lucide="arrow-right" class="w-2.5 h-2.5 sm:w-3 sm:h-3"></i></span>
                 </div>
             </div>
         </a>
