@@ -15,15 +15,15 @@
 </div>
 
 {{-- Category Filter Pills --}}
-<div class="flex flex-wrap gap-2 mb-8">
+<div class="flex gap-2 mb-8 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:flex-wrap whitespace-nowrap scrollbar-none">
     <a href="{{ route('customer.services') }}"
-       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200
+       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0
               {{ !$selectedCategory ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300 hover:text-blue-600' }}">
         🔥 All
     </a>
     @foreach($allCategories as $cat)
     <a href="{{ route('customer.services', ['category' => $cat]) }}"
-       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200
+       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0
               {{ $selectedCategory === $cat ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-300 hover:text-blue-600' }}">
         {{ $cat }}
     </a>
@@ -51,7 +51,7 @@
         </div>
 
         {{-- Body --}}
-        <div class="p-5 flex-1 flex flex-col">
+        <div class="p-4 sm:p-5 flex-1 flex flex-col">
             <span class="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-1">{{ $svc->category }}</span>
             <h2 class="font-black text-base text-slate-900 mb-1 leading-tight group-hover:text-blue-600 transition-colors">{{ $svc->name }}</h2>
             <p class="text-xs text-slate-500 line-clamp-2 mb-4 flex-1">{{ $svc->short_description }}</p>
@@ -71,7 +71,7 @@
             @endif
 
             {{-- Price & Actions --}}
-            <div class="flex items-center justify-between mb-4 bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
+            <div class="flex items-center justify-between mb-4 bg-slate-50 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 border border-slate-100">
                 <div>
                     <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Starting at</div>
                     <div class="text-xl font-black text-slate-900">₹{{ number_format($svc->min_price) }}</div>
@@ -86,15 +86,15 @@
 
             <div class="grid grid-cols-2 gap-2">
                 <a href="{{ route('services.show', $svc->slug) }}"
-                   class="py-2.5 rounded-xl text-xs font-black text-center text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-sm shadow-blue-600/20 transition-all active:scale-95">
+                   class="py-2.5 rounded-xl text-xs font-black text-center text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-sm shadow-blue-600/20 transition-all active:scale-95 shrink-0">
                     View Details
                 </a>
                 <form action="{{ route('cart.add') }}" method="POST">
                     @csrf
                     <input type="hidden" name="service_id" value="{{ $svc->id }}">
                     <button type="submit"
-                            class="w-full py-2.5 rounded-xl text-xs font-black text-slate-700 bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-all active:scale-95 flex items-center justify-center gap-1">
-                        <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Add to Cart
+                            class="w-full py-2.5 rounded-xl text-xs font-black text-slate-700 bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-all active:scale-95 flex items-center justify-center gap-1 shrink-0">
+                        <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Add
                     </button>
                 </form>
             </div>

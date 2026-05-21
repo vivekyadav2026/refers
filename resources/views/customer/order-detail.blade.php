@@ -15,7 +15,7 @@
     {{-- Main Content --}}
     <div class="lg:col-span-2 space-y-6">
         {{-- Order Header --}}
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 relative overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-bl-full -z-10 blur-xl"></div>
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
                 <div>
@@ -43,7 +43,7 @@
         </div>
 
         {{-- Service Info --}}
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8">
             <h2 class="text-xl font-black text-slate-900 mb-6">Service Details</h2>
             <div class="flex items-center gap-5 mb-6 bg-slate-50 p-5 rounded-2xl border border-slate-100">
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/20 shrink-0">
@@ -77,7 +77,7 @@
 
         {{-- Requirements --}}
         @if($order->requirements)
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8">
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                     <i data-lucide="file-text" class="w-5 h-5"></i>
@@ -91,9 +91,9 @@
         @endif
 
         {{-- Order Progress --}}
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8">
             <h2 class="text-xl font-black text-slate-900 mb-8">Order Timeline</h2>
-            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[1.15rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-slate-200 before:to-transparent">
+            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-slate-200 before:to-transparent">
                 @php
                     $steps = [
                         ['status' => 'pending', 'title' => 'Order Placed', 'desc' => 'We received your order.', 'icon' => 'shopping-cart'],
@@ -128,7 +128,7 @@
     {{-- Sidebar --}}
     <div class="space-y-6">
         {{-- Payment Summary --}}
-        <div class="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl shadow-xl p-8 text-white relative overflow-hidden">
+        <div class="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl shadow-xl p-5 sm:p-8 text-white relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl -z-10"></div>
             <h2 class="text-xl font-black mb-6">Payment Summary</h2>
             
@@ -154,7 +154,7 @@
 
         {{-- Contact Info --}}
         @if($order->customer_name || $order->customer_phone)
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-8">
             <h2 class="text-lg font-black text-slate-900 mb-5">Billing Details</h2>
             <div class="space-y-4 text-sm font-medium text-slate-600">
                 @if($order->customer_name)
@@ -174,7 +174,7 @@
         @endif
 
         {{-- Need Help? --}}
-        <div class="bg-blue-50 rounded-3xl border border-blue-100 p-8 text-center relative overflow-hidden">
+        <div class="bg-blue-50 rounded-3xl border border-blue-100 p-5 sm:p-8 text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-blue-200/50 rounded-full blur-xl -z-10"></div>
             <div class="w-16 h-16 rounded-full bg-white text-blue-600 flex items-center justify-center mx-auto mb-4 shadow-sm">
                 <i data-lucide="headphones" class="w-8 h-8"></i>

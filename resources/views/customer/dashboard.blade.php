@@ -15,7 +15,7 @@
 </div>
 
 {{-- Stats Grid --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 mb-12">
     @foreach([
         ['label' => 'Total Orders',  'value' => $totalOrders,                         'icon' => 'shopping-bag',  'color' => 'blue',   'gradient' => 'from-blue-50 to-indigo-50'],
         ['label' => 'Pending',       'value' => $pendingOrders,                        'icon' => 'clock',         'color' => 'amber',  'gradient' => 'from-amber-50 to-orange-50'],
@@ -23,7 +23,7 @@
         ['label' => 'Completed',     'value' => $completedOrders,                      'icon' => 'check-circle',  'color' => 'emerald','gradient' => 'from-emerald-50 to-teal-50'],
         ['label' => 'Total Spent',   'value' => '₹' . number_format($totalSpent),      'icon' => 'wallet',        'color' => 'purple', 'gradient' => 'from-purple-50 to-fuchsia-50'],
     ] as $stat)
-    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-{{ $stat['color'] }}-300 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
+    <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-{{ $stat['color'] }}-300 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
         <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br {{ $stat['gradient'] }} rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
         <div class="flex items-center justify-between mb-6 relative z-10">
             <div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ $stat['gradient'] }} text-{{ $stat['color'] }}-600 flex items-center justify-center border border-{{ $stat['color'] }}-100 group-hover:scale-110 transition-transform duration-300">
@@ -38,7 +38,7 @@
 
 {{-- Quick Actions --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-    <a href="{{ route('customer.services') }}" class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+    <a href="{{ route('customer.services') }}" class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 sm:p-8 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
         <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-6 border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors">
             <i data-lucide="grid-3x3" class="w-7 h-7"></i>
@@ -47,7 +47,7 @@
         <p class="text-blue-100 text-sm font-medium">Explore our premium digital services</p>
     </a>
     
-    <a href="{{ route('cart.index') }}" class="bg-white border border-slate-200 rounded-3xl p-8 text-slate-900 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+    <a href="{{ route('cart.index') }}" class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 text-slate-900 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
         <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
         <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6 border border-emerald-100 group-hover:bg-emerald-100 transition-colors">
             <i data-lucide="shopping-cart" class="w-7 h-7"></i>
@@ -56,7 +56,7 @@
         <p class="text-slate-500 text-sm font-medium">{{ auth()->user()->cartItems->count() }} items in your cart</p>
     </a>
     
-    <a href="{{ route('customer.orders') }}" class="bg-white border border-slate-200 rounded-3xl p-8 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+    <a href="{{ route('customer.orders') }}" class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
         <div class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
         <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6 border border-purple-100 group-hover:bg-purple-100 transition-colors">
             <i data-lucide="package" class="w-7 h-7"></i>
@@ -68,15 +68,15 @@
 
 {{-- Recent Orders --}}
 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-10">
-    <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-        <h2 class="text-xl font-black text-slate-900 tracking-tight">Recent Orders</h2>
-        <a href="{{ route('customer.orders') }}" class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors">View All <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+    <div class="p-4 sm:px-8 sm:py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <h2 class="text-base sm:text-xl font-black text-slate-900 tracking-tight">Recent Orders</h2>
+        <a href="{{ route('customer.orders') }}" class="text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors">View All <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
     </div>
     
     @if($recentOrders->count())
     <div class="divide-y divide-slate-100">
         @foreach($recentOrders as $order)
-        <a href="{{ route('customer.order.show', $order) }}" class="block px-8 py-6 hover:bg-slate-50 transition-colors group">
+        <a href="{{ route('customer.order.show', $order) }}" class="block p-4 sm:px-8 sm:py-6 hover:bg-slate-50 transition-colors group">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-5">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 flex items-center justify-center shrink-0 border border-slate-200 group-hover:from-blue-50 group-hover:to-indigo-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-all">

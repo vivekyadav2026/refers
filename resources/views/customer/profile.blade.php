@@ -16,7 +16,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     {{-- Left Sidebar Profile Summary --}}
     <div class="space-y-6">
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 text-center relative overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8 text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-bl-full -z-10 blur-xl"></div>
             
             <div class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center text-4xl font-black mx-auto mb-4 shadow-lg shadow-blue-600/20">
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div class="bg-slate-50 rounded-3xl border border-slate-200 p-8">
+        <div class="bg-slate-50 rounded-3xl border border-slate-200 p-5 sm:p-8">
             <h3 class="font-black text-slate-900 mb-4">Account Stats</h3>
             <div class="space-y-4">
                 <div class="flex items-center justify-between">
@@ -48,7 +48,7 @@
 
     {{-- Main Profile Form --}}
     <div class="lg:col-span-2">
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-8">
             <h2 class="text-xl font-black text-slate-900 mb-6">Personal Information</h2>
             
             <form action="{{ route('customer.profile.update') }}" method="POST">
