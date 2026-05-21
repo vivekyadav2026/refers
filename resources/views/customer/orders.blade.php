@@ -4,16 +4,18 @@
     <!-- enable sidebar -->
 @endsection
 @section('content')
+<div class="py-4 sm:py-6">
 
-<div class="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+{{-- Page Header --}}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
     <div>
-        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-black px-3 py-1.5 rounded-full mb-3 uppercase tracking-wider">
             <i data-lucide="package" class="w-3.5 h-3.5"></i> Order History
         </div>
-        <h1 class="text-3xl font-black text-slate-900 tracking-tight">My Orders</h1>
-        <p class="text-slate-500 font-medium mt-1">Track all your service purchases and their progress.</p>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">My Orders</h1>
+        <p class="text-slate-500 font-medium mt-1 text-sm">Track all your service purchases and their progress.</p>
     </div>
-    <a href="{{ route('services.index') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+    <a href="{{ route('services.index') }}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto">
         <i data-lucide="plus" class="w-4 h-4"></i> New Order
     </a>
 </div>
@@ -21,60 +23,105 @@
 {{-- Filters --}}
 <div class="flex gap-2 mb-8 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:flex-wrap whitespace-nowrap scrollbar-none">
     @foreach(['all' => 'All Orders', 'pending' => 'Pending', 'paid' => 'Paid', 'in_progress' => 'In Progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $key => $label)
-    <a href="{{ route('customer.orders', ['status' => $key]) }}" 
-       class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all shrink-0 {{ request('status', 'all') === $key ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300' }}">
+    <a href="{{ route('customer.orders', ['status' => $key]) }}"
+       class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 {{ request('status', 'all') === $key ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300' }}">
         {{ $label }}
     </a>
     @endforeach
 </div>
 
 {{-- Orders List --}}
-<div class="space-y-5">
+<div class="space-y-4">
     @forelse($orders as $order)
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all duration-300 group">
-        <div class="p-4 sm:p-8">
-            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-                <div class="flex items-start gap-3 sm:gap-5">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 flex items-center justify-center shrink-0 border border-slate-200 group-hover:from-blue-50 group-hover:to-indigo-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-all duration-300">
-                        <i data-lucide="{{ optional($order->service)->icon ?? 'box' }}" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+    @php
+        $statusMap = [
+            'pending'     => ['pill' => 'bg-amber-100 text-amber-700 border-amber-200',    'dot' => 'bg-amber-500',   'icon' => 'clock'],
+            'paid'        => ['pill' => 'bg-blue-100 text-blue-700 border-blue-200',        'dot' => 'bg-blue-500',    'icon' => 'check-circle-2'],
+            'in_progress' => ['pill' => 'bg-indigo-100 text-indigo-700 border-indigo-200',  'dot' => 'bg-indigo-500',  'icon' => 'loader-2'],
+            'completed'   => ['pill' => 'bg-emerald-100 text-emerald-700 border-emerald-200','dot' => 'bg-emerald-500', 'icon' => 'check-circle'],
+            'cancelled'   => ['pill' => 'bg-red-100 text-red-700 border-red-200',           'dot' => 'bg-red-500',     'icon' => 'x-circle'],
+        ];
+        $sm = $statusMap[$order->status] ?? ['pill' => 'bg-slate-100 text-slate-700 border-slate-200', 'dot' => 'bg-slate-400', 'icon' => 'circle'];
+    @endphp
+
+    {{-- Mobile Card --}}
+    <div class="block sm:hidden bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-lg hover:border-blue-200 transition-all duration-300 group">
+        <div class="p-4">
+            <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500 flex items-center justify-center border border-slate-200 group-hover:from-blue-50 group-hover:to-indigo-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-all shrink-0">
+                        <i data-lucide="{{ optional($order->service)->icon ?? 'box' }}" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <div class="inline-flex items-center gap-2 mb-2 flex-wrap">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</span>
-                            <span class="text-slate-300 hidden sm:inline">•</span>
-                            <span class="text-xs font-semibold text-slate-500">{{ $order->created_at->format('M d, Y') }}</span>
+                        <div class="font-black text-slate-900 text-sm leading-snug">{{ optional($order->service)->name ?? $order->lead->service_needed ?? 'Custom Service' }}</div>
+                        <div class="text-[10px] text-slate-400 font-medium mt-0.5">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</div>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $sm['pill'] }} shrink-0 ml-2">
+                    <span class="w-1.5 h-1.5 rounded-full {{ $sm['dot'] }}"></span>
+                    {{ str_replace('_', ' ', $order->status) }}
+                </span>
+            </div>
+
+            @if($order->requirements)
+            <p class="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-3 line-clamp-2">{{ Str::limit($order->requirements, 100) }}</p>
+            @endif
+
+            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                <div>
+                    <div class="text-[10px] text-slate-400 font-medium">{{ $order->created_at->format('M d, Y') }}</div>
+                    <div class="text-lg font-black text-slate-900">₹{{ number_format($order->amount) }}</div>
+                </div>
+                <div class="flex gap-2">
+                    @if($order->status === 'pending')
+                    <a href="{{ route('payment.create', $order) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-sm transition-all active:scale-95">
+                        <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Pay
+                    </a>
+                    @endif
+                    <a href="{{ route('customer.order.show', $order) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black text-slate-700 bg-white border border-slate-200 hover:border-blue-300 hover:text-blue-600 transition-all active:scale-95">
+                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> View
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Desktop Card --}}
+    <div class="hidden sm:block bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all duration-300 group">
+        <div class="p-6">
+            <div class="flex items-start justify-between gap-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500 flex items-center justify-center border border-slate-200 group-hover:from-blue-50 group-hover:to-indigo-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-all duration-300 shrink-0">
+                        <i data-lucide="{{ optional($order->service)->icon ?? 'box' }}" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-wider">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</span>
+                            <span class="text-slate-200">•</span>
+                            <span class="text-xs font-medium text-slate-400">{{ $order->created_at->format('M d, Y') }}</span>
                         </div>
-                        <h3 class="font-black text-lg sm:text-xl text-slate-900 group-hover:text-blue-600 transition-colors mb-2 leading-snug">{{ optional($order->service)->name ?? $order->lead->service_needed ?? 'Custom Service' }}</h3>
-                        
+                        <h3 class="font-black text-lg text-slate-900 group-hover:text-blue-600 transition-colors mb-2">{{ optional($order->service)->name ?? $order->lead->service_needed ?? 'Custom Service' }}</h3>
                         @if($order->requirements)
-                        <p class="text-sm font-medium text-slate-500 line-clamp-2 max-w-2xl bg-slate-50 p-3 rounded-xl border border-slate-100">{{ Str::limit($order->requirements, 120) }}</p>
+                        <p class="text-sm font-medium text-slate-500 line-clamp-2 max-w-2xl bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">{{ Str::limit($order->requirements, 120) }}</p>
                         @endif
                     </div>
                 </div>
-                
-                <div class="sm:text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-start shrink-0 pt-4 sm:pt-0 border-t border-slate-100 sm:border-0 mt-2 sm:mt-0">
-                    <div class="text-2xl font-black text-slate-900 mb-1">₹{{ number_format($order->amount) }}</div>
-                    @php
-                        $statusColors = [
-                            'pending' => 'bg-amber-100 text-amber-700 border-amber-200',
-                            'paid' => 'bg-blue-100 text-blue-700 border-blue-200',
-                            'in_progress' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
-                            'completed' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
-                            'cancelled' => 'bg-red-100 text-red-700 border-red-200',
-                        ];
-                    @endphp
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
+
+                <div class="text-right shrink-0">
+                    <div class="text-2xl font-black text-slate-900 mb-2">₹{{ number_format($order->amount) }}</div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $sm['pill'] }}">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $sm['dot'] }}"></span>
                         {{ str_replace('_', ' ', $order->status) }}
                     </span>
                 </div>
             </div>
-            
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 mt-6 pt-6 border-t border-slate-100">
-                <a href="{{ route('customer.order.show', $order) }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all">
-                    <i data-lucide="eye" class="w-4 h-4 text-slate-400"></i> View Details
+
+            <div class="flex items-center justify-end gap-3 mt-5 pt-5 border-t border-slate-100">
+                <a href="{{ route('customer.order.show', $order) }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-blue-300 hover:text-blue-600 transition-all uppercase tracking-wider text-xs">
+                    <i data-lucide="eye" class="w-4 h-4"></i> View Details
                 </a>
                 @if($order->status === 'pending')
-                <a href="{{ route('payment.create', $order) }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md shadow-emerald-500/20 transition-all">
+                <a href="{{ route('payment.create', $order) }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black text-white uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
                     <i data-lucide="credit-card" class="w-4 h-4"></i> Pay Now
                 </a>
                 @endif
@@ -82,14 +129,14 @@
         </div>
     </div>
     @empty
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-20 text-center">
-        <div class="w-24 h-24 rounded-full bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="package-open" class="w-12 h-12 text-slate-300"></i>
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-16 text-center">
+        <div class="w-20 h-20 rounded-full bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="package-open" class="w-10 h-10 text-slate-300"></i>
         </div>
-        <h3 class="text-2xl font-black text-slate-900 mb-2">No orders found</h3>
-        <p class="text-slate-500 text-base font-medium mb-8">You haven't placed any orders matching this filter.</p>
-        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
-            <i data-lucide="grid-3x3" class="w-5 h-5"></i> Browse Services
+        <h3 class="text-xl font-black text-slate-900 mb-2">No orders found</h3>
+        <p class="text-slate-500 text-sm font-medium mb-6">You haven't placed any orders matching this filter.</p>
+        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+            <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
         </a>
     </div>
     @endforelse
@@ -102,4 +149,5 @@
 </div>
 @endif
 
+</div>
 @endsection

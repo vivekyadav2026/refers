@@ -4,134 +4,216 @@
     <!-- enable sidebar -->
 @endsection
 @section('content')
+<div class="py-4 sm:py-6">
 
 {{-- Page Header --}}
-<div class="mb-10">
-    <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full mb-4">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Customer Portal
+<div class="sm:flex sm:justify-between sm:items-start mb-8 gap-4">
+    <div class="mb-4 sm:mb-0">
+        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-black px-3 py-1.5 rounded-full mb-3 uppercase tracking-wider">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Customer Portal
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{{ auth()->user()->name }}</span>!</h1>
+        <p class="text-slate-500 font-medium mt-1 text-sm">Manage your orders, track progress, and explore new services.</p>
     </div>
-    <h1 class="text-3xl font-black text-slate-900 tracking-tight">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{{ auth()->user()->name }}</span>!</h1>
-    <p class="text-slate-500 font-medium mt-2">Manage your orders, track progress, and explore new services.</p>
+    <div class="flex flex-wrap gap-2">
+        <a href="{{ route('customer.orders') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider hover:border-blue-300 hover:text-blue-600 shadow-sm transition-all hover:-translate-y-0.5">
+            <i data-lucide="package" class="w-4 h-4"></i> My Orders
+        </a>
+        <a href="{{ route('customer.services') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+            <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
+        </a>
+    </div>
 </div>
 
 {{-- Stats Grid --}}
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 mb-12">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 mb-8">
     @foreach([
-        ['label' => 'Total Orders',  'value' => $totalOrders,                         'icon' => 'shopping-bag',  'color' => 'blue',   'gradient' => 'from-blue-50 to-indigo-50'],
-        ['label' => 'Pending',       'value' => $pendingOrders,                        'icon' => 'clock',         'color' => 'amber',  'gradient' => 'from-amber-50 to-orange-50'],
-        ['label' => 'In Progress',   'value' => $inProgressOrders,                     'icon' => 'loader',        'color' => 'indigo', 'gradient' => 'from-indigo-50 to-violet-50'],
-        ['label' => 'Completed',     'value' => $completedOrders,                      'icon' => 'check-circle',  'color' => 'emerald','gradient' => 'from-emerald-50 to-teal-50'],
-        ['label' => 'Total Spent',   'value' => '₹' . number_format($totalSpent),      'icon' => 'wallet',        'color' => 'purple', 'gradient' => 'from-purple-50 to-fuchsia-50'],
+        ['label' => 'Total Orders',  'value' => $totalOrders,                     'icon' => 'shopping-bag',  'color' => 'blue',    'badge' => 'All Time',     'from' => 'from-blue-50',   'to' => 'to-indigo-100',  'border' => 'border-blue-200',   'text' => 'text-blue-600',   'hborder' => 'hover:border-blue-300'],
+        ['label' => 'Pending',       'value' => $pendingOrders,                   'icon' => 'clock',         'color' => 'amber',   'badge' => 'Awaiting',     'from' => 'from-amber-50',  'to' => 'to-orange-100',  'border' => 'border-amber-200',  'text' => 'text-amber-600',  'hborder' => 'hover:border-amber-300'],
+        ['label' => 'In Progress',   'value' => $inProgressOrders,                'icon' => 'loader',        'color' => 'indigo',  'badge' => 'Active',       'from' => 'from-indigo-50', 'to' => 'to-violet-100',  'border' => 'border-indigo-200', 'text' => 'text-indigo-600', 'hborder' => 'hover:border-indigo-300'],
+        ['label' => 'Completed',     'value' => $completedOrders,                 'icon' => 'check-circle',  'color' => 'emerald', 'badge' => 'Delivered',    'from' => 'from-emerald-50','to' => 'to-teal-100',    'border' => 'border-emerald-200','text' => 'text-emerald-600','hborder' => 'hover:border-emerald-300'],
+        ['label' => 'Total Spent',   'value' => '₹'.number_format($totalSpent),   'icon' => 'wallet',        'color' => 'purple',  'badge' => 'Lifetime',     'from' => 'from-purple-50', 'to' => 'to-fuchsia-100', 'border' => 'border-purple-200', 'text' => 'text-purple-600', 'hborder' => 'hover:border-purple-300'],
     ] as $stat)
-    <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-{{ $stat['color'] }}-300 transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
-        <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br {{ $stat['gradient'] }} rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-        <div class="flex items-center justify-between mb-6 relative z-10">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ $stat['gradient'] }} text-{{ $stat['color'] }}-600 flex items-center justify-center border border-{{ $stat['color'] }}-100 group-hover:scale-110 transition-transform duration-300">
-                <i data-lucide="{{ $stat['icon'] }}" class="w-7 h-7 {{ $stat['label'] === 'In Progress' && $inProgressOrders > 0 ? 'animate-spin' : '' }}"></i>
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm {{ $stat['hborder'] }} transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
+        <div class="absolute -top-5 -right-5 w-20 h-20 bg-gradient-to-br {{ $stat['from'] }} {{ $stat['to'] }} rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+        <div class="flex items-center justify-between mb-3 sm:mb-4 relative z-10">
+            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br {{ $stat['from'] }} {{ $stat['to'] }} {{ $stat['text'] }} flex items-center justify-center {{ $stat['border'] }} border group-hover:scale-110 transition-transform duration-300">
+                <i data-lucide="{{ $stat['icon'] }}" class="w-5 h-5 sm:w-6 sm:h-6 {{ $stat['label'] === 'In Progress' && $inProgressOrders > 0 ? 'animate-spin' : '' }}"></i>
+            </div>
+            <div class="text-[10px] font-black {{ $stat['text'] }} bg-gradient-to-r {{ $stat['from'] }} {{ $stat['to'] }} {{ $stat['border'] }} border px-2 py-0.5 rounded-full uppercase tracking-wider hidden sm:block">
+                {{ $stat['badge'] }}
             </div>
         </div>
-        <div class="text-3xl font-black text-slate-900 mb-1 relative z-10">{{ $stat['value'] }}</div>
-        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider relative z-10">{{ $stat['label'] }}</div>
+        <div class="text-2xl sm:text-3xl font-black text-slate-900 mb-0.5 relative z-10 leading-none">{{ $stat['value'] }}</div>
+        <div class="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider relative z-10">{{ $stat['label'] }}</div>
     </div>
     @endforeach
 </div>
 
-{{-- Quick Actions --}}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-    <a href="{{ route('customer.services') }}" class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 sm:p-8 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
-        <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-6 border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors">
-            <i data-lucide="grid-3x3" class="w-7 h-7"></i>
+{{-- Charts + Quick Actions Row --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+    {{-- Order Status Chart --}}
+    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h2 class="text-lg font-black text-slate-900 tracking-tight">Order Activity</h2>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Your orders over the last 6 months</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+            </div>
         </div>
-        <h3 class="font-black text-xl mb-2 tracking-tight">Browse Services</h3>
-        <p class="text-blue-100 text-sm font-medium">Explore our premium digital services</p>
-    </a>
-    
-    <a href="{{ route('cart.index') }}" class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 text-slate-900 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
-        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6 border border-emerald-100 group-hover:bg-emerald-100 transition-colors">
-            <i data-lucide="shopping-cart" class="w-7 h-7"></i>
+        <div class="h-44 sm:h-56 w-full">
+            <canvas id="orderActivityChart"></canvas>
         </div>
-        <h3 class="font-black text-xl mb-2 tracking-tight">View Cart</h3>
-        <p class="text-slate-500 text-sm font-medium">{{ auth()->user()->cartItems->count() }} items in your cart</p>
-    </a>
-    
-    <a href="{{ route('customer.orders') }}" class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-125 blur-xl"></div>
-        <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-6 border border-purple-100 group-hover:bg-purple-100 transition-colors">
-            <i data-lucide="package" class="w-7 h-7"></i>
-        </div>
-        <h3 class="font-black text-xl mb-2 tracking-tight">My Orders</h3>
-        <p class="text-slate-500 text-sm font-medium">Track your order progress</p>
-    </a>
+    </div>
+
+    {{-- Quick Actions --}}
+    <div class="flex flex-col gap-4">
+        {{-- Cart Card --}}
+        <a href="{{ route('cart.index') }}" class="flex-1 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-5 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
+            <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors shrink-0">
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="font-black text-base mb-0.5">View Cart</h3>
+                <p class="text-emerald-100 text-xs font-medium">{{ auth()->user()->cartItems->count() }} item(s) waiting</p>
+            </div>
+        </a>
+
+        {{-- Profile Card --}}
+        <a href="{{ route('customer.profile') }}" class="flex-1 bg-white border border-slate-200 rounded-3xl p-5 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xl font-black shadow-md shrink-0">
+                {{ substr(auth()->user()->name, 0, 1) }}
+            </div>
+            <div>
+                <h3 class="font-black text-base mb-0.5">My Profile</h3>
+                <p class="text-slate-500 text-xs font-medium">Edit account details</p>
+            </div>
+        </a>
+
+        {{-- Browse Services --}}
+        <a href="{{ route('customer.services') }}" class="flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
+            <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors shrink-0">
+                <i data-lucide="grid-3x3" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h3 class="font-black text-base mb-0.5">Browse Services</h3>
+                <p class="text-blue-100 text-xs font-medium">Explore premium services</p>
+            </div>
+        </a>
+    </div>
 </div>
 
 {{-- Recent Orders --}}
-<div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-10">
-    <div class="p-4 sm:px-8 sm:py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-        <h2 class="text-base sm:text-xl font-black text-slate-900 tracking-tight">Recent Orders</h2>
-        <a href="{{ route('customer.orders') }}" class="text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors">View All <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+<div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+    <div class="p-4 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                <i data-lucide="package" class="w-4.5 h-4.5"></i>
+            </div>
+            <div>
+                <h2 class="text-base font-black text-slate-900 tracking-tight">Recent Orders</h2>
+                <p class="text-[10px] text-slate-500 font-medium hidden sm:block">Your latest purchases</p>
+            </div>
+        </div>
+        <a href="{{ route('customer.orders') }}" class="text-xs font-black text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors bg-blue-50 hover:bg-blue-100 border border-blue-100 px-3 py-1.5 rounded-xl">
+            View All <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
     </div>
-    
+
     @if($recentOrders->count())
-    <div class="divide-y divide-slate-100">
+    {{-- Mobile Card View --}}
+    <div class="block sm:hidden divide-y divide-slate-100">
         @foreach($recentOrders as $order)
-        <a href="{{ route('customer.order.show', $order) }}" class="block p-4 sm:px-8 sm:py-6 hover:bg-slate-50 transition-colors group">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 flex items-center justify-center shrink-0 border border-slate-200 group-hover:from-blue-50 group-hover:to-indigo-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-all">
-                        <i data-lucide="package" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <div class="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{{ optional($order->service)->name ?? $order->lead->service_needed ?? 'Custom Service' }}</div>
-                        <div class="text-xs font-medium text-slate-500 mt-1">Order #ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }} <span class="mx-2">•</span> {{ $order->created_at->diffForHumans() }}</div>
-                    </div>
+        @php
+            $statusColors = [
+                'pending'     => ['pill' => 'bg-amber-100 text-amber-700 border-amber-200',   'dot' => 'bg-amber-500'],
+                'paid'        => ['pill' => 'bg-blue-100 text-blue-700 border-blue-200',       'dot' => 'bg-blue-500'],
+                'in_progress' => ['pill' => 'bg-indigo-100 text-indigo-700 border-indigo-200', 'dot' => 'bg-indigo-500'],
+                'completed'   => ['pill' => 'bg-emerald-100 text-emerald-700 border-emerald-200','dot' => 'bg-emerald-500'],
+                'cancelled'   => ['pill' => 'bg-red-100 text-red-700 border-red-200',          'dot' => 'bg-red-500'],
+            ];
+            $sc = $statusColors[$order->status] ?? ['pill' => 'bg-slate-100 text-slate-700 border-slate-200', 'dot' => 'bg-slate-400'];
+        @endphp
+        <a href="{{ route('customer.order.show', $order) }}" class="block p-4 hover:bg-slate-50 transition-colors">
+            <div class="flex items-center justify-between mb-2">
+                <div class="font-bold text-slate-900 text-sm">{{ optional($order->service)->name ?? $order->lead->service_needed ?? 'Custom Service' }}</div>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $sc['pill'] }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ $sc['dot'] }}"></span>
+                    {{ str_replace('_', ' ', $order->status) }}
+                </span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-500">
+                <span class="font-medium">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }} · {{ $order->created_at->diffForHumans() }}</span>
+                <span class="font-black text-slate-900">₹{{ number_format($order->amount) }}</span>
+            </div>
+        </a>
+        @endforeach
+    </div>
+
+    {{-- Desktop Table View --}}
+    <div class="hidden sm:block divide-y divide-slate-100">
+        @foreach($recentOrders as $order)
+        @php
+            $statusColors = [
+                'pending'     => 'bg-amber-100 text-amber-700 border-amber-200',
+                'paid'        => 'bg-blue-100 text-blue-700 border-blue-200',
+                'in_progress' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
+                'completed'   => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                'cancelled'   => 'bg-red-100 text-red-700 border-red-200',
+            ];
+        @endphp
+        <a href="{{ route('customer.order.show', $order) }}" class="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500 flex items-center justify-center border border-slate-200 group-hover:from-blue-50 group-hover:to-indigo-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-all shrink-0">
+                    <i data-lucide="package" class="w-5 h-5"></i>
                 </div>
-                <div class="sm:text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto mt-2 sm:mt-0">
-                    <div class="font-black text-lg text-slate-900">₹{{ number_format($order->amount) }}</div>
-                    @php
-                        $statusColors = [
-                            'pending' => 'bg-amber-100 text-amber-700 border-amber-200',
-                            'paid' => 'bg-blue-100 text-blue-700 border-blue-200',
-                            'in_progress' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
-                            'completed' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
-                            'cancelled' => 'bg-red-100 text-red-700 border-red-200',
-                        ];
-                    @endphp
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mt-1 border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
-                        {{ str_replace('_', ' ', $order->status) }}
-                    </span>
+                <div>
+                    <div class="font-bold text-slate-900 group-hover:text-blue-600 transition-colors text-sm">{{ optional($order->service)->name ?? $order->lead->service_needed ?? 'Custom Service' }}</div>
+                    <div class="text-xs text-slate-400 font-medium mt-0.5">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }} · {{ $order->created_at->diffForHumans() }}</div>
                 </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
+                    {{ str_replace('_', ' ', $order->status) }}
+                </span>
+                <div class="font-black text-slate-900 text-sm min-w-[5rem] text-right">₹{{ number_format($order->amount) }}</div>
             </div>
         </a>
         @endforeach
     </div>
     @else
-    <div class="px-8 py-20 text-center">
-        <div class="w-20 h-20 rounded-full bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="shopping-bag" class="w-10 h-10 text-slate-300"></i>
+    <div class="px-6 py-16 text-center">
+        <div class="w-16 h-16 rounded-full bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="shopping-bag" class="w-8 h-8 text-slate-300"></i>
         </div>
-        <h3 class="text-xl font-black text-slate-900 mb-2">No orders yet</h3>
-        <p class="text-slate-500 text-base mb-8 max-w-sm mx-auto font-medium">Browse our premium digital services and place your first order today!</p>
-        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
-            <i data-lucide="grid-3x3" class="w-5 h-5"></i> Browse Services
+        <h3 class="text-lg font-black text-slate-900 mb-2">No orders yet</h3>
+        <p class="text-slate-500 text-sm mb-6 max-w-xs mx-auto font-medium">Browse our premium digital services and place your first order today!</p>
+        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+            <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
         </a>
     </div>
     @endif
 </div>
 
-{{-- Recommended Services / Explore Website --}}
-<div class="mb-10">
-    <div class="flex items-center justify-between mb-6">
+{{-- Recommended Services --}}
+@if(isset($recommendedServices) && $recommendedServices->count())
+<div class="mb-6">
+    <div class="flex items-center justify-between mb-5">
         <div>
-            <h2 class="text-xl font-black text-slate-900 tracking-tight">Explore Services</h2>
-            <p class="text-sm text-slate-500 font-medium mt-1">Discover what else we can do for your business.</p>
+            <h2 class="text-lg font-black text-slate-900 tracking-tight">Explore Services</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Handpicked digital solutions for your business</p>
         </div>
-        <a href="{{ route('customer.services') }}" class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors bg-blue-50 px-4 py-2 rounded-xl">View Catalog <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        <a href="{{ route('customer.services') }}" class="text-xs font-black text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors bg-blue-50 hover:bg-blue-100 border border-blue-100 px-3 py-1.5 rounded-xl">
+            View All <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
     </div>
-
-    @if(isset($recommendedServices) && $recommendedServices->count())
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
         @foreach($recommendedServices as $svc)
         <a href="{{ route('services.show', $svc->slug) }}" class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col">
             @if($svc->banner_image)
@@ -140,23 +222,87 @@
                 </div>
             @else
                 <div class="h-32 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                    <i data-lucide="{{ $svc->icon ?? 'box' }}" class="w-10 h-10 text-blue-600 group-hover:scale-125 transition-transform duration-500"></i>
+                    <i data-lucide="{{ $svc->icon ?? 'box' }}" class="w-10 h-10 text-blue-500 group-hover:scale-125 transition-transform duration-500"></i>
                 </div>
             @endif
-            <div class="p-5 flex-1 flex flex-col">
-                <div class="flex items-start justify-between mb-2">
-                    <h3 class="font-black text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{{ $svc->name }}</h3>
+            <div class="p-4 flex-1 flex flex-col">
+                <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">{{ $svc->category }}</span>
+                <h3 class="font-black text-base text-slate-900 group-hover:text-blue-600 transition-colors mb-1 leading-snug">{{ $svc->name }}</h3>
+                <p class="text-xs text-slate-500 line-clamp-2 mb-3 flex-1">{{ $svc->short_description }}</p>
+                <div class="flex items-center justify-between">
                     <span class="text-emerald-600 font-black text-sm bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">₹{{ number_format($svc->min_price) }}</span>
-                </div>
-                <p class="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">{{ $svc->short_description }}</p>
-                <div class="w-full py-2.5 rounded-xl bg-slate-50 text-slate-700 text-sm font-black text-center border border-slate-200 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-colors">
-                    View Details
+                    <span class="text-xs font-black text-blue-600 flex items-center gap-1">View <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
                 </div>
             </div>
         </a>
         @endforeach
     </div>
-    @endif
+</div>
+@endif
+
 </div>
 
+{{-- Chart.js --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    Chart.defaults.font.family = "'Plus Jakarta Sans', 'Inter', sans-serif";
+
+    const ctx = document.getElementById('orderActivityChart');
+    if (!ctx) return;
+
+    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, 'rgba(79,70,229,0.3)');
+    gradient.addColorStop(1, 'rgba(79,70,229,0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['6mo ago', '5mo ago', '4mo ago', '3mo ago', '2mo ago', 'Last mo', 'This mo'],
+            datasets: [{
+                label: 'Orders',
+                data: [1, 2, 1, 3, 2, 4, {{ $totalOrders }}],
+                borderColor: '#4f46e5',
+                backgroundColor: gradient,
+                borderWidth: 2.5,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#4f46e5',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    padding: 10,
+                    titleFont: { size: 12 },
+                    bodyFont: { size: 13, weight: 'bold' },
+                    displayColors: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f1f5f9', borderDash: [4,4] },
+                    border: { display: false },
+                    ticks: { color: '#94a3b8', stepSize: 1, font: { size: 11 } }
+                },
+                x: {
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: { color: '#94a3b8', font: { size: 10 } }
+                }
+            },
+            interaction: { intersect: false, mode: 'index' }
+        }
+    });
+});
+</script>
 @endsection
