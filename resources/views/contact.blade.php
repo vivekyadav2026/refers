@@ -160,7 +160,7 @@ select.input-field {
                          style="display:none">
                          <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
                              <div class="text-xs font-bold text-slate-800 truncate">{{ $user->name }}</div>
-                             <div class="text-[10px] text-slate-500 truncate mt-0.5">{{ $user->email }}</div>
+                             <div class="text-[10px] text-slate-500 truncate mt-0.5">{{ $user->email ?: $user->phone }}</div>
                          </div>
                          <div class="py-1.5">
                              <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-800 transition-colors">
