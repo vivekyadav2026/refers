@@ -77,8 +77,45 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    <!-- LEFT: Documents -->
+    <!-- LEFT: Documents & Details -->
     <div class="lg:col-span-2 space-y-5">
+
+        <!-- Applicant Details -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <i data-lucide="user-check" class="w-4 h-4"></i> Applicant Details
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="text-xs text-slate-400 font-medium mb-0.5">Full Name</p>
+                    <p class="font-semibold text-slate-800">{{ $kyc->user->name ?? '—' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium mb-0.5">Gender</p>
+                    <p class="font-medium text-slate-800">{{ $kyc->user->gender ?? '—' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium mb-0.5">Primary Phone</p>
+                    <p class="font-mono text-slate-800 font-semibold">{{ $kyc->user->phone ?? '—' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium mb-0.5">Alternate Phone</p>
+                    <p class="font-mono text-slate-800">{{ $kyc->user->alternate_phone ?? '—' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium mb-0.5">Email</p>
+                    <p class="font-medium text-slate-800">{{ $kyc->user->email ?? '—' }}</p>
+                </div>
+                <div class="md:col-span-2">
+                    <p class="text-xs text-slate-400 font-medium mb-0.5">Residential Address</p>
+                    <p class="font-medium text-slate-800">
+                        {{ $kyc->user->address_house ?? '' }} {{ $kyc->user->address_street ?? '' }}<br>
+                        {{ $kyc->user->address_city ?? '' }}, {{ $kyc->user->address_state ?? '' }} - {{ $kyc->user->address_pin ?? '' }}<br>
+                        {{ $kyc->user->address_country ?? '' }}
+                    </p>
+                </div>
+            </div>
+        </div>
 
         <!-- Aadhaar -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">

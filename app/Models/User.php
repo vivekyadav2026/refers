@@ -42,6 +42,14 @@ class User extends Authenticatable
         'kyc_status',
         'status',
         'avatar',
+        'alternate_phone',
+        'gender',
+        'address_house',
+        'address_street',
+        'address_city',
+        'address_state',
+        'address_pin',
+        'address_country',
     ];
 
     /**

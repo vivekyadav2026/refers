@@ -125,6 +125,39 @@
         </div>
     </div>
 
+    <!-- Additional Partner Info -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6 p-6">
+        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <i data-lucide="info" class="w-4 h-4"></i> Applicant Information
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+                <p class="text-xs text-slate-400 font-medium mb-1">Gender</p>
+                <p class="font-semibold text-slate-800">{{ $user->gender ?? 'Not Provided' }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-slate-400 font-medium mb-1">Primary Phone</p>
+                <p class="font-mono text-slate-800">{{ $user->phone ?? 'Not Provided' }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-slate-400 font-medium mb-1">Alternate Phone</p>
+                <p class="font-mono text-slate-800">{{ $user->alternate_phone ?? 'Not Provided' }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-slate-400 font-medium mb-1">Residential Address</p>
+                <p class="text-sm text-slate-800 leading-snug">
+                    @if($user->address_house)
+                        {{ $user->address_house }}, {{ $user->address_street }}<br>
+                        {{ $user->address_city }}, {{ $user->address_state }} - {{ $user->address_pin }}<br>
+                        {{ $user->address_country }}
+                    @else
+                        <span class="text-slate-400 italic">Not Provided</span>
+                    @endif
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Status Badges Row -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         @php

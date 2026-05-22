@@ -31,15 +31,32 @@ class PartnerOnboardingController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'company_name' => 'required|string|max:255',
-            'business_type' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'alternate_phone' => 'nullable|string|max:20',
+            'gender' => 'required|in:Male,Female,Other',
+            'address_house' => 'required|string|max:255',
+            'address_street' => 'required|string|max:255',
+            'address_city' => 'required|string|max:255',
+            'address_state' => 'required|string|max:255',
+            'address_pin' => 'required|string|max:20',
+            'address_country' => 'required|string|max:255',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'company_name' => $request->company_name,
-            'business_type' => $request->business_type,
+            'phone' => $request->phone,
+            'alternate_phone' => $request->alternate_phone,
+            'gender' => $request->gender,
+            'address_house' => $request->address_house,
+            'address_street' => $request->address_street,
+            'address_city' => $request->address_city,
+            'address_state' => $request->address_state,
+            'address_pin' => $request->address_pin,
+            'address_country' => $request->address_country,
+            // 'company_name' and 'business_type' are removed as per request
+            'company_name' => 'Individual Partner', // provide a default since it was required before for step 1 completion check
+            'business_type' => 'Individual',
         ]);
 
         return redirect()->route('partner.apply')->with('success', 'Step 1: Partner Application submitted successfully! Please complete your KYC verification next.');

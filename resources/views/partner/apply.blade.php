@@ -103,52 +103,140 @@
     <!-- Active Step Action Cards -->
     @if(!$step1Complete)
         <!-- Step 1 Form Card -->
-        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden mb-12">
-            <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6 md:p-8 text-white flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white shrink-0">
-                    <i data-lucide="file-text" class="w-6 h-6"></i>
+        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden mb-12" x-data="locationForm()">
+            <div class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-center gap-4 md:gap-12 text-xs font-bold text-slate-400">
+                <div class="flex flex-col items-center gap-1.5 text-blue-600">
+                    <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md"><i data-lucide="check" class="w-3.5 h-3.5"></i></div>
+                    <span class="text-blue-900">Mobile Verify</span>
                 </div>
-                <div>
-                    <h2 class="text-xl md:text-2xl font-extrabold">Step 1: Partner Application Form</h2>
-                    <p class="text-indigo-100 text-sm mt-1">Please provide your professional profile details below to initiate onboarding.</p>
+                <div class="w-12 h-px bg-slate-200"></div>
+                <div class="flex flex-col items-center gap-1.5 text-blue-600">
+                    <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-md">2</div>
+                    <span class="text-blue-900">Applicant Details</span>
+                </div>
+                <div class="w-12 h-px bg-slate-200"></div>
+                <div class="flex flex-col items-center gap-1.5">
+                    <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center">3</div>
+                    <span>More Details</span>
                 </div>
             </div>
             
-            <form action="{{ route('partner.apply.store') }}" method="POST" class="p-6 md:p-10 space-y-8">
+            <form action="{{ route('partner.apply.store') }}" method="POST" class="p-6 md:p-10">
                 @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Full Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" value="{{ old('name') }}" placeholder="Enter your full name" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                
+                <h3 class="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-2">
+                    <i data-lucide="user" class="w-5 h-5 text-indigo-600"></i> Personal Information
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Full Name (As per PAN Card & Aadhaar Card) <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" value="{{ old('name') }}" placeholder="Enter applicant's full name" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Email Address <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Primary Mobile Number <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500 font-bold pointer-events-none">+91</span>
+                            <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="Enter mobile number" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 py-3.5 pr-3.5 pl-12 transition-all outline-none" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Alternative Mobile Number</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500 font-bold pointer-events-none">+91</span>
+                            <input type="text" name="alternate_phone" value="{{ old('alternate_phone', $user->alternate_phone) }}" placeholder="Enter alternative number" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 py-3.5 pr-3.5 pl-12 transition-all outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Email ID <span class="text-red-500">*</span></label>
                         <input type="email" name="email" value="{{ old('email', str_contains($user->email, '@sksolution.local') ? '' : $user->email) }}" placeholder="yourname@domain.com" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Company / Agency Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="company_name" value="{{ old('company_name', $user->company_name) }}" placeholder="e.g. Apex Marketing Corp / Freelance" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Primary Business Type <span class="text-red-500">*</span></label>
-                        <select name="business_type" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
-                            <option value="">Select Business Type</option>
-                            <option value="Freelancer / Consultant" {{ old('business_type', $user->business_type) == 'Freelancer / Consultant' ? 'selected' : '' }}>Freelancer / Consultant</option>
-                            <option value="Digital Marketing Agency" {{ old('business_type', $user->business_type) == 'Digital Marketing Agency' ? 'selected' : '' }}>Digital Marketing Agency</option>
-                            <option value="IT & Tech Services" {{ old('business_type', $user->business_type) == 'IT & Tech Services' ? 'selected' : '' }}>IT & Tech Services</option>
-                            <option value="Content Creator / Influencer" {{ old('business_type', $user->business_type) == 'Content Creator / Influencer' ? 'selected' : '' }}>Content Creator / Influencer</option>
-                            <option value="Other Business" {{ old('business_type', $user->business_type) == 'Other Business' ? 'selected' : '' }}>Other Business</option>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Gender <span class="text-red-500">*</span></label>
+                        <select name="gender" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male" {{ old('gender', $user->gender) == 'Male' ? 'selected' : '' }}>Male</option>
+                            <option value="Female" {{ old('gender', $user->gender) == 'Female' ? 'selected' : '' }}>Female</option>
+                            <option value="Other" {{ old('gender', $user->gender) == 'Other' ? 'selected' : '' }}>Other</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-slate-100 flex items-center justify-end">
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-8 py-4 flex items-center gap-3 text-base font-extrabold shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all hover:-translate-y-0.5">
-                        Save Application & Continue
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                <h3 class="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-2 pt-4 border-t border-slate-100">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-indigo-600"></i> Residential Address
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">House No. / Plot No. / Flat No. <span class="text-red-500">*</span></label>
+                        <input type="text" name="address_house" value="{{ old('address_house', $user->address_house) }}" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Street / Area / Locality <span class="text-red-500">*</span></label>
+                        <input type="text" name="address_street" value="{{ old('address_street', $user->address_street) }}" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">State <span class="text-red-500">*</span></label>
+                        <select name="address_state" x-model="selectedState" @change="updateCities()" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                            <option value="">Select State</option>
+                            <template x-for="stateObj in statesData" :key="stateObj.state">
+                                <option :value="stateObj.state" x-text="stateObj.state" :selected="selectedState === stateObj.state"></option>
+                            </template>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">City <span class="text-red-500">*</span></label>
+                        <select name="address_city" x-model="selectedCity" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required :disabled="!selectedState">
+                            <option value="">Select City</option>
+                            <template x-for="city in availableCities" :key="city">
+                                <option :value="city" x-text="city" :selected="selectedCity === city"></option>
+                            </template>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">PIN Code <span class="text-red-500">*</span></label>
+                        <input type="text" name="address_pin" value="{{ old('address_pin', $user->address_pin) }}" class="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium text-sm rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-600 p-3.5 transition-all outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Country <span class="text-red-500">*</span></label>
+                        <input type="text" name="address_country" value="India" readonly class="w-full bg-slate-100 border border-slate-200 text-slate-500 font-medium text-sm rounded-2xl p-3.5 outline-none cursor-not-allowed">
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-100">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-8 py-4 flex items-center justify-center gap-3 text-base font-extrabold shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transition-all hover:-translate-y-0.5">
+                        Proceed
                     </button>
                 </div>
             </form>
+            
+            <script>
+                document.addEventListener('alpine:init', () => {
+                    Alpine.data('locationForm', () => ({
+                        statesData: [],
+                        selectedState: "{{ old('address_state', $user->address_state) }}",
+                        selectedCity: "{{ old('address_city', $user->address_city) }}",
+                        availableCities: [],
+                        
+                        init() {
+                            fetch("{{ asset('assets/indian_states_cities.json') }}")
+                                .then(res => res.json())
+                                .then(data => {
+                                    this.statesData = data.states;
+                                    if(this.selectedState) {
+                                        this.updateCities(false);
+                                    }
+                                });
+                        },
+                        
+                        updateCities(resetCity = true) {
+                            if(resetCity) this.selectedCity = '';
+                            const stateObj = this.statesData.find(s => s.state === this.selectedState);
+                            this.availableCities = stateObj ? stateObj.districts : [];
+                        }
+                    }))
+                })
+            </script>
         </div>
 
     @elseif(!$step2Complete)
