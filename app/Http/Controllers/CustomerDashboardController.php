@@ -71,9 +71,16 @@ class CustomerDashboardController extends Controller
             'email' => 'nullable|email|max:255',
             'company_name' => 'nullable|string|max:255',
             'business_type' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|max:2048',
         ]);
 
-        auth()->user()->update($request->only('name', 'email', 'company_name', 'business_type'));
+        $data = $request->only('name', 'email', 'company_name', 'business_type');
+
+        if ($request->hasFile('avatar')) {
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        auth()->user()->update($data);
 
         return back()->with('success', 'Profile updated successfully.');
     }

@@ -39,7 +39,7 @@
             <p class="text-xs font-medium text-slate-500 mb-4">{{ auth()->user()->email ?? auth()->user()->phone }}</p>
 
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-black text-xs border border-blue-100 uppercase tracking-wider">
-                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified Customer
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified Partner
             </div>
         </div>
 
@@ -77,25 +77,25 @@
                 <i data-lucide="link" class="w-4 h-4 text-blue-500"></i> Quick Links
             </h3>
             <div class="space-y-2">
-                <a href="{{ route('customer.orders') }}" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all group">
+                <a href="{{ route('partner.orders') }}" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all group">
                     <div class="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-blue-100 text-slate-500 group-hover:text-blue-600 flex items-center justify-center transition-colors">
                         <i data-lucide="package" class="w-4 h-4"></i>
                     </div>
                     <span class="text-xs font-black">My Orders</span>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-auto opacity-40 group-hover:opacity-100 transition-opacity"></i>
                 </a>
-                <a href="{{ route('customer.services') }}" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all group">
+                <a href="{{ route('partner.leads.index') }}" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all group">
                     <div class="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-blue-100 text-slate-500 group-hover:text-blue-600 flex items-center justify-center transition-colors">
-                        <i data-lucide="grid-3x3" class="w-4 h-4"></i>
+                        <i data-lucide="target" class="w-4 h-4"></i>
                     </div>
-                    <span class="text-xs font-black">Browse Services</span>
+                    <span class="text-xs font-black">My Leads</span>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-auto opacity-40 group-hover:opacity-100 transition-opacity"></i>
                 </a>
-                <a href="{{ route('cart.index') }}" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all group">
+                <a href="{{ route('partner.referrals') }}" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all group">
                     <div class="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-blue-100 text-slate-500 group-hover:text-blue-600 flex items-center justify-center transition-colors">
-                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <i data-lucide="users" class="w-4 h-4"></i>
                     </div>
-                    <span class="text-xs font-black">My Cart</span>
+                    <span class="text-xs font-black">My Referrals</span>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-auto opacity-40 group-hover:opacity-100 transition-opacity"></i>
                 </a>
             </div>
@@ -124,7 +124,7 @@
                 </div>
                 @endif
 
-                <form action="{{ route('customer.profile.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('partner.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 

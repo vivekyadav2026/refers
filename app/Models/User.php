@@ -41,6 +41,7 @@ class User extends Authenticatable
         'business_type',
         'kyc_status',
         'status',
+        'avatar',
     ];
 
     /**

@@ -6,9 +6,21 @@
     </button>
     <div class="h-6 w-px bg-slate-200 lg:hidden"></div>
     <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <form class="relative flex flex-1" action="#" method="GET">
+        @php
+            $searchRoute = route('services.index');
+            if (auth()->check()) {
+                if (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin') {
+                    $searchRoute = route('admin.services');
+                } elseif (auth()->user()->role === 'partner') {
+                    $searchRoute = route('partner.services');
+                } else {
+                    $searchRoute = route('customer.services');
+                }
+            }
+        @endphp
+        <form class="relative flex flex-1" action="{{ $searchRoute }}" method="GET">
             <i data-lucide="search" class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-slate-400"></i>
-            <input class="block h-full w-full border-0 py-0 pl-8 pr-0 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm bg-transparent outline-none" placeholder="Search..." type="search" name="search">
+            <input value="{{ request('search') }}" class="block h-full w-full border-0 py-0 pl-8 pr-0 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm bg-transparent outline-none" placeholder="Search services..." type="search" name="search">
         </form>
         <div class="flex items-center gap-x-4 lg:gap-x-6">
             {{-- ── Notification Bell ── --}}
@@ -118,9 +130,15 @@
             <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-slate-200"></div>
             <div class="relative" x-data="{ open: false }">
                 <button type="button" class="-m-1.5 flex items-center p-1.5 rounded-full hover:bg-slate-50 transition-colors" @click="open = !open" @click.away="open = false">
-                    <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white">
-                        {{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'VT' }}
-                    </div>
+                    @if(auth()->check() && auth()->user()->avatar)
+                        <div class="h-8 w-8 rounded-full shadow-sm ring-2 ring-white overflow-hidden">
+                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                        </div>
+                    @else
+                        <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white">
+                            {{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'VT' }}
+                        </div>
+                    @endif
                     <span class="hidden lg:flex lg:items-center">
                         <span class="ml-4 text-sm font-semibold leading-6 text-slate-900">{{ auth()->check() ? auth()->user()->name : 'Partner' }}</span>
                         <i data-lucide="chevron-down" class="ml-2 h-4 w-4 text-slate-400"></i>
@@ -138,6 +156,9 @@
                     @elseif(auth()->check() && auth()->user()->role === 'partner')
                         <a href="{{ route('partner.kyc') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold text-slate-700 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">
                             <i data-lucide="shield-check" class="w-4 h-4 text-slate-400"></i> KYC & Agreements
+                        </a>
+                        <a href="{{ route('partner.profile') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold text-slate-700 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                            <i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Account Settings
                         </a>
                     @elseif(auth()->check() && auth()->user()->role === 'customer')
                         <a href="{{ route('customer.profile') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold text-slate-700 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">

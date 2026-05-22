@@ -9,9 +9,9 @@
 {{-- Page Header --}}
 <div class="sm:flex sm:justify-between sm:items-start mb-8 gap-4">
     <div class="mb-4 sm:mb-0">
-        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-black px-3 py-1.5 rounded-full mb-3 uppercase tracking-wider">
+        <!-- <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 text-xs font-black px-3 py-1.5 rounded-full mb-3 uppercase tracking-wider">
             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Customer Portal
-        </div>
+        </div> -->
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{{ auth()->user()->name }}</span>!</h1>
         <p class="text-slate-500 font-medium mt-1 text-sm">Manage your orders, track progress, and explore new services.</p>
     </div>
@@ -72,7 +72,7 @@
     {{-- Quick Actions --}}
     <div class="flex flex-col gap-4">
         {{-- Cart Card --}}
-        <a href="{{ route('cart.index') }}" class="flex-1 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-5 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
+        <!-- <a href="{{ route('cart.index') }}" class="flex-1 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-5 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
             <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
             <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors shrink-0">
                 <i data-lucide="shopping-cart" class="w-6 h-6"></i>
@@ -81,10 +81,10 @@
                 <h3 class="font-black text-base mb-0.5">View Cart</h3>
                 <p class="text-emerald-100 text-xs font-medium">{{ auth()->user()->cartItems->count() }} item(s) waiting</p>
             </div>
-        </a>
+        </a> -->
 
         {{-- Profile Card --}}
-        <a href="{{ route('customer.profile') }}" class="flex-1 bg-white border border-slate-200 rounded-3xl p-5 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
+        <!-- <a href="{{ route('customer.profile') }}" class="flex-1 bg-white border border-slate-200 rounded-3xl p-5 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
             <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xl font-black shadow-md shrink-0">
                 {{ substr(auth()->user()->name, 0, 1) }}
@@ -93,10 +93,10 @@
                 <h3 class="font-black text-base mb-0.5">My Profile</h3>
                 <p class="text-slate-500 text-xs font-medium">Edit account details</p>
             </div>
-        </a>
+        </a> -->
 
         {{-- Browse Services --}}
-        <a href="{{ route('customer.services') }}" class="flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
+        <!-- <a href="{{ route('customer.services') }}" class="flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
             <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
             <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors shrink-0">
                 <i data-lucide="grid-3x3" class="w-6 h-6"></i>
@@ -105,7 +105,7 @@
                 <h3 class="font-black text-base mb-0.5">Browse Services</h3>
                 <p class="text-blue-100 text-xs font-medium">Explore premium services</p>
             </div>
-        </a>
+        </a> -->
     </div>
 </div>
 

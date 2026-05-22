@@ -98,6 +98,7 @@
             ['route'=>'partner.training','icon'=>'graduation-cap','label'=>'Training Center'],
             ['route'=>'partner.marketing','icon'=>'image','label'=>'Marketing Assets'],
             ['route'=>'partner.kyc','icon'=>'shield-check','label'=>'KYC & Agreements'],
+            ['route'=>'partner.profile','icon'=>'user','label'=>'Account Settings'],
         ] as $item)
         <li>
             <a href="{{ route($item['route']) }}" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 {{ request()->routeIs($item['route']) ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 -translate-y-0.5' : 'text-slate-600 hover:bg-blue-50/60 hover:text-blue-700' }}">
@@ -128,9 +129,15 @@
         {{-- BOTTOM USER PROFILE --}}
         <li class="mt-auto pt-6 border-t border-slate-100 mb-2">
             <div class="flex items-center gap-3.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-100 mb-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-md">
-                    {{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'VT' }}
-                </div>
+                @if(auth()->check() && auth()->user()->avatar)
+                    <div class="w-10 h-10 rounded-xl shadow-md overflow-hidden">
+                        <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                    </div>
+                @else
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-md">
+                        {{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 2)) : 'VT' }}
+                    </div>
+                @endif
                 <div class="min-w-0 flex-1">
                     <div class="text-sm font-bold text-slate-900 truncate">{{ auth()->user()->name ?? 'User' }}</div>
                     <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5">{{ auth()->user()->role ?? 'customer' }}</div>

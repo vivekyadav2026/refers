@@ -76,6 +76,9 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
         if (request('category')) {
             $query->where('category', request('category'));
         }
+        if (request('search')) {
+            $query->where('name', 'like', '%' . request('search') . '%');
+        }
         $servicesByCategory = $query->orderBy('name')->get()->groupBy('category');
         $allCategories = \App\Models\Service::where('is_active', true)->distinct()->pluck('category');
         return view('customer.services', [
@@ -109,13 +112,19 @@ Route::middleware(['auth'])->prefix('partner')->name('partner.')->group(function
     // Locked partner panel routes (requires Step 1 and Approved KYC)
     Route::middleware(['partner.unlock'])->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profile', [\App\Http\Controllers\DashboardController::class, 'profile'])->name('profile');
+        Route::put('/profile', [\App\Http\Controllers\DashboardController::class, 'updateProfile'])->name('profile.update');
 
         Route::get('/leads', [\App\Http\Controllers\LeadController::class, 'index'])->name('leads.index');
         Route::get('/leads/create', [\App\Http\Controllers\LeadController::class, 'create'])->name('leads.create');
         Route::post('/leads', [\App\Http\Controllers\LeadController::class, 'store'])->name('leads.store');
 
         Route::get('/services', function () {
-            $servicesByCategory = \App\Models\Service::where('is_active', true)->get()->groupBy('category');
+            $query = \App\Models\Service::where('is_active', true);
+            if (request('search')) {
+                $query->where('name', 'like', '%' . request('search') . '%');
+            }
+            $servicesByCategory = $query->get()->groupBy('category');
             return view('partner.services', ['servicesByCategory' => $servicesByCategory]);
         })->name('services');
 
