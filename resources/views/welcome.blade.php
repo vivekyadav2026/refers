@@ -375,15 +375,15 @@ body {
         @foreach($servicesByCategory->flatten(1) as $svc)
         @php
             $match = $findPremiumMatch($svc->name);
-            $img = $svc->banner_image ? asset('storage/'.$svc->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
+            $icon = $match ? $match['icon'] : 'layout-grid';
+            $icon_color = $match ? $match['icon_color'] : 'text-slate-500';
+            $bg = $match ? $match['bg'] : 'from-slate-50 to-slate-100';
         @endphp
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col group hover:bg-indigo-50/20 transition-all duration-300 overflow-hidden min-h-[120px] sm:min-h-[155px]">
-            <div class="h-[60px] sm:h-[80px] w-full overflow-hidden shrink-0 border-b border-slate-100/50 relative bg-slate-50 flex items-center justify-center">
-                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350">
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 overflow-hidden min-h-[120px] sm:min-h-[150px] p-3 sm:p-4 text-center">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br {{ $bg }} flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50">
+                <i data-lucide="{{ $icon }}" class="w-5 h-5 sm:w-7 sm:h-7 {{ $icon_color }}"></i>
             </div>
-            <div class="flex-1 flex items-center justify-center p-2 sm:p-3 text-center">
-                <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
-            </div>
+            <span class="text-[9.5px] sm:text-xs font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
         </a>
         @endforeach
         
