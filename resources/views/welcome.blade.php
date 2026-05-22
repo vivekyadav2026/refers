@@ -297,8 +297,8 @@ body {
         };
     @endphp
 
-    <!-- Responsive Grid utilizing gap-px structure for a beautiful border layout -->
-    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-px bg-slate-200 rounded-[24px] overflow-hidden shadow-sm border border-slate-200">
+    <!-- Responsive Grid with gap and shadows -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-5 bg-transparent pb-4 px-1">
         
         @foreach($servicesByCategory->flatten(1) as $svc)
         @php
@@ -307,7 +307,7 @@ body {
             $icon_color = $match ? $match['icon_color'] : 'text-slate-500';
             $bg = $match ? $match['bg'] : 'from-slate-50 to-slate-100';
         @endphp
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 overflow-hidden min-h-[120px] sm:min-h-[150px] p-3 sm:p-4 text-center">
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 min-h-[120px] sm:min-h-[150px] p-3 sm:p-4 text-center rounded-2xl shadow-md hover:shadow-xl hover:shadow-indigo-500/10 border border-slate-100/50 hover:-translate-y-1">
             <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br {{ $bg }} flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50">
                 <i data-lucide="{{ $icon }}" class="w-5 h-5 sm:w-7 sm:h-7 {{ $icon_color }}"></i>
             </div>
