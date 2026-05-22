@@ -170,7 +170,7 @@
             <!-- Desktop Nav -->
             <div class="hidden md:flex items-center gap-8 bg-white border border-slate-200 shadow-sm rounded-full px-6 py-2.5">
                 <a href="{{ route('landing') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('landing') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Home</a>
-                <a href="{{ route('services.index') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('services.index') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Services</a>
+                <a href="{{ route('services.index') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('services.*') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Services</a>
                 <a href="{{ route('contact') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('contact') ? 'text-purple-700' : 'text-slate-600 hover:text-purple-600' }}">Contact</a>
             </div>
 
@@ -223,8 +223,8 @@
                     <i data-lucide="home" class="w-5 h-5 {{ request()->routeIs('landing') ? 'text-purple-600' : 'text-slate-400' }}"></i>
                     Home
                 </a>
-                <a href="{{ route('services.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all {{ request()->routeIs('services.index') ? 'text-purple-700 bg-purple-50/80' : 'text-slate-600 hover:bg-slate-50 hover:text-purple-600' }}">
-                    <i data-lucide="briefcase" class="w-5 h-5 {{ request()->routeIs('services.index') ? 'text-purple-600' : 'text-slate-400' }}"></i>
+                <a href="{{ route('services.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all {{ request()->routeIs('services.*') ? 'text-purple-700 bg-purple-50/80' : 'text-slate-600 hover:bg-slate-50 hover:text-purple-600' }}">
+                    <i data-lucide="briefcase" class="w-5 h-5 {{ request()->routeIs('services.*') ? 'text-purple-600' : 'text-slate-400' }}"></i>
                     Services
                 </a>
                 <a href="{{ route('contact') }}" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all {{ request()->routeIs('contact') ? 'text-purple-700 bg-purple-50/80' : 'text-slate-600 hover:bg-slate-50 hover:text-purple-600' }}">
