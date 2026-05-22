@@ -218,7 +218,7 @@ body {
 </section>
 
 <!-- OUR SERVICES -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 md:py-16">
     <div class="flex items-center justify-between mb-6 md:mb-10">
         <h3 class="text-sm sm:text-base md:text-lg font-black text-slate-900  tracking-tight">Our  Services</h3>
         <a href="{{ route('services.index') }}" class="text-[11px] sm:text-xs md:text-sm font-bold text-indigo-850 hover:text-indigo-900 transition-colors flex items-center gap-1 group">
@@ -319,7 +319,7 @@ body {
 </section>
 
 <!-- WHY CHOOSE US -->
-<section id="why-choose-us" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 lg:mb-8 scroll-mt-20">
+<section id="why-choose-us" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-16 lg:mb-8 scroll-mt-20">
     <h3 class="text-xs sm:text-sm md:text-base font-black text-slate-900 mb-6 md:mb-10 tracking-tight ">Why Choose SK Solutions</h3>
     
     <!-- Mobile/Tablet Layout: row of 4 icons. Desktop Layout: Full SaaS detail cards. -->

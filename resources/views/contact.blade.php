@@ -249,7 +249,7 @@ select.input-field {
           </h2>
 
           {{-- WhatsApp Card --}}
-          <a href="https://wa.me/919999999999?text=Hi SKSolutions, I need help with a project."
+          <a href="https://wa.me/918287121769?text=Hi SKSolutions, I need help with a project."
              target="_blank"
              class="flex items-center gap-4 sm:gap-5 p-5 sm:p-6 rounded-[24px] bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-750 to-teal-700 text-white hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 mb-5 group relative overflow-hidden shadow-xl shadow-emerald-500/10">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(255,255,255,0.2),transparent_60%)] pointer-events-none"></div>
@@ -273,9 +273,9 @@ select.input-field {
           {{-- Info Cards --}}
           @php
             $infoCards = [
-              ['icon'=>'mail',  'label'=>'Email',         'val'=>'hello@sksolution.in',          'href'=>'mailto:hello@sksolution.in', 'bg'=>'bg-purple-50',  'text'=>'text-purple-655 text-purple-600', 'border'=>'border-purple-100'],
-              ['icon'=>'phone', 'label'=>'Phone',         'val'=>'+91 99999 99999',             'href'=>'tel:+919999999999',         'bg'=>'bg-blue-50',    'text'=>'text-blue-655 text-blue-600',   'border'=>'border-blue-100'],
-              ['icon'=>'clock', 'label'=>'Working Hours', 'val'=>'Mon–Sat: 9 AM – 7 PM IST',    'href'=>null,                        'bg'=>'bg-amber-50',   'text'=>'text-amber-655 text-amber-600',  'border'=>'border-amber-100'],
+              ['icon'=>'mail',  'label'=>'Email',         'val'=>'support@sksolutions.in',          'href'=>'mailto:hello@sksolution.in', 'bg'=>'bg-purple-50',  'text'=>'text-purple-655 text-purple-600', 'border'=>'border-purple-100'],
+              ['icon'=>'phone', 'label'=>'Phone',         'val'=>'+91 82871 21769',             'href'=>'tel:+919999999999',         'bg'=>'bg-blue-50',    'text'=>'text-blue-655 text-blue-600',   'border'=>'border-blue-100'],
+              ['icon'=>'clock', 'label'=>'Working Hours', 'val'=>'Mon–Sat: 10 AM – 6 PM IST',    'href'=>null,                        'bg'=>'bg-amber-50',   'text'=>'text-amber-655 text-amber-600',  'border'=>'border-amber-100'],
             ];
           @endphp
 
@@ -298,21 +298,6 @@ select.input-field {
           </div>
         </div>
 
-        {{-- Partner CTA Card --}}
-        <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-950 rounded-[28px] p-6 sm:p-7 text-white relative overflow-hidden shadow-xl shadow-indigo-955 shadow-indigo-950/15 group hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
-          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(139,92,246,0.25),transparent_50%)] pointer-events-none"></div>
-          <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
-          
-          <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-inner">
-            <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
-          </div>
-          <h3 class="font-black text-xl mb-2.5 tracking-tight">Are You a Freelancer?</h3>
-          <p class="text-slate-355 text-slate-300 text-[13px] font-semibold mb-6 leading-relaxed">Join our Partner Network and earn <span class="text-white font-bold">20–30% commission</span> on every client referral. Zero upfront investment required.</p>
-          <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-white text-indigo-900 hover:bg-indigo-50 active:scale-[0.98] px-5 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-md w-full justify-center group/btn">
-            <span>Start Earning Now</span>
-            <i data-lucide="arrow-right" class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform"></i>
-          </a>
-        </div>
       </div>
 
       {{-- ─── RIGHT: Contact Form ─── --}}
