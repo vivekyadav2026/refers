@@ -312,6 +312,11 @@ body {
                 <i data-lucide="{{ $icon }}" class="w-6 h-6 sm:w-8 sm:h-8 {{ $icon_color }}"></i>
             </div>
             <span class="text-xs sm:text-sm font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
+            @auth
+                <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
+            @else
+                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Login for Pricing</span>
+            @endauth
         </a>
         @endforeach
         

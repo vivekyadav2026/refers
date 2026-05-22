@@ -500,7 +500,7 @@ body {
             <div x-show="buyNowModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[105] bg-slate-900/80 backdrop-blur-sm transition-opacity"></div>
             
             <div class="fixed inset-0 z-[110] w-screen overflow-y-auto">
-                <div class="flex min-h-full items-end justify-center sm:items-center p-0 sm:p-4 text-center">
+                <div class="flex mt-10 items-end justify-center sm:items-center p-0 sm:p-4 text-center">
                     
                     <div x-show="buyNowModal" 
                          x-transition:enter="ease-out duration-300" 

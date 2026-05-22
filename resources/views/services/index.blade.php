@@ -323,7 +323,11 @@ body {
             </div>
             <span class="text-xs sm:text-sm font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
             <p class="text-[10px] sm:text-[11px] text-slate-500 mt-2 line-clamp-2 leading-relaxed">{{ $svc->short_description }}</p>
-            <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
+            @auth
+                <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
+            @else
+                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Login for Pricing</span>
+            @endauth
         </a>
         @endforeach
 
