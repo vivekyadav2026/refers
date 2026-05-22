@@ -244,10 +244,9 @@
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image <span id="bannerImageRequired" class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image (For Details Page)</label>
                         <input type="file" name="banner_image" id="serviceBanner" accept="image/*"
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
-                        <input type="hidden" name="icon" id="serviceIcon" value="box">
                         <span class="text-[10px] text-slate-400 font-bold block mt-1">Compressed auto under 200KB.</span>
                         
                         <!-- Dynamic Image Preview & Ratio Analysis -->
@@ -265,6 +264,16 @@
                             </div>
                             <div id="bannerPreviewFeedback" class="mt-2 text-[10px] font-bold hidden"></div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Lucide Icon Name</label>
+                    <div class="flex items-center gap-3">
+                        <input type="text" name="icon" id="serviceIcon" value="box"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                            placeholder="e.g. globe, smartphone, palette">
+                        <a href="https://lucide.dev/icons" target="_blank" class="text-xs text-indigo-600 hover:underline shrink-0 whitespace-nowrap">View Icons</a>
                     </div>
                 </div>
 
@@ -430,8 +439,6 @@ function openModal(service = null) {
         document.getElementById('servicePrice').value = service.min_price;
         document.getElementById('serviceIcon').value = service.icon || 'box';
         document.getElementById('serviceBanner').value = '';
-        document.getElementById('serviceBanner').required = false;
-        document.getElementById('bannerImageRequired').classList.add('hidden');
         document.getElementById('serviceDesc').value = service.short_description;
         document.getElementById('serviceLongDesc').value = service.description || '';
         // Parse escaped newlines back to actual newlines
@@ -456,8 +463,6 @@ function openModal(service = null) {
         form.reset();
         document.getElementById('serviceIcon').value = 'box'; // Default icon
         document.getElementById('serviceBanner').value = '';
-        document.getElementById('serviceBanner').required = true;
-        document.getElementById('bannerImageRequired').classList.remove('hidden');
         document.getElementById('serviceLongDesc').value = '';
         document.getElementById('serviceRequirements').value = '';
         document.getElementById('serviceTimeline').value = '';

@@ -455,7 +455,7 @@ body {
                 </div>
 
                 {{-- SIDEBAR PACKAGES & SUPPORT --}}
-                <div class="bg-white/90 backdrop-blur-md rounded-[32px] p-5 sm:p-6 border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.015)]">
+                <!-- <div class="bg-white/90 backdrop-blur-md rounded-[32px] p-5 sm:p-6 border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.015)]">
                     <h3 class="text-base sm:text-lg font-black text-slate-900 mb-4 tracking-tight flex items-center gap-2">
                         <i data-lucide="package" class="w-4.5 h-4.5 text-indigo-600"></i> Flexible Packages
                     </h3>
@@ -490,34 +490,49 @@ body {
                             <i data-lucide="headphones" class="w-3.5 h-3.5 text-blue-600"></i> Talk to Account Manager
                         </a>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>
 
         {{-- BUY NOW MODAL --}}
         <div x-show="buyNowModal" class="relative z-[100]" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="display: none;">
-            <div x-show="buyNowModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity"></div>
-            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                    <div x-show="buyNowModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg border border-slate-200" @click.away="buyNowModal = false">
+            <div x-show="buyNowModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[105] bg-slate-900/80 backdrop-blur-sm transition-opacity"></div>
+            
+            <div class="fixed inset-0 z-[110] w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center sm:items-center p-0 sm:p-4 text-center">
+                    
+                    <div x-show="buyNowModal" 
+                         x-transition:enter="ease-out duration-300" 
+                         x-transition:enter-start="opacity-0 translate-y-full sm:translate-y-4 sm:scale-95" 
+                         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                         x-transition:leave="ease-in duration-200" 
+                         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                         x-transition:leave-end="opacity-0 translate-y-full sm:translate-y-4 sm:scale-95" 
+                         class="relative transform overflow-hidden rounded-t-[32px] sm:rounded-[32px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-lg border-t sm:border border-slate-200 mt-6 sm:mt-0" 
+                         @click.away="buyNowModal = false">
                         
-                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <h3 class="text-lg font-black text-slate-900 flex items-center gap-2" id="modal-title">
-                                <i data-lucide="zap" class="w-5 h-5 text-blue-600"></i> Quick Checkout
+                        <!-- Mobile Drag Handle -->
+                        <div class="w-full flex justify-center pt-3 pb-1 sm:hidden bg-slate-50">
+                            <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+                        </div>
+
+                        <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                            <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2" id="modal-title">
+                                <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i> Quick Checkout
                             </h3>
-                            <button @click="buyNowModal = false" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
-                                <i data-lucide="x" class="w-5 h-5"></i>
+                            <button @click="buyNowModal = false" type="button" class="p-2 -mr-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-200/50">
+                                <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </button>
                         </div>
 
-                        <form id="buyNowForm" class="p-6">
+                        <form id="buyNowForm" class="p-5 sm:p-6 max-h-[80vh] overflow-y-auto">
                             @csrf
                             <input type="hidden" name="service_id" value="{{ $service->id }}">
                             
                             <div class="space-y-4 font-sans">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Full Name *</label>
+                                    <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Full Name *</label>
                                     @php
                                         $defaultName = auth()->check() ? 'User ' . substr(auth()->user()->phone, -4) : '';
                                         $displayName = auth()->check() && auth()->user()->name !== $defaultName ? auth()->user()->name : '';
@@ -525,20 +540,20 @@ body {
                                     <input type="text" name="customer_name" value="{{ $displayName }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Mobile Number *</label>
+                                    <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Mobile Number *</label>
                                     <input type="tel" name="customer_phone" value="{{ auth()->check() ? auth()->user()->phone : '' }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Project Requirements *</label>
+                                    <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Project Requirements *</label>
                                     <textarea name="requirements" rows="3" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all resize-none" placeholder="Describe your project requirements briefly..."></textarea>
                                 </div>
                             </div>
 
-                            <div class="mt-8 flex gap-3">
-                                <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-xl text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+                            <div class="mt-6 sm:mt-8 flex gap-3 pb-4 sm:pb-0">
+                                <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-xl text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
                                     Cancel
                                 </button>
-                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-xl text-xs font-black tracking-wider uppercase text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
+                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-xl text-[10px] sm:text-xs font-black tracking-wider uppercase text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
                                     <span x-show="!isProcessing">Pay ₹{{ number_format($service->min_price) }}</span>
                                     <span x-show="isProcessing">Processing...</span>
                                 </button>

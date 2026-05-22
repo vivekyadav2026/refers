@@ -306,64 +306,24 @@ body {
 
 <!-- Services Grid Section -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 lg:pb-16">
-    <div class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8 bg-transparent pb-4 px-1">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-5 bg-transparent pb-4 px-1">
         
         @foreach($allSvcs as $svc)
         @php
             $match = $findPremiumMatch($svc->name);
-            $bg = $match ? $match['bg'] : 'from-slate-50 to-gray-100';
-            $img = $svc->banner_image ? asset('storage/'.$svc->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
-            $icon = $match ? $match['icon'] : 'box';
-            $icon_color = $match ? $match['icon_color'] : 'text-slate-700';
+            $dbIcon = $svc->icon && $svc->icon !== 'box' ? $svc->icon : null;
+            $icon = $dbIcon ?? ($match ? $match['icon'] : 'layout-grid');
+            $bg = $match ? $match['bg'] : 'from-slate-50 to-slate-100';
+            $icon_color = $match ? $match['icon_color'] : 'text-slate-500';
         @endphp
         
-        <!-- Mobile Card: top half image, bottom half name -->
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col group hover:bg-indigo-50/20 transition-all duration-300 overflow-hidden sm:hidden min-h-[125px] rounded-2xl shadow-md border border-slate-100/50">
-            <!-- Top: image -->
-            <div class="w-full h-[72px] overflow-hidden shrink-0 bg-slate-50 relative">
-                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350">
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 min-h-[180px] sm:min-h-[220px] p-4 sm:p-6 text-center rounded-2xl shadow-md hover:shadow-xl hover:shadow-indigo-500/10 border border-slate-100/50 hover:-translate-y-1">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br {{ $bg }} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50">
+                <i data-lucide="{{ $icon }}" class="w-6 h-6 sm:w-8 sm:h-8 {{ $icon_color }}"></i>
             </div>
-            <!-- Bottom: name -->
-            <div class="flex-1 flex items-center justify-center p-2 text-center">
-                <span class="text-[9px] font-bold text-slate-800 leading-tight">{{ $svc->name }}</span>
-            </div>
-        </a>
-
-        <!-- Desktop/Tablet Card: top half image, bottom half content -->
-        <a href="{{ route('services.show', $svc->slug) }}" class="hidden sm:flex flex-col bg-gradient-to-br {{ $bg }} rounded-[32px] relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 border border-slate-100/50">
-            <!-- Glow element -->
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
-
-            <!-- Top half: full-width banner image -->
-            <div class="w-full h-44 sm:h-52 overflow-hidden shrink-0">
-                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </div>
-
-            <!-- Bottom half: content -->
-            <div class="flex flex-col justify-between flex-1 p-5 sm:p-6 relative z-10">
-                <div>
-                    <!-- Category Badge -->
-                    <span class="px-3 py-1 rounded-full bg-white/70 backdrop-blur-sm border border-slate-100 text-slate-600 text-[10px] font-bold tracking-wider uppercase mb-4 inline-block">
-                        {{ $svc->category }}
-                    </span>
-
-                    <!-- Title -->
-                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 mb-2.5 leading-tight tracking-tight">
-                        {{ $svc->name }}
-                    </h3>
-
-                    <!-- Description -->
-                    <p class="text-[13px] text-slate-600 font-medium leading-relaxed line-clamp-2">
-                        {{ $svc->short_description ?? 'Powerful, secure and user-friendly digital solutions.' }}
-                    </p>
-                </div>
-
-                <!-- Price -->
-                <div class="flex flex-col mt-4">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Starting from</span>
-                    <span class="text-lg sm:text-xl font-black text-indigo-900 mt-1">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
-                </div>
-            </div>
+            <span class="text-xs sm:text-sm font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-2 line-clamp-2 leading-relaxed">{{ $svc->short_description }}</p>
+            <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
         </a>
         @endforeach
 

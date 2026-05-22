@@ -14,7 +14,20 @@ class NewMemberRegistered extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    public function toMail(object $notifiable)
+    {
+        $role = ucfirst($this->member->role);
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+                    ->subject('New ' . $role . ' Registration')
+                    ->greeting('Hello Admin,')
+                    ->line('A new ' . $role . ' has just registered on the platform.')
+                    ->line('Name: ' . ($this->member->name ?? 'Unknown'))
+                    ->line('Phone: ' . $this->member->phone)
+                    ->action('View Profile', route('admin.users.show', $this->member->id))
+                    ->line('Thank you for using our application!');
     }
 
     public function toArray(object $notifiable): array
