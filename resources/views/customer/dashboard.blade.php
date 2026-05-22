@@ -267,21 +267,22 @@
         @foreach($recommendedServices as $svc)
         @php
             $match = $findPremiumMatch($svc->name);
-            $img = $svc->banner_image ? asset('storage/'.$svc->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
+            $icon = $svc->icon ?: ($match ? $match['icon'] : 'layout-grid');
+            $icon_color = $match ? $match['icon_color'] : 'text-slate-500';
+            $bg = $match ? $match['bg'] : 'from-slate-50 to-slate-100';
         @endphp
-        <a href="{{ route('services.show', $svc->slug) }}" class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group flex flex-col">
-            <div class="h-24 sm:h-32 w-full overflow-hidden shrink-0 bg-slate-50 flex items-center justify-center relative">
-                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 min-h-[180px] sm:min-h-[220px] p-4 sm:p-6 text-center rounded-2xl shadow-md hover:shadow-xl hover:shadow-indigo-500/10 border border-slate-100/50 hover:-translate-y-1">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br {{ $bg }} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50">
+                <i data-lucide="{{ $icon }}" class="w-6 h-6 sm:w-8 sm:h-8 {{ $icon_color }}"></i>
             </div>
-            <div class="p-3 sm:p-4 flex-1 flex flex-col">
-                <span class="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase tracking-widest mb-0.5">{{ $svc->category }}</span>
-                <h3 class="font-black text-xs sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors mb-1 leading-snug line-clamp-2">{{ $svc->name }}</h3>
-                <p class="text-[11px] text-slate-500 line-clamp-2 mb-2 flex-1 hidden sm:block">{{ $svc->short_description }}</p>
-                <div class="flex items-center justify-between mt-auto">
-                    <span class="text-emerald-600 font-black text-xs sm:text-sm bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">₹{{ number_format($svc->min_price) }}</span>
-                    <span class="text-[10px] sm:text-xs font-black text-blue-600 flex items-center gap-0.5 sm:gap-1">View <i data-lucide="arrow-right" class="w-2.5 h-2.5 sm:w-3 sm:h-3"></i></span>
-                </div>
-            </div>
+            <span class="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">{{ $svc->category }}</span>
+            <span class="text-xs sm:text-sm font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-2 line-clamp-2 leading-relaxed hidden sm:block">{{ $svc->short_description }}</p>
+            @auth
+                <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
+            @else
+                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Login for Pricing</span>
+            @endauth
         </a>
         @endforeach
     </div>
