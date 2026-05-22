@@ -4,8 +4,7 @@
             <!-- Brand -->
             <div class="md:col-span-2">
                 <div class="flex items-center gap-2.5 mb-4">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">S</div>
-                    <span class="font-black text-2xl tracking-tight bg-gradient-to-r from-slate-900 to-blue-950 bg-clip-text text-transparent">SKSolutions</span>
+                    <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100">
                 </div>
                 <p class="text-slate-500 text-sm leading-relaxed max-w-sm font-medium">
                     We deliver high-quality digital solutions to help you scale your business efficiently. Join our partner network and grow with us.

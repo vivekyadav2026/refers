@@ -25,7 +25,8 @@
     </div>
 
     @php
-        $initials = strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $user->name), 0, 2))));
+        $words = array_filter(explode(' ', trim($user->name)));
+        $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice($words, 0, 2))));
         $avatarColors = ['from-indigo-500 to-purple-600','from-emerald-500 to-teal-600','from-amber-500 to-orange-600','from-rose-500 to-pink-600','from-sky-500 to-blue-600'];
         $avatarGradient = $avatarColors[$user->id % count($avatarColors)];
     @endphp

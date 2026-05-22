@@ -232,12 +232,12 @@ class AuthController extends Controller
 
         // Redirect based on role
         if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard')
+            return redirect()->intended(route('admin.dashboard'))
                              ->with('success', 'Logged in as Admin.');
         }
 
         if ($user->role === 'partner') {
-            return redirect()->route('partner.dashboard')
+            return redirect()->intended(route('partner.dashboard'))
                              ->with('success', 'Logged in successfully!');
         }
 
@@ -245,11 +245,11 @@ class AuthController extends Controller
         $refServiceSlug = session('ref_service_slug');
         if ($refServiceSlug) {
             session()->forget('ref_service_slug');
-            return redirect()->route('services.show', $refServiceSlug)
+            return redirect()->intended(route('services.show', $refServiceSlug))
                              ->with('success', 'Logged in successfully! You can now purchase your referred service.');
         }
 
-        return redirect()->route('customer.dashboard')
+        return redirect()->intended(route('customer.dashboard'))
                          ->with('success', 'Logged in successfully!');
     }
 
@@ -325,12 +325,12 @@ class AuthController extends Controller
 
         // Redirect based on role
         if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard')
+            return redirect()->intended(route('admin.dashboard'))
                              ->with('success', 'Logged in as Admin.');
         }
 
         if ($user->role === 'partner') {
-            return redirect()->route('partner.dashboard')
+            return redirect()->intended(route('partner.dashboard'))
                              ->with('success', 'Logged in successfully!');
         }
 
@@ -338,11 +338,11 @@ class AuthController extends Controller
         $refServiceSlug = session('ref_service_slug');
         if ($refServiceSlug) {
             session()->forget('ref_service_slug');
-            return redirect()->route('services.show', $refServiceSlug)
+            return redirect()->intended(route('services.show', $refServiceSlug))
                              ->with('success', 'Logged in successfully! You can now purchase your referred service.');
         }
 
-        return redirect()->route('customer.dashboard')
+        return redirect()->intended(route('customer.dashboard'))
                          ->with('success', 'Logged in successfully!');
     }
 }

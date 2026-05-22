@@ -88,7 +88,8 @@
                 <tbody class="divide-y divide-slate-200 bg-white">
                     @forelse($leads as $lead)
                     @php
-                        $initials = strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $lead->client_name), 0, 2))));
+                        $words = array_filter(explode(' ', trim($lead->client_name)));
+                        $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice($words, 0, 2))));
                         $colors = ['bg-indigo-100 text-indigo-700','bg-purple-100 text-purple-700','bg-amber-100 text-amber-700','bg-emerald-100 text-emerald-700','bg-rose-100 text-rose-700'];
                         $color = $colors[$lead->id % count($colors)];
                         $badge = match($lead->status) {

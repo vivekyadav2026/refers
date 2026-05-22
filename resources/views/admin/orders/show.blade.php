@@ -85,7 +85,8 @@
                 </h2>
                 @if($order->user)
                     @php
-                        $initials = strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $order->user->name), 0, 2))));
+                        $words = array_filter(explode(' ', trim($order->user->name)));
+                        $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice($words, 0, 2))));
                     @endphp
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm shrink-0">

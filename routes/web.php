@@ -60,7 +60,7 @@ Route::get('/services', function () {
 Route::get('/services/{slug}', function ($slug) {
     $service = Service::where('slug', $slug)->firstOrFail();
     return view('services.show', ['service' => $service]);
-})->name('services.show');
+})->name('services.show')->middleware('auth');
 
 // ─── CUSTOMER ROUTES ──────────────────────────────────────────────────────
 Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(function () {

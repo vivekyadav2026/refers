@@ -29,9 +29,8 @@ body {
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100/80 shadow-sm transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         <!-- Logo -->
-        <a href="{{ url('/') }}" class="flex flex-col items-start select-none">
-            <span class="text-3xl font-black text-indigo-800 leading-none tracking-tighter">SK</span>
-            <span class="text-[10px] font-bold text-slate-900 uppercase tracking-widest leading-none mt-1">Solutions</span>
+        <a href="{{ url('/') }}" class="flex items-center gap-2 select-none">
+            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100">
         </a>
 
         <!-- Desktop Navigation Menu (hidden on mobile/tablet) -->
@@ -89,6 +88,51 @@ body {
                      </div>
                 </div>
             </div>
+
+            @auth
+                <!-- User Profile Dropdown -->
+                @php
+                    $user = auth()->user();
+                    $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice(array_filter(explode(' ', trim($user->name))), 0, 2))));
+                    $dashUrl = match($user->role) {
+                        'admin' => route('admin.dashboard'),
+                        'partner' => route('partner.dashboard'),
+                        default => route('customer.dashboard'),
+                    };
+                @endphp
+                <div class="relative" x-data="{ profileOpen: false }" @click.away="profileOpen = false">
+                    <button type="button" @click="profileOpen = !profileOpen" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold text-xs sm:text-sm flex items-center justify-center transition-colors focus:outline-none ring-2 ring-indigo-50/50 hover:ring-indigo-100">
+                        {{ $initials }}
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div x-show="profileOpen" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                         x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                         class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden" 
+                         style="display:none">
+                         <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
+                             <div class="text-xs font-bold text-slate-800 truncate">{{ $user->name }}</div>
+                             <div class="text-[10px] text-slate-500 truncate mt-0.5">{{ $user->email }}</div>
+                         </div>
+                         <div class="py-1.5">
+                             <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-800 transition-colors">
+                                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                             </a>
+                             <form method="POST" action="{{ route('logout') }}" class="w-full m-0">
+                                 @csrf
+                                 <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors text-left border-none bg-transparent cursor-pointer">
+                                     <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+                                 </button>
+                             </form>
+                         </div>
+                    </div>
+                </div>
+            @endauth
 
             <!-- Desktop CTA Button -->
             <div class="hidden lg:flex items-center gap-3">
@@ -248,7 +292,7 @@ body {
 <!-- OUR SERVICES -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
     <div class="flex items-center justify-between mb-6 md:mb-10">
-        <h3 class="text-sm sm:text-base md:text-lg font-black text-slate-900 uppercase tracking-tight">OUR SERVICES</h3>
+        <h3 class="text-sm sm:text-base md:text-lg font-black text-slate-900  tracking-tight">Our  Services</h3>
         <a href="{{ route('services.index') }}" class="text-[11px] sm:text-xs md:text-sm font-bold text-indigo-850 hover:text-indigo-900 transition-colors flex items-center gap-1 group">
             View All <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"></i>
         </a>
@@ -347,8 +391,8 @@ body {
 </section>
 
 <!-- WHY CHOOSE US -->
-<section id="why-choose-us" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 mb-16 lg:mb-8 scroll-mt-20">
-    <h3 class="text-xs sm:text-sm md:text-base font-black text-slate-900 mb-6 md:mb-10 tracking-tight uppercase">Why Choose SK Solutions</h3>
+<section id="why-choose-us" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 lg:mb-8 scroll-mt-20">
+    <h3 class="text-xs sm:text-sm md:text-base font-black text-slate-900 mb-6 md:mb-10 tracking-tight ">Why Choose SK Solutions</h3>
     
     <!-- Mobile/Tablet Layout: row of 4 icons. Desktop Layout: Full SaaS detail cards. -->
     <div class="grid grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-8">
@@ -406,17 +450,31 @@ body {
         <i data-lucide="grid-3x3" class="w-5 h-5"></i>
         <span class="text-[10px] font-bold">Services</span>
     </a>
-    <a href="{{ route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="file-text" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Orders</span>
-    </a>
+    @auth
+        @php
+            $ordersUrl = match(auth()->user()->role) {
+                'admin' => route('admin.dashboard'),
+                'partner' => route('partner.orders'),
+                default => route('customer.orders'),
+            };
+        @endphp
+        <a href="{{ $ordersUrl }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span class="text-[10px] font-bold">Orders</span>
+        </a>
+    @else
+        <a href="{{ route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span class="text-[10px] font-bold">Orders</span>
+        </a>
+    @endauth
     <a href="{{ route('contact') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
         <i data-lucide="headphones" class="w-5 h-5"></i>
         <span class="text-[10px] font-bold">Support</span>
     </a>
-    <a href="{{ route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
+    <a href="{{ auth()->check() ? url('/dashboard') : route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
         <i data-lucide="user" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Profile</span>
+        <span class="text-[10px] font-bold">{{ auth()->check() ? 'Dashboard' : 'Profile' }}</span>
     </a>
 </nav>
 
