@@ -24,7 +24,7 @@ body {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center gap-2 select-none">
-            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100">
+            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
         </a>
 
         <!-- Desktop Navigation Menu -->
@@ -306,7 +306,7 @@ body {
 
 <!-- Services Grid Section -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 lg:pb-16">
-    <div class="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px sm:gap-6 lg:gap-8 bg-slate-200 sm:bg-transparent rounded-[24px] sm:rounded-none overflow-hidden shadow-sm sm:shadow-none border border-slate-200 sm:border-0">
+    <div class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8 bg-transparent pb-4 px-1">
         
         @foreach($allSvcs as $svc)
         @php
@@ -318,9 +318,9 @@ body {
         @endphp
         
         <!-- Mobile Card: top half image, bottom half name -->
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col group hover:bg-indigo-50/20 transition-all duration-300 overflow-hidden sm:hidden min-h-[115px]">
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col group hover:bg-indigo-50/20 transition-all duration-300 overflow-hidden sm:hidden min-h-[125px] rounded-2xl shadow-md border border-slate-100/50">
             <!-- Top: image -->
-            <div class="w-full h-[68px] overflow-hidden shrink-0">
+            <div class="w-full h-[72px] overflow-hidden shrink-0 bg-slate-50 relative">
                 <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350">
             </div>
             <!-- Bottom: name -->
@@ -330,7 +330,7 @@ body {
         </a>
 
         <!-- Desktop/Tablet Card: top half image, bottom half content -->
-        <a href="{{ route('services.show', $svc->slug) }}" class="hidden sm:flex flex-col bg-gradient-to-br {{ $bg }} rounded-[32px] relative overflow-hidden group hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 transform hover:-translate-y-1 border border-slate-100/50">
+        <a href="{{ route('services.show', $svc->slug) }}" class="hidden sm:flex flex-col bg-gradient-to-br {{ $bg }} rounded-[32px] relative overflow-hidden group shadow-lg hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1 border border-slate-100/50">
             <!-- Glow element -->
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
 
@@ -375,10 +375,10 @@ body {
             </div>
         @endif
 
-        <!-- Mobile "Why Choose SK Solutions?" Card (3 columns per row, compact style) -->
-        <a href="{{ route('landing') }}#why-choose-us" class="service-card p-3 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:hidden">
-            <div class="w-10 h-10 mb-2 text-orange-600 flex items-center justify-center">
-                <i data-lucide="help-circle" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" stroke-width="2.5"></i>
+        <!-- Mobile "Why Choose SK Solutions?" Card -->
+        <a href="{{ route('landing') }}#why-choose-us" class="service-card p-3 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[125px] sm:hidden rounded-2xl shadow-md border border-slate-100/50">
+            <div class="w-10 h-10 mb-2 text-orange-600 flex items-center justify-center bg-orange-50 rounded-full group-hover:bg-orange-100 transition-colors">
+                <i data-lucide="help-circle" class="w-6 h-6 group-hover:scale-110 transition-transform duration-350" stroke-width="2.5"></i>
             </div>
             <span class="text-[9px] font-bold text-slate-800 leading-tight">Why Choose SK Solutions?</span>
         </a>

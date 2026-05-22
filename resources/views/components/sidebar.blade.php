@@ -1,5 +1,5 @@
 <div class="flex h-20 shrink-0 items-center gap-3.5 border-b border-slate-100/80 -mx-6 px-8 mb-6">
-    <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100">
+    <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
 </div>
 
 <nav class="flex flex-1 flex-col">

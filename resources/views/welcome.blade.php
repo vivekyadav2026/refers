@@ -30,7 +30,7 @@ body {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center gap-2 select-none">
-            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100">
+            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
         </a>
 
         <!-- Desktop Navigation Menu (hidden on mobile/tablet) -->

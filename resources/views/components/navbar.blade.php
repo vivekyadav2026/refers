@@ -163,7 +163,7 @@
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <a href="{{ url('/') }}" class="flex items-center gap-2.5">
-                <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-10 w-auto rounded-xl object-contain shadow-sm border border-slate-100">
+                <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
             </a>
 
             <!-- Desktop Nav -->
