@@ -159,131 +159,59 @@ body {
 </header>
 
 <!-- Hero Section / Slider -->
-<section class="px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 bg-white">
+<section class="px-4 sm:px-6 lg:px-8 py-4 sm:py-8 bg-white">
     <div class="max-w-7xl mx-auto">
         <!-- Interactive Carousel using Alpine.js -->
         <div x-data="{ 
             activeSlide: 0,
-            slidesCount: 3,
+            slidesCount: 5,
             autoPlay() {
                 setInterval(() => {
                     this.activeSlide = (this.activeSlide + 1) % this.slidesCount;
-                }, 6000);
+                }, 4000);
             }
-        }" x-init="autoPlay()" class="relative">
+        }" x-init="autoPlay()" class="relative group">
+            
+            <!-- Navigation Buttons (Chevron Next & Prev) -->
+            <button @click="activeSlide = (activeSlide - 1 + slidesCount) % slidesCount" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/70 backdrop-blur-md border border-white/80 flex items-center justify-center text-slate-800 hover:bg-white hover:shadow-lg transition-all focus:outline-none opacity-0 group-hover:opacity-100">
+                <i class="w-4 h-4 sm:w-6 sm:h-6" data-lucide="chevron-left"></i>
+            </button>
+            <button @click="activeSlide = (activeSlide + 1) % slidesCount" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/70 backdrop-blur-md border border-white/80 flex items-center justify-center text-slate-800 hover:bg-white hover:shadow-lg transition-all focus:outline-none opacity-0 group-hover:opacity-100">
+                <i class="w-4 h-4 sm:w-6 sm:h-6" data-lucide="chevron-right"></i>
+            </button>
+
             <!-- Slide Wrapper -->
-            <div class="relative overflow-hidden rounded-[24px] sm:rounded-[32px] min-h-[220px] xs:min-h-[280px] sm:min-h-[380px] md:min-h-[460px] lg:min-h-[580px] bg-gradient-to-br from-indigo-50 via-purple-50 to-fuchsia-50 shadow-sm border border-purple-100/50">
-                
-                <!-- Glow elements -->
-                <div class="absolute -top-10 -right-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-                <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-
-                <!-- Navigation Buttons (Chevron Next & Prev) -->
-                <!-- Prev Button -->
-                <button @click="activeSlide = (activeSlide - 1 + slidesCount) % slidesCount" class="absolute left-2.5 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/75 backdrop-blur-md border border-slate-200/50 flex items-center justify-center text-slate-700 hover:bg-white hover:text-indigo-850 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all hover:scale-105 active:scale-95 shadow-sm focus:outline-none select-none">
-                    <i class="w-4 h-4 sm:w-6 sm:h-6 text-slate-655 text-slate-600" data-lucide="chevron-left"></i>
-                </button>
-                
-                <!-- Next Button -->
-                <button @click="activeSlide = (activeSlide + 1) % slidesCount" class="absolute right-2.5 sm:right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/75 backdrop-blur-md border border-slate-200/50 flex items-center justify-center text-slate-700 hover:bg-white hover:text-indigo-850 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all hover:scale-105 active:scale-95 shadow-sm focus:outline-none select-none">
-                    <i class="w-4 h-4 sm:w-6 sm:h-6 text-slate-655 text-slate-600" data-lucide="chevron-right"></i>
-                </button>
-
+            <div class="relative overflow-hidden rounded-[16px] sm:rounded-[24px] shadow-sm border border-slate-100 aspect-[16/9] lg:aspect-[21/9] bg-slate-50">
                 <!-- Sliding Track -->
-                <div class="flex w-full transition-transform duration-500 ease-out" :style="'transform: translateX(-' + (activeSlide * 100) + '%)'">
-                    
-                    <!-- Slide 1: Grow Your Business -->
-                    <div class="w-full shrink-0 px-4 py-6 xs:px-6 xs:py-8 sm:px-12 sm:py-16 lg:px-20 lg:py-24 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
-                        <!-- Left Column -->
-                        <div class="w-[58%] lg:flex-1 text-left flex flex-col items-start z-10">
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[8px] sm:text-[10px] font-bold tracking-wider uppercase mb-1.5 sm:mb-4">
-                                <i data-lucide="sparkles" class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5"></i> DIGITAL PARTNER
-                            </span>
-                            <h1 class="text-[14px]/[16px] xs:text-[20px]/[22px] sm:text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight mb-1 sm:mb-4 select-none">
-                                GROW YOUR <br>
-                                <span class="text-indigo-850">BUSINESS</span> <span class="script-font text-indigo-700 font-normal ml-1 text-[13px] xs:text-[18px] sm:text-2xl lg:text-4xl">Online</span>
-                            </h1>
-                            <h2 class="text-[8px] sm:text-sm font-bold text-slate-800 mb-1 sm:mb-3 tracking-tight">Smart Solutions. Better Results.</h2>
-                            <p class="text-[7.5px] xs:text-[8.5px] sm:text-xs text-slate-600 leading-normal sm:leading-relaxed font-medium mb-2 sm:mb-8 max-w-[420px] line-clamp-3 sm:line-clamp-none">
-                                SK Solutions is a Digital Growth Partner dedicated to helping businesses build a strong online presence and achieve measurable results.
-                            </p>
-                            <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 bg-indigo-800 hover:bg-indigo-900 text-white px-2 py-1 xs:px-3 xs:py-1.5 sm:px-6 sm:py-3.5 rounded-md sm:rounded-xl font-bold text-[8px] xs:text-[9px] sm:text-sm shadow-[0_4px_10px_rgba(55,48,163,0.3)] transition-all hover:scale-105 active:scale-95 group">
-                                Explore <i data-lucide="arrow-right" class="w-2.5 h-2.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                        
-                        <!-- Right Column (Mockup) -->
-                        <div class="w-[42%] lg:flex-1 flex justify-center lg:justify-end z-10 relative mt-0">
-                            <div class="relative w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[540px] h-[125px] xs:h-[160px] sm:h-[230px] md:h-[280px] lg:h-[400px] flex justify-center items-center">
-                                <img src="{{ asset('storage/banners/hero_mockup.png') }}" alt="Dashboard Mockup" class="w-full h-full object-contain drop-shadow-2xl">
-                            </div>
-                        </div>
+                <div class="flex w-full h-full transition-transform duration-700 ease-in-out" :style="'transform: translateX(-' + (activeSlide * 100) + '%)'">
+                    <!-- Slide 1 -->
+                    <div class="w-full h-full shrink-0">
+                        <img src="{{ asset('storage/banners/slide1.png') }}" class="w-full h-full object-cover" alt="Informative Website Banner">
                     </div>
-
-                    <!-- Slide 2: Dynamic Social Ads -->
-                    <div class="w-full shrink-0 px-4 py-6 xs:px-6 xs:py-8 sm:px-12 sm:py-16 lg:px-20 lg:py-24 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
-                        <!-- Left Column -->
-                        <div class="w-[58%] lg:flex-1 text-left flex flex-col items-start z-10">
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[8px] sm:text-[10px] font-bold tracking-wider uppercase mb-1.5 sm:mb-4">
-                                <i data-lucide="trending-up" class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5"></i> MARKETING
-                            </span>
-                            <h1 class="text-[14px]/[16px] xs:text-[20px]/[22px] sm:text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight mb-1 sm:mb-4 select-none">
-                                TARGETED <br>
-                                <span class="text-indigo-850">CAMPAIGNS</span> <span class="script-font text-indigo-700 font-normal ml-1 text-[13px] xs:text-[18px] sm:text-2xl lg:text-4xl">Delivered</span>
-                            </h1>
-                            <h2 class="text-[8px] sm:text-sm font-bold text-slate-800 mb-1 sm:mb-3 tracking-tight">Reach the Right Audience. Maximize ROI.</h2>
-                            <p class="text-[7.5px] xs:text-[8.5px] sm:text-xs text-slate-600 leading-normal sm:leading-relaxed font-medium mb-2 sm:mb-8 max-w-[420px] line-clamp-3 sm:line-clamp-none">
-                                Scale your brand using data-driven Facebook, Instagram, Google, and YouTube ads designed to capture attention and convert visitors.
-                            </p>
-                            <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 bg-indigo-800 hover:bg-indigo-900 text-white px-2 py-1 xs:px-3 xs:py-1.5 sm:px-6 sm:py-3.5 rounded-md sm:rounded-xl font-bold text-[8px] xs:text-[9px] sm:text-sm shadow-[0_4px_10px_rgba(55,48,163,0.3)] transition-all hover:scale-105 active:scale-95 group">
-                                Ads Services <i data-lucide="arrow-right" class="w-2.5 h-2.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                        
-                        <!-- Right Column (Mockup) -->
-                        <div class="w-[42%] lg:flex-1 flex justify-center lg:justify-end z-10 relative mt-0">
-                            <div class="relative w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[540px] h-[125px] xs:h-[160px] sm:h-[230px] md:h-[280px] lg:h-[400px] flex justify-center items-center">
-                                <img src="{{ asset('storage/banners/srv_fb.png') }}" alt="Social Media Ads" class="w-full h-full object-contain drop-shadow-2xl">
-                            </div>
-                        </div>
+                    <!-- Slide 2 -->
+                    <div class="w-full h-full shrink-0">
+                        <img src="{{ asset('storage/banners/slide2.png') }}" class="w-full h-full object-cover" alt="Instagram Ads Banner">
                     </div>
-
-                    <!-- Slide 3: Web & App Dev -->
-                    <div class="w-full shrink-0 px-4 py-6 xs:px-6 xs:py-8 sm:px-12 sm:py-16 lg:px-20 lg:py-24 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
-                        <!-- Left Column -->
-                        <div class="w-[58%] lg:flex-1 text-left flex flex-col items-start z-10">
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-fuchsia-100 text-fuchsia-800 text-[8px] sm:text-[10px] font-bold tracking-wider uppercase mb-1.5 sm:mb-4">
-                                <i data-lucide="code" class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5"></i> WEB SOLUTIONS
-                            </span>
-                            <h1 class="text-[14px]/[16px] xs:text-[20px]/[22px] sm:text-3xl md:text-4xl lg:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight mb-1 sm:mb-4 select-none">
-                                PREMIUM <br>
-                                <span class="text-indigo-850">WEBSITES</span> <span class="script-font text-indigo-700 font-normal ml-1 text-[13px] xs:text-[18px] sm:text-2xl lg:text-4xl">Built</span>
-                            </h1>
-                            <h2 class="text-[8px] sm:text-sm font-bold text-slate-800 mb-1 sm:mb-3 tracking-tight">Stunning Designs. High Speed.</h2>
-                            <p class="text-[7.5px] xs:text-[8.5px] sm:text-xs text-slate-600 leading-normal sm:leading-relaxed font-medium mb-2 sm:mb-8 max-w-[420px] line-clamp-3 sm:line-clamp-none">
-                                Get premium custom e-commerce stores, informative corporate websites, and mobile applications built with cutting-edge tools to secure your market lead.
-                            </p>
-                            <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 bg-indigo-800 hover:bg-indigo-900 text-white px-2 py-1 xs:px-3 xs:py-1.5 sm:px-6 sm:py-3.5 rounded-md sm:rounded-xl font-bold text-[8px] xs:text-[9px] sm:text-sm shadow-[0_4px_10px_rgba(55,48,163,0.3)] transition-all hover:scale-105 active:scale-95 group">
-                                Web Services <i data-lucide="arrow-right" class="w-2.5 h-2.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                        
-                        <!-- Right Column (Mockup) -->
-                        <div class="w-[42%] lg:flex-1 flex justify-center lg:justify-end z-10 relative mt-0">
-                            <div class="relative w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[540px] h-[125px] xs:h-[160px] sm:h-[230px] md:h-[280px] lg:h-[400px] flex justify-center items-center">
-                                <img src="{{ asset('storage/banners/srv_ecommerce.png') }}" alt="Web Development" class="w-full h-full object-contain drop-shadow-2xl">
-                            </div>
-                        </div>
+                    <!-- Slide 3 -->
+                    <div class="w-full h-full shrink-0">
+                        <img src="{{ asset('storage/banners/slide3.png') }}" class="w-full h-full object-cover" alt="Mobile App Banner">
                     </div>
-
+                    <!-- Slide 4 -->
+                    <div class="w-full h-full shrink-0">
+                        <img src="{{ asset('storage/banners/slide4.png') }}" class="w-full h-full object-cover" alt="SEO Banner">
+                    </div>
+                    <!-- Slide 5 -->
+                    <div class="w-full h-full shrink-0">
+                        <img src="{{ asset('storage/banners/slide5.png') }}" class="w-full h-full object-cover" alt="Video Editing Banner">
+                    </div>
                 </div>
             </div>
 
             <!-- Slide Dots Indicator -->
-            <div class="flex justify-center gap-2 mt-6">
-                <button @click="activeSlide = 0" class="w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none" :class="activeSlide === 0 ? 'bg-indigo-800 w-6' : 'bg-slate-200 hover:bg-slate-350'"></button>
-                <button @click="activeSlide = 1" class="w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none" :class="activeSlide === 1 ? 'bg-indigo-800 w-6' : 'bg-slate-200 hover:bg-slate-350'"></button>
-                <button @click="activeSlide = 2" class="w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none" :class="activeSlide === 2 ? 'bg-indigo-800 w-6' : 'bg-slate-200 hover:bg-slate-350'"></button>
+            <div class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex justify-center gap-1.5 sm:gap-2 z-20">
+                <template x-for="i in slidesCount">
+                    <button @click="activeSlide = i - 1" class="h-1.5 sm:h-2 rounded-full transition-all duration-300 focus:outline-none backdrop-blur-sm shadow-sm" :class="activeSlide === i - 1 ? 'bg-indigo-600 w-4 sm:w-6' : 'bg-slate-300/80 hover:bg-slate-400 w-1.5 sm:w-2'"></button>
+                </template>
             </div>
         </div>
     </div>
