@@ -94,8 +94,8 @@ class AdminServiceController extends Controller
         $bannerPath = $service->banner_image;
         if ($request->hasFile('banner_image')) {
             // Delete old one
-            if ($bannerPath && \Illuminate\Support\Facades\Storage::exists('public/' . $bannerPath)) {
-                \Illuminate\Support\Facades\Storage::delete('public/' . $bannerPath);
+            if ($bannerPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($bannerPath)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($bannerPath);
             }
             $bannerPath = $this->compressAndSaveImage($request->file('banner_image'), 'services');
         }
@@ -123,8 +123,8 @@ class AdminServiceController extends Controller
 
     public function destroy(Service $service)
     {
-        if ($service->banner_image && \Illuminate\Support\Facades\Storage::exists('public/' . $service->banner_image)) {
-            \Illuminate\Support\Facades\Storage::delete('public/' . $service->banner_image);
+        if ($service->banner_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($service->banner_image)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($service->banner_image);
         }
         $service->delete();
         return redirect()->back()->with('success', 'Service deleted successfully.');
@@ -177,7 +177,7 @@ class AdminServiceController extends Controller
         // Fallback: if GD fails, copy directly
         if (!$image) {
             $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/' . $destinationPath, $fileName);
+            $file->storeAs($destinationPath, $fileName, 'public');
             return $destinationPath . '/' . $fileName;
         }
 
@@ -195,9 +195,8 @@ class AdminServiceController extends Controller
 
         // Save compressed file to storage
         $fileName = uniqid() . '.jpg';
-        $finalPath = 'public/' . $destinationPath . '/' . $fileName;
         
-        \Illuminate\Support\Facades\Storage::put($finalPath, file_get_contents($tempPath));
+        \Illuminate\Support\Facades\Storage::disk('public')->put($destinationPath . '/' . $fileName, file_get_contents($tempPath));
         unlink($tempPath);
 
         return $destinationPath . '/' . $fileName;

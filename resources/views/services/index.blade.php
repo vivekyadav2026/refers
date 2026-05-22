@@ -268,95 +268,56 @@ body {
         @php
             $match = $findPremiumMatch($svc->name);
             $bg = $match ? $match['bg'] : 'from-slate-50 to-gray-100';
-            $img = $match ? $match['img'] : ($svc->banner_image ? asset('storage/'.$svc->banner_image) : asset('storage/banners/srv_web.png'));
+            $img = $svc->banner_image ? asset('storage/'.$svc->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
             $icon = $match ? $match['icon'] : 'box';
             $icon_color = $match ? $match['icon_color'] : 'text-slate-700';
         @endphp
         
-        <!-- Mobile Card (3 columns per row, compact style) -->
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card p-3 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:hidden">
-            <div class="w-10 h-10 mb-2 flex items-center justify-center">
-                @if($icon == 'instagram')
-                    <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" viewBox="0 0 24 24" fill="none" stroke="url(#ig-grad-svc-mob-{{$loop->index}})" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <defs>
-                            <linearGradient id="ig-grad-svc-mob-{{$loop->index}}" x1="2" y1="2" x2="22" y2="22">
-                                <stop offset="0%" stop-color="#f58529" />
-                                <stop offset="50%" stop-color="#dd2a7b" />
-                                <stop offset="100%" stop-color="#8134af" />
-                            </linearGradient>
-                        </defs>
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
-                @elseif($icon == 'facebook' || $icon == 'youtube')
-                    <i data-lucide="{{ $icon }}" class="w-7 h-7 {{ $icon_color }} group-hover:scale-110 transition-transform duration-350" fill="currentColor" stroke="none"></i>
-                @else
-                    <i data-lucide="{{ $icon }}" class="w-7 h-7 {{ $icon_color }} group-hover:scale-110 transition-transform duration-350" stroke-width="2.5"></i>
-                @endif
+        <!-- Mobile Card: top half image, bottom half name -->
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col group hover:bg-indigo-50/20 transition-all duration-300 overflow-hidden sm:hidden min-h-[115px]">
+            <!-- Top: image -->
+            <div class="w-full h-[68px] overflow-hidden shrink-0">
+                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350">
             </div>
-            <span class="text-[9px] font-bold text-slate-800 leading-tight">{{ $svc->name }}</span>
+            <!-- Bottom: name -->
+            <div class="flex-1 flex items-center justify-center p-2 text-center">
+                <span class="text-[9px] font-bold text-slate-800 leading-tight">{{ $svc->name }}</span>
+            </div>
         </a>
 
-        <!-- Desktop/Tablet Card (Original Detailed Design) -->
-        <a href="{{ route('services.show', $svc->slug) }}" class="hidden sm:block bg-gradient-to-br {{ $bg }} rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 transform hover:-translate-y-1 border border-slate-100/50">
+        <!-- Desktop/Tablet Card: top half image, bottom half content -->
+        <a href="{{ route('services.show', $svc->slug) }}" class="hidden sm:flex flex-col bg-gradient-to-br {{ $bg }} rounded-[32px] relative overflow-hidden group hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 transform hover:-translate-y-1 border border-slate-100/50">
             <!-- Glow element -->
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
 
-            <div class="flex flex-col justify-between h-full relative z-10">
+            <!-- Top half: full-width banner image -->
+            <div class="w-full h-44 sm:h-52 overflow-hidden shrink-0">
+                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+
+            <!-- Bottom half: content -->
+            <div class="flex flex-col justify-between flex-1 p-5 sm:p-6 relative z-10">
                 <div>
-                    <!-- Top Row: Icon & Category Badge -->
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-md shadow-slate-100/50">
-                            @if($icon == 'instagram')
-                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="url(#ig-grad-svc-{{$loop->index}})" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <defs>
-                                        <linearGradient id="ig-grad-svc-{{$loop->index}}" x1="2" y1="2" x2="22" y2="22">
-                                            <stop offset="0%" stop-color="#f58529" />
-                                            <stop offset="50%" stop-color="#dd2a7b" />
-                                            <stop offset="100%" stop-color="#8134af" />
-                                        </linearGradient>
-                                    </defs>
-                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                                </svg>
-                            @elseif($icon == 'facebook' || $icon == 'youtube')
-                                <i data-lucide="{{ $icon }}" class="w-6 h-6 {{ $icon_color }}" fill="currentColor" stroke="none"></i>
-                            @else
-                                <i data-lucide="{{ $icon }}" class="w-6 h-6 {{ $icon_color }}" stroke-width="2.5"></i>
-                            @endif
-                        </div>
-                        
-                        <span class="px-3 py-1 rounded-full bg-white/70 backdrop-blur-sm border border-slate-100 text-slate-600 text-[10px] font-bold tracking-wider uppercase">
-                            {{ $svc->category }}
-                        </span>
-                    </div>
-                    
+                    <!-- Category Badge -->
+                    <span class="px-3 py-1 rounded-full bg-white/70 backdrop-blur-sm border border-slate-100 text-slate-600 text-[10px] font-bold tracking-wider uppercase mb-4 inline-block">
+                        {{ $svc->category }}
+                    </span>
+
                     <!-- Title -->
                     <h3 class="text-xl sm:text-2xl font-black text-slate-900 mb-2.5 leading-tight tracking-tight">
                         {{ $svc->name }}
                     </h3>
-                    
+
                     <!-- Description -->
-                    <p class="text-[13px] text-slate-600 font-medium leading-relaxed mb-6 max-w-sm">
+                    <p class="text-[13px] text-slate-600 font-medium leading-relaxed line-clamp-2">
                         {{ $svc->short_description ?? 'Powerful, secure and user-friendly digital solutions.' }}
                     </p>
                 </div>
 
-                <!-- Bottom Row: Price / Button & Image -->
-                <div class="flex items-end justify-between mt-auto gap-4">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Starting from</span>
-                        <span class="text-lg sm:text-xl font-black text-indigo-900 mt-1">₹{{ number_format($svc->price ?? 0, 0) }}</span>
-                    </div>
-                    
-                    <div class="relative">
-                        <!-- Image container with 3D shadow and hover zoom -->
-                        <div class="w-[120px] h-[100px] flex items-center justify-end relative">
-                            <img src="{{ $img }}" alt="{{ $svc->name }}" class="max-w-full max-h-full drop-shadow-2xl group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-500 object-contain">
-                        </div>
-                    </div>
+                <!-- Price -->
+                <div class="flex flex-col mt-4">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Starting from</span>
+                    <span class="text-lg sm:text-xl font-black text-indigo-900 mt-1">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
                 </div>
             </div>
         </a>

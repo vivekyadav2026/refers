@@ -133,6 +133,7 @@
                                 'description' => $service->description,
                                 'min_price' => $service->min_price,
                                 'icon' => $service->icon,
+                                'banner_image' => $service->banner_image,
                                 'is_popular' => $service->is_popular,
                                 'is_active' => $service->is_active,
                                 'delivery_timeline' => $service->delivery_timeline,
@@ -248,6 +249,22 @@
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                         <input type="hidden" name="icon" id="serviceIcon" value="box">
                         <span class="text-[10px] text-slate-400 font-bold block mt-1">Compressed auto under 200KB.</span>
+                        
+                        <!-- Dynamic Image Preview & Ratio Analysis -->
+                        <div id="bannerPreviewWrapper" class="mt-3 hidden bg-slate-50 border border-slate-200/80 rounded-xl p-3 shadow-inner">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Image Preview & Analysis</span>
+                            <div class="flex items-center gap-3">
+                                <div class="w-20 h-16 rounded-lg overflow-hidden border border-slate-200 bg-white flex items-center justify-center shrink-0">
+                                    <img id="bannerPreviewImg" src="" class="max-w-full max-h-full object-contain">
+                                </div>
+                                <div class="text-xs font-sans">
+                                    <div class="font-bold text-slate-800" id="bannerPreviewDimensions">Dimensions: -</div>
+                                    <div class="text-[11px] text-indigo-600 font-bold mt-0.5" id="bannerPreviewRatio">Aspect Ratio: -</div>
+                                    <div class="text-[10px] text-slate-500 mt-0.5" id="bannerPreviewSize">File Size: -</div>
+                                </div>
+                            </div>
+                            <div id="bannerPreviewFeedback" class="mt-2 text-[10px] font-bold hidden"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -330,11 +347,77 @@
 </div>
 
 <script>
+// Helper to parse aspect ratio and return human readable ratio type
+function getClosestRatio(width, height) {
+    const ratio = width / height;
+    const targets = [
+        { name: '16:9', val: 16/9, desc: 'Landscape' },
+        { name: '16:7', val: 16/7, desc: 'Ideal Detail Banner' },
+        { name: '21:9', val: 21/9, desc: 'Widescreen Banner' },
+        { name: '6:5', val: 6/5, desc: 'Ideal Card Thumbnail' },
+        { name: '4:3', val: 4/3, desc: 'Standard Desktop' },
+        { name: '1:1', val: 1, desc: 'Square' }
+    ];
+    let minDiff = Infinity;
+    let closest = null;
+    targets.forEach(t => {
+        const diff = Math.abs(ratio - t.val);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closest = t;
+        }
+    });
+    if (minDiff < 0.15) {
+        return `${closest.name} (${closest.desc})`;
+    }
+    return ratio.toFixed(2) + ' : 1';
+}
+
+function analyzeImage(imgSrc, isUploadedFile = false, fileSizeKB = null) {
+    const previewWrapper = document.getElementById('bannerPreviewWrapper');
+    const previewImg = document.getElementById('bannerPreviewImg');
+    const previewDimensions = document.getElementById('bannerPreviewDimensions');
+    const previewRatio = document.getElementById('bannerPreviewRatio');
+    const previewSize = document.getElementById('bannerPreviewSize');
+    const previewFeedback = document.getElementById('bannerPreviewFeedback');
+
+    previewWrapper.classList.remove('hidden');
+    previewFeedback.classList.add('hidden');
+    previewImg.src = imgSrc;
+    
+    previewDimensions.textContent = 'Dimensions: loading...';
+    previewRatio.textContent = 'Aspect Ratio: loading...';
+    previewSize.textContent = isUploadedFile ? `File Size: ${fileSizeKB} KB` : 'File Size: Existing Server Image';
+
+    const imgObj = new Image();
+    imgObj.onload = function() {
+        const w = this.naturalWidth;
+        const h = this.naturalHeight;
+        previewDimensions.textContent = `Dimensions: ${w} x ${h} px`;
+        const ratioStr = getClosestRatio(w, h);
+        previewRatio.textContent = `Aspect Ratio: ${ratioStr}`;
+        
+        previewFeedback.classList.remove('hidden');
+        const ratio = w / h;
+        if (ratio >= 2.0) {
+            previewFeedback.innerHTML = '<span class="text-emerald-600 flex items-center gap-1">✓ Perfect aspect ratio for widescreen banner (16:7 / 21:9).</span>';
+        } else if (ratio >= 1.1 && ratio <= 1.3) {
+            previewFeedback.innerHTML = '<span class="text-indigo-600 flex items-center gap-1">ℹ️ Great aspect ratio for Services Grid card thumbnail (6:5). Will render with dynamic background gradient on details banner.</span>';
+        } else {
+            previewFeedback.innerHTML = '<span class="text-amber-600 flex items-center gap-1">⚠️ Widescreen banner is recommended (16:7 / 21:9). Standard image is uploaded.</span>';
+        }
+    };
+    imgObj.src = imgSrc;
+}
+
 function openModal(service = null) {
     const form = document.getElementById('serviceForm');
     const title = document.getElementById('modalTitle');
     const methodField = document.getElementById('methodField');
     const submitBtn = document.getElementById('submitBtn');
+
+    // Hide preview first
+    document.getElementById('bannerPreviewWrapper').classList.add('hidden');
 
     if (service) {
         title.textContent = 'Edit Service';
@@ -359,6 +442,11 @@ function openModal(service = null) {
         document.getElementById('serviceCommissionType').value = service.commission_type || 'percentage';
         document.getElementById('servicePopular').checked = service.is_popular ? true : false;
         document.getElementById('serviceActive').checked = service.is_active ? true : false;
+
+        // Show preview of existing image
+        if (service.banner_image) {
+            analyzeImage('/storage/' + service.banner_image, false);
+        }
     } else {
         title.textContent = 'Add New Service';
         form.action = "{{ route('admin.services.store') }}";
@@ -388,6 +476,26 @@ function closeModal() {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
 }
+
+// File input selection event listener
+document.getElementById('serviceBanner').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) {
+        // If edit mode and we had an existing image, show it again
+        const isEditMode = document.getElementById('submitBtn').textContent === 'Update Service';
+        if (!isEditMode) {
+            document.getElementById('bannerPreviewWrapper').classList.add('hidden');
+        }
+        return;
+    }
+
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        analyzeImage(event.target.result, true, sizeKB);
+    };
+    reader.readAsDataURL(file);
+});
 
 // Close modal on backdrop click
 document.getElementById('serviceModal').addEventListener('click', function(e) {

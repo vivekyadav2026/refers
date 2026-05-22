@@ -14,6 +14,14 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(1.05); }
+    50% { transform: translateY(-8px) scale(1.07); }
+}
+.banner-mockup-float {
+    animation: float 6s ease-in-out infinite;
+}
+
 .bottom-nav {
     padding-bottom: env(safe-area-inset-bottom);
 }
@@ -111,220 +119,335 @@ body {
 <div x-data="{ buyNowModal: false, isProcessing: false }" 
      @processing-start.window="isProcessing = true" 
      @processing-end.window="isProcessing = false"
-     class="bg-[#FAFAFA] min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-28 lg:pb-16">
+     class="bg-[#FAFAFA] min-h-screen relative overflow-hidden">
+    
+    <!-- Ambient Background Blobs -->
+    <div class="absolute top-20 left-10 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-[400px] right-20 w-[450px] h-[450px] bg-purple-200/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-40 left-1/4 w-[350px] h-[350px] bg-blue-200/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-28 lg:pb-16 relative z-10">
         
         {{-- BREADCRUMBS --}}
-        <nav class="flex items-center gap-2 text-xs font-bold text-slate-500 mb-8 uppercase tracking-wider">
-            <a href="{{ url('/') }}" class="hover:text-blue-600 transition-colors">Home</a>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
-            <a href="{{ route('services.index') }}" class="hover:text-blue-600 transition-colors">Services</a>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
-            <span class="text-blue-600">{{ $service->name }}</span>
+        <nav class="flex items-center gap-2.5 text-[11px] font-bold text-slate-400 mb-8 uppercase tracking-widest relative z-10">
+            <a href="{{ url('/') }}" class="hover:text-indigo-800 transition-colors flex items-center gap-1.5">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i> Home
+            </a>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300"></i>
+            <a href="{{ route('services.index') }}" class="hover:text-indigo-800 transition-colors">Services</a>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300"></i>
+            <span class="text-indigo-800 font-extrabold">{{ $service->name }}</span>
         </nav>
 
-        {{-- MAIN HERO CARD --}}
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 mb-14 relative overflow-hidden">
-            <div class="absolute -top-24 -right-24 w-72 h-72 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-3xl pointer-events-none"></div>
+        @php
+            // Define mapping of name substrings to custom generated 3D images and specific theme styling.
+            $premiumMappingRules = [
+                'e-commerce' => [
+                    'img' => asset('storage/banners/srv_ecommerce.png'),
+                    'bg' => 'from-indigo-50 to-purple-50',
+                    'icon' => 'shopping-cart'
+                ],
+                'web' => [
+                    'img' => asset('storage/banners/srv_web.png'),
+                    'bg' => 'from-blue-50 to-indigo-50',
+                    'icon' => 'layout-template'
+                ],
+                'app' => [
+                    'img' => asset('storage/banners/srv_app.png'),
+                    'bg' => 'from-sky-50 to-indigo-100',
+                    'icon' => 'smartphone'
+                ],
+                'facebook' => [
+                    'img' => asset('storage/banners/srv_fb.png'),
+                    'bg' => 'from-blue-50 to-blue-100',
+                    'icon' => 'facebook'
+                ],
+                'instagram' => [
+                    'img' => asset('storage/banners/srv_ig.png'),
+                    'bg' => 'from-pink-50 to-rose-100',
+                    'icon' => 'instagram'
+                ],
+                'google' => [
+                    'img' => asset('storage/banners/srv_google.png'),
+                    'bg' => 'from-green-50 to-emerald-100',
+                    'icon' => 'bar-chart'
+                ],
+                'youtube' => [
+                    'img' => asset('storage/banners/srv_yt.png'),
+                    'bg' => 'from-red-50 to-rose-100',
+                    'icon' => 'youtube'
+                ],
+                'seo' => [
+                    'img' => asset('storage/banners/srv_seo.png'),
+                    'bg' => 'from-purple-50 to-fuchsia-100',
+                    'icon' => 'search'
+                ],
+                'video' => [
+                    'img' => asset('storage/banners/srv_reels.png'),
+                    'bg' => 'from-fuchsia-50 to-pink-100',
+                    'icon' => 'clapperboard'
+                ],
+                'reels' => [
+                    'img' => asset('storage/banners/srv_reels.png'),
+                    'bg' => 'from-fuchsia-50 to-pink-100',
+                    'icon' => 'clapperboard'
+                ],
+                'ui/ux' => [
+                    'img' => asset('storage/banners/srv_web.png'),
+                    'bg' => 'from-amber-50 to-orange-100',
+                    'icon' => 'palette'
+                ],
+                'figma' => [
+                    'img' => asset('storage/banners/srv_web.png'),
+                    'bg' => 'from-amber-50 to-orange-100',
+                    'icon' => 'palette'
+                ],
+                'chatbot' => [
+                    'img' => asset('storage/banners/srv_web.png'),
+                    'bg' => 'from-violet-50 to-indigo-100',
+                    'icon' => 'message-square'
+                ],
+                'ai' => [
+                    'img' => asset('storage/banners/srv_web.png'),
+                    'bg' => 'from-violet-50 to-indigo-100',
+                    'icon' => 'cpu'
+                ]
+            ];
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <div class="lg:col-span-7 relative z-10">
-                    <div class="flex flex-wrap items-center gap-3 mb-6">
-                        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                            <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-4 h-4 text-blue-600"></i> {{ $service->category }}
-                        </div>
-                        @if($service->is_popular)
-                        <div class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
-                            🔥 Hot Selling Service
-                        </div>
-                        @endif
-                    </div>
+            $findPremiumMatch = function ($serviceName) use ($premiumMappingRules) {
+                $lowerName = strtolower($serviceName);
+                foreach ($premiumMappingRules as $key => $mapping) {
+                    if (str_contains($lowerName, $key)) {
+                        return $mapping;
+                    }
+                }
+                return null;
+            };
 
-                    @if($service->banner_image)
-                    <div class="w-full aspect-[21/9] rounded-2xl overflow-hidden border border-slate-200 shadow-sm mb-6">
-                        <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
-                    </div>
-                    @endif
-
-                    <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mb-4 leading-[1.15]">
-                        {{ $service->name }}
-                    </h1>
-                    <p class="text-base sm:text-lg text-slate-500 font-semibold mb-8 leading-relaxed">
-                        {{ $service->short_description }}
-                    </p>
-
-                    @auth
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-100 mb-8 font-sans">
-                        @if($service->delivery_timeline)
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Base Client Price</div>
-                            <div class="text-2xl font-black text-slate-900 mt-1">₹{{ number_format($service->min_price) }}</div>
-                        </div>
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 col-span-2 sm:col-span-1">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Est. Delivery</div>
-                            <div class="text-xl sm:text-2xl font-black text-blue-600 mt-1">{{ $service->delivery_timeline }}</div>
-                        </div>
-                        @else
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 col-span-2 sm:col-span-1">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Base Client Price</div>
-                            <div class="text-2xl font-black text-slate-900 mt-1">₹{{ number_format($service->min_price) }}</div>
-                        </div>
-                        @endif
-                    </div>
-                    @else
-                    <div class="pt-6 border-t border-slate-100 mb-8">
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
-                            <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-blue-600 hover:text-blue-700">
-                                <i data-lucide="lock" class="w-4 h-4"></i> Member Login Required to View Price
-                            </a>
-                        </div>
-                    </div>
-                    @endauth
-                </div>
-
-                <div class="lg:col-span-5 relative z-10">
-                    <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 rounded-3xl p-8 sm:p-10 text-white shadow-2xl border border-slate-800 relative">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
-
-                        <h3 class="text-2xl font-black mb-2 tracking-tight">Purchase or Refer</h3>
-                        <p class="text-xs text-slate-400 font-semibold mb-8 leading-relaxed">Add to cart or submit client requirement to get started.</p>
-
-                        @auth
-                        @if(auth()->user()->isCustomer())
-                        <button type="button" @click="buyNowModal = true" class="w-full py-4 rounded-2xl text-sm font-black tracking-wide uppercase text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-xl shadow-blue-600/30 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mb-4">
-                            <i data-lucide="zap" class="w-5 h-5"></i> Buy Now — ₹{{ number_format($service->min_price) }}
-                        </button>
-                        @endif
-
-                        @if(auth()->user()->isPartner() || auth()->user()->isAdmin())
-                        <div class="flex items-center gap-4 mb-6 text-xs text-slate-500 uppercase tracking-widest font-black">
-                            <div class="h-px bg-white/10 flex-1"></div>
-                            <span>Submit Lead Info</span>
-                            <div class="h-px bg-white/10 flex-1"></div>
-                        </div>
-
-                        <form action="{{ route('partner.leads.store') }}" method="POST" class="space-y-4 font-sans">
-                            @csrf
-                            <input type="hidden" name="service_needed" value="{{ $service->name }}">
-                            <div>
-                                <label class="block text-[11px] font-black text-slate-300 mb-1.5 uppercase tracking-wider">Client Full Name *</label>
-                                <input type="text" name="client_name" required class="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-900/60 outline-none transition-all backdrop-blur-md" placeholder="e.g. Rahul Sharma">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-black text-slate-300 mb-1.5 uppercase tracking-wider">Client Phone Number *</label>
-                                <input type="tel" name="client_phone" required class="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-900/60 outline-none transition-all backdrop-blur-md" placeholder="+91 9999999999">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-black text-slate-300 mb-1.5 uppercase tracking-wider">Project Requirements (Optional)</label>
-                                <textarea name="notes" rows="2" class="w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-900/60 outline-none transition-all backdrop-blur-md resize-none" placeholder="Key deliverables, references, budget..."></textarea>
-                            </div>
-                            <button type="submit" class="w-full py-3.5 rounded-2xl text-xs font-black tracking-wider uppercase text-slate-900 bg-white hover:bg-slate-100 shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                                <i data-lucide="send" class="w-4 h-4 text-blue-600"></i> Submit Lead
-                            </button>
-                        </form>
-                        @endif
-                        @else
-                        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center backdrop-blur-md mb-6">
-                            <i data-lucide="lock" class="w-10 h-10 text-blue-400 mx-auto mb-3"></i>
-                            <h4 class="text-lg font-black text-white mb-2">Member Authentication Required</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed mb-6 font-semibold">Sign in to add this item to your cart or submit a lead to get started.</p>
-                            <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-blue-600 text-white font-black text-xs uppercase tracking-wider rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5">
-                                Secure Sign In / Register
-                            </a>
-                        </div>
-                        <a href="https://wa.me/919999999999?text=Hi, I am interested in {{ urlencode($service->name) }}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-xs font-black uppercase tracking-wider text-white bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
-                            <i data-lucide="message-circle" class="w-4 h-4"></i> Inquire via WhatsApp
-                        </a>
-                        @endauth
-                    </div>
-                </div>
+            $match = $findPremiumMatch($service->name);
+            $themeBg = $match ? $match['bg'] : 'from-blue-50 to-indigo-50';
+            $themeImg = $match ? $match['img'] : asset('storage/banners/srv_web.png');
+            $themeIcon = $match ? $match['icon'] : ($service->icon ?? 'box');
+        @endphp        {{-- HERO HEADER SECTION --}}
+        <div class="mb-6 max-w-4xl relative z-10">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200/40 text-blue-700 text-[9px] font-bold uppercase tracking-wider">
+                    <i data-lucide="{{ $themeIcon }}" class="w-3 h-3"></i> {{ $service->category }}
+                </span>
+                @if($service->is_popular)
+                <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/40 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
+                    🔥 Hot Selling Service
+                </span>
+                @endif
             </div>
+
+            <h1 class="text-3xl sm:text-4xl md:text-[42px] font-black text-slate-900 tracking-tight leading-tight mb-3">
+                {{ $service->name }}
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-2xl">
+                {{ $service->short_description }}
+            </p>
+
+            @auth
+            <div class="flex flex-wrap items-center gap-4.5 sm:gap-6 mt-5 pt-5 border-t border-slate-200/40">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Base Client Price:</span>
+                    <span class="text-lg font-black text-slate-900">₹{{ number_format($service->min_price) }}</span>
+                </div>
+                @if($service->delivery_timeline)
+                <div class="h-4 w-px bg-slate-200 hidden sm:block"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Est. Delivery:</span>
+                    <span class="text-xs font-bold text-indigo-750 text-indigo-700 bg-indigo-50 border border-indigo-100/60 px-2.5 py-0.5 rounded-full">{{ $service->delivery_timeline }}</span>
+                </div>
+                @endif
+            </div>
+            @else
+            <div class="mt-5 pt-5 border-t border-slate-200/40">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500 bg-slate-100 border border-slate-200/30 px-3 py-1 rounded-xl">
+                    <i data-lucide="lock" class="w-3 h-3 text-slate-400"></i> Member Pricing Available After Login
+                </span>
+            </div>
+            @endauth
         </div>
 
-        {{-- DETAILED INFO SECTION --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-20">
-            <div class="lg:col-span-8 space-y-12">
+        {{-- TWO-COLUMN CONTENT GRID --}}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start relative z-10">
+            
+            {{-- LEFT COLUMN: Media, Description, Features, Requirements --}}
+            <div class="lg:col-span-7 xl:col-span-8 space-y-6">
                 
-                {{-- DESCRIPTION --}}
+                {{-- BANNER MEDIA CARD --}}
+                @if($service->banner_image)
+                <div class="w-full aspect-[21/9] sm:aspect-[16/7] rounded-[32px] overflow-hidden border border-slate-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
+                    <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
+                </div>
+                @else
+                <!-- Fallback Banner with custom responsive layout and background mesh -->
+                <div class="w-full min-h-[145px] sm:min-h-[200px] md:min-h-[240px] rounded-[32px] overflow-hidden border border-slate-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.015)] bg-gradient-to-br {{ $themeBg }} flex flex-col sm:flex-row items-center justify-between p-5 sm:p-7 md:p-8 relative">
+                    <!-- Dot Pattern Grid Overlay -->
+                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none opacity-80"></div>
+                    <div class="absolute inset-0 bg-white/10 backdrop-blur-[1px] pointer-events-none"></div>
+                    
+                    <div class="relative z-10 max-w-full sm:max-w-[55%] text-center sm:text-left mb-3 sm:mb-0">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-600/10 border border-indigo-600/20 text-indigo-900 text-[9px] font-black uppercase tracking-wider mb-2">
+                            🌟 Premium SKSolutions Asset
+                        </span>
+                        <h2 class="text-base sm:text-lg md:text-xl font-black text-slate-900 leading-tight tracking-tight select-none">
+                            {{ $service->name }}
+                        </h2>
+                    </div>
+                    <div class="relative z-10 w-24 h-24 sm:w-32 sm:h-32 md:w-38 md:h-38 flex items-center justify-center shrink-0">
+                        <img src="{{ $themeImg }}" alt="{{ $service->name }}" class="max-w-full max-h-full drop-shadow-2xl object-contain banner-mockup-float">
+                    </div>
+                </div>
+                @endif
+
+                {{-- ABOUT/DESCRIPTION CARD --}}
                 @if($service->description)
-                <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm">
-                    <h2 class="text-2xl font-black text-slate-900 mb-6 tracking-tight flex items-center gap-3">
-                        <div class="w-3 h-8 bg-blue-600 rounded-full"></div> About This Service
-                    </h2>
-                    <div class="prose prose-slate max-w-none text-slate-600 font-semibold leading-relaxed text-sm sm:text-base space-y-4">
+                <div class="bg-white rounded-[32px] p-5 sm:p-6 lg:p-7 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] relative overflow-hidden transition-all duration-300 hover:shadow-md">
+                    <h3 class="text-base sm:text-lg font-black text-slate-900 mb-3 tracking-tight flex items-center gap-2">
+                        <span class="w-1 h-5 bg-indigo-600 rounded-full"></span> About This Service
+                    </h3>
+                    <div class="prose prose-slate max-w-none text-slate-600 font-medium leading-relaxed text-xs sm:text-sm space-y-3 font-sans">
                         {!! nl2br(e($service->description)) !!}
                     </div>
                 </div>
                 @endif
 
-                {{-- FEATURES --}}
+                {{-- WHAT'S INCLUDED / FEATURES CARD --}}
                 @if(is_array($service->features) && count($service->features) > 0)
-                <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm">
-                    <h2 class="text-2xl font-black text-slate-900 mb-8 tracking-tight flex items-center gap-3">
-                        <div class="w-3 h-8 bg-emerald-600 rounded-full"></div> What's Included
-                    </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white rounded-[32px] p-5 sm:p-6 lg:p-7 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] relative overflow-hidden transition-all duration-300 hover:shadow-md">
+                    <h3 class="text-base sm:text-lg font-black text-slate-900 mb-4 tracking-tight flex items-center gap-2">
+                        <span class="w-1 h-5 bg-emerald-500 rounded-full"></span> What's Included
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         @foreach($service->features as $feature)
-                        <div class="flex items-start gap-3.5 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                                <i data-lucide="check" class="w-4 h-4"></i>
+                        <div class="flex items-start gap-2.5 bg-white p-3 rounded-2xl border border-slate-100 hover:-translate-y-0.5 hover:shadow-sm hover:border-indigo-100 transition-all duration-300 group">
+                            <div class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-100/50 group-hover:scale-105 transition-transform">
+                                <i data-lucide="check" class="w-3.5 h-3.5" stroke-width="3"></i>
                             </div>
-                            <span class="text-slate-800 font-extrabold text-sm leading-snug">{{ $feature }}</span>
+                            <span class="text-slate-700 font-bold text-[12px] sm:text-xs leading-snug">{{ $feature }}</span>
                         </div>
                         @endforeach
                     </div>
                 </div>
                 @endif
 
-                {{-- REQUIREMENTS --}}
+                {{-- REQUIREMENTS CARD --}}
                 @if($service->requirements_text)
-                <div class="bg-blue-50/80 rounded-3xl p-8 sm:p-12 border border-blue-100 shadow-sm">
-                    <h2 class="text-2xl font-black text-blue-950 mb-4 tracking-tight flex items-center gap-3">
-                        <i data-lucide="alert-circle" class="w-7 h-7 text-blue-600"></i> What We Need From You
-                    </h2>
-                    <div class="text-blue-900 font-semibold text-sm leading-relaxed space-y-2">
+                <div class="bg-indigo-50/10 rounded-[32px] p-5 sm:p-6 lg:p-7 border border-indigo-100/50 relative overflow-hidden transition-all duration-300 hover:shadow-sm">
+                    <h3 class="text-base sm:text-lg font-black text-indigo-950 mb-2.5 tracking-tight flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-100/30">
+                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                        </div>
+                        What We Need From You
+                    </h3>
+                    <div class="text-indigo-900/85 font-medium text-xs sm:text-[13px] leading-relaxed space-y-2 font-sans pl-0.5">
                         {!! nl2br(e($service->requirements_text)) !!}
                     </div>
                 </div>
                 @endif
+
             </div>
 
-            {{-- SIDEBAR PACKAGES & FAQ --}}
-            <div class="lg:col-span-4 space-y-8">
-                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm sticky top-24">
-                    <h3 class="text-xl font-black text-slate-900 mb-6 tracking-tight">Flexible Packages</h3>
+            {{-- RIGHT COLUMN: Action Forms and Packages Sidebar --}}
+            <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+                
+                {{-- PURCHASE / LEAD CARD --}}
+                <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 rounded-[32px] p-5 sm:p-6 text-white shadow-xl border border-white/5 hover:border-indigo-500/10 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute -top-12 -right-12 w-36 h-36 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <h3 class="text-base sm:text-lg font-black mb-1 tracking-tight">Purchase or Refer</h3>
+                    <p class="text-[10px] text-slate-400 font-medium mb-5 leading-normal">Add to cart or submit lead info to launch this project.</p>
+
+                    @auth
+                        @if(auth()->user()->isCustomer())
+                        <button type="button" @click="buyNowModal = true" class="w-full py-3.5 rounded-xl text-xs font-black tracking-wide uppercase text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 mb-2 cursor-pointer">
+                            <i data-lucide="zap" class="w-4 h-4"></i> Buy Now — ₹{{ number_format($service->min_price) }}
+                        </button>
+                        @endif
+
+                        @if(auth()->user()->isPartner() || auth()->user()->isAdmin())
+                        <div class="flex items-center gap-3 mb-4 text-[9px] text-slate-500 uppercase tracking-widest font-black">
+                            <div class="h-px bg-white/10 flex-1"></div>
+                            <span>Submit Lead Info</span>
+                            <div class="h-px bg-white/10 flex-1"></div>
+                        </div>
+
+                        <form action="{{ route('partner.leads.store') }}" method="POST" class="space-y-3 font-sans">
+                            @csrf
+                            <input type="hidden" name="service_needed" value="{{ $service->name }}">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Full Name *</label>
+                                <input type="text" name="client_name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/35 focus:border-indigo-500 text-xs bg-slate-950/40 outline-none transition-all focus:bg-slate-950/65" placeholder="e.g. Rahul Sharma">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Phone Number *</label>
+                                <input type="tel" name="client_phone" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/35 focus:border-indigo-500 text-xs bg-slate-950/40 outline-none transition-all focus:bg-slate-950/65" placeholder="+91 9999999999">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Project Requirements</label>
+                                <textarea name="notes" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500/35 focus:border-indigo-500 text-xs bg-slate-950/40 outline-none transition-all resize-none focus:bg-slate-950/65" placeholder="Deliverables, details..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-900 bg-white hover:bg-slate-100 shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-1.5 active:translate-y-0 cursor-pointer mt-2">
+                                <i data-lucide="send" class="w-3.5 h-3.5 text-indigo-600"></i> Submit Lead
+                            </button>
+                        </form>
+                        @endif
+                    @else
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-5 text-center backdrop-blur-md mb-4">
+                            <i data-lucide="lock" class="w-8 h-8 text-indigo-400 mx-auto mb-2.5"></i>
+                            <h4 class="text-sm font-black text-white mb-1">Authentication Required</h4>
+                            <p class="text-[10px] text-slate-400 leading-normal mb-4 font-semibold">Sign in to add this item to your cart or submit client leads.</p>
+                            <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-1.5 w-full py-3 bg-indigo-600 text-white font-black text-[10px] uppercase tracking-wider rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-600/20 transition-all hover:-translate-y-0.5">
+                                Secure Sign In
+                            </a>
+                        </div>
+                        <a href="https://wa.me/919999999999?text=Hi, I am interested in {{ urlencode($service->name) }}" target="_blank" class="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white bg-emerald-50 hover:bg-emerald-600 shadow-md shadow-emerald-500/10 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Inquire via WhatsApp
+                        </a>
+                    @endauth
+                </div>
+
+                {{-- SIDEBAR PACKAGES & SUPPORT --}}
+                <div class="bg-white/90 backdrop-blur-md rounded-[32px] p-5 sm:p-6 border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.015)]">
+                    <h3 class="text-base sm:text-lg font-black text-slate-900 mb-4 tracking-tight flex items-center gap-2">
+                        <i data-lucide="package" class="w-4.5 h-4.5 text-indigo-600"></i> Flexible Packages
+                    </h3>
                     
                     <div class="space-y-4 font-sans">
                         @auth
                             @foreach([
-                                ['label'=>'Standard Start','price'=> $service->min_price,'desc'=>'Essential scope for high-quality baseline delivery','badge'=>'Popular Choice','border'=>'border-blue-300 bg-blue-50/20 shadow-md'],
-                                ['label'=>'Enterprise Growth','price'=> $service->min_price * 1.8,'desc'=>'Expanded deliverables with priority engineering & unlimited revisions','badge'=>'Recommended','border'=>'border-slate-200 bg-white'],
+                                ['label'=>'Standard Start','price'=> $service->min_price,'desc'=>'Essential scope for high-quality baseline delivery','badge'=>'Popular Choice','border'=>'border-indigo-100 bg-indigo-50/25 shadow-sm'],
+                                ['label'=>'Enterprise Growth','price'=> $service->min_price * 1.8,'desc'=>'Expanded deliverables with priority engineering & revisions','badge'=>'Recommended','border'=>'border-slate-100 bg-white hover:border-indigo-100/70 hover:bg-slate-50/20'],
                             ] as $pkg)
-                            <div class="rounded-2xl p-5 border {{ $pkg['border'] }} relative">
-                                <div class="absolute -top-3 right-4 px-3 py-0.5 bg-blue-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider">{{ $pkg['badge'] }}</div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="font-black text-slate-900">{{ $pkg['label'] }}</h4>
-                                    <span class="text-lg font-black text-blue-600">₹{{ number_format($pkg['price']) }}</span>
+                            <div class="rounded-2xl p-3.5 border {{ $pkg['border'] }} relative transition-all duration-300 group">
+                                <div class="absolute -top-2.5 right-3 px-2 py-0.5 bg-indigo-600 text-white rounded-full text-[8px] font-bold uppercase tracking-wider shadow-sm group-hover:scale-105 transition-transform">{{ $pkg['badge'] }}</div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <h4 class="font-bold text-slate-800 text-xs sm:text-sm">{{ $pkg['label'] }}</h4>
+                                    <span class="text-xs sm:text-sm font-extrabold text-indigo-600">₹{{ number_format($pkg['price']) }}</span>
                                 </div>
-                                <p class="text-xs text-slate-500 font-semibold">{{ $pkg['desc'] }}</p>
+                                <p class="text-[10px] text-slate-500 font-medium leading-relaxed">{{ $pkg['desc'] }}</p>
                             </div>
                             @endforeach
                         @else
-                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center">
-                                <i data-lucide="lock" class="w-8 h-8 text-slate-400 mx-auto mb-2"></i>
-                                <div class="text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Member Packages Locked</div>
-                                <a href="{{ route('login') }}" class="inline-block px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">Login to View Pricing Packages</a>
+                            <div class="bg-slate-50/50 p-5 rounded-2xl border border-slate-200/50 text-center">
+                                <i data-lucide="lock" class="w-6 h-6 text-slate-400 mx-auto mb-2"></i>
+                                <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider mb-2.5">Member Packages Locked</div>
+                                <a href="{{ route('login') }}" class="inline-block px-3.5 py-2 bg-indigo-600 text-white text-[10px] font-bold rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-600/20">Login to View Packages</a>
                             </div>
                         @endauth
                     </div>
 
-                    <div class="mt-8 pt-8 border-t border-slate-100 text-center">
-                        <h4 class="font-bold text-xs text-slate-400 uppercase tracking-widest mb-3">Questions about deliverables?</h4>
-                        <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs hover:bg-slate-200 transition-colors">
-                            <i data-lucide="headphones" class="w-4 h-4 text-blue-600"></i> Talk to Account Manager
+                    <div class="mt-5 pt-4 border-t border-slate-100 text-center">
+                        <h4 class="font-bold text-[9px] text-slate-400 uppercase tracking-widest mb-2.5">Questions about deliverables?</h4>
+                        <a href="{{ route('contact') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 font-extrabold text-[10px] transition-colors">
+                            <i data-lucide="headphones" class="w-3.5 h-3.5 text-blue-600"></i> Talk to Account Manager
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
 

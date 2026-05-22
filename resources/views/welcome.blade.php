@@ -18,12 +18,8 @@ body {
     font-size: 1.4em;
     line-height: 0.5;
 }
-
 .service-card {
-    transition: all 0.2s ease;
-}
-.service-card:active {
-    transform: scale(0.96);
+    transition: background-color 0.2s ease;
 }
 
 .bottom-nav {
@@ -119,7 +115,7 @@ body {
 </header>
 
 <!-- Hero Section / Slider -->
-<section class="px-4 sm:px-6 lg:px-8 py-6 md:py-10 bg-white">
+<section class="px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 bg-white">
     <div class="max-w-7xl mx-auto">
         <!-- Interactive Carousel using Alpine.js -->
         <div x-data="{ 
@@ -131,18 +127,29 @@ body {
                 }, 6000);
             }
         }" x-init="autoPlay()" class="relative">
-                       <!-- Slide Wrapper -->
-            <div class="relative overflow-hidden rounded-[24px] sm:rounded-[32px] min-h-[170px] xs:min-h-[220px] sm:min-h-[300px] md:min-h-[360px] lg:min-h-[480px] bg-gradient-to-br from-indigo-50 via-purple-50 to-fuchsia-50 shadow-sm border border-purple-100/50">
+            <!-- Slide Wrapper -->
+            <div class="relative overflow-hidden rounded-[24px] sm:rounded-[32px] min-h-[220px] xs:min-h-[280px] sm:min-h-[380px] md:min-h-[460px] lg:min-h-[580px] bg-gradient-to-br from-indigo-50 via-purple-50 to-fuchsia-50 shadow-sm border border-purple-100/50">
                 
                 <!-- Glow elements -->
                 <div class="absolute -top-10 -right-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
                 <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
 
+                <!-- Navigation Buttons (Chevron Next & Prev) -->
+                <!-- Prev Button -->
+                <button @click="activeSlide = (activeSlide - 1 + slidesCount) % slidesCount" class="absolute left-2.5 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/75 backdrop-blur-md border border-slate-200/50 flex items-center justify-center text-slate-700 hover:bg-white hover:text-indigo-850 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all hover:scale-105 active:scale-95 shadow-sm focus:outline-none select-none">
+                    <i class="w-4 h-4 sm:w-6 sm:h-6 text-slate-655 text-slate-600" data-lucide="chevron-left"></i>
+                </button>
+                
+                <!-- Next Button -->
+                <button @click="activeSlide = (activeSlide + 1) % slidesCount" class="absolute right-2.5 sm:right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/75 backdrop-blur-md border border-slate-200/50 flex items-center justify-center text-slate-700 hover:bg-white hover:text-indigo-850 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all hover:scale-105 active:scale-95 shadow-sm focus:outline-none select-none">
+                    <i class="w-4 h-4 sm:w-6 sm:h-6 text-slate-655 text-slate-600" data-lucide="chevron-right"></i>
+                </button>
+
                 <!-- Sliding Track -->
                 <div class="flex w-full transition-transform duration-500 ease-out" :style="'transform: translateX(-' + (activeSlide * 100) + '%)'">
                     
                     <!-- Slide 1: Grow Your Business -->
-                    <div class="w-full shrink-0 px-3 py-4 xs:px-5 xs:py-6 sm:px-10 sm:py-12 lg:p-16 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
+                    <div class="w-full shrink-0 px-4 py-6 xs:px-6 xs:py-8 sm:px-12 sm:py-16 lg:px-20 lg:py-24 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
                         <!-- Left Column -->
                         <div class="w-[58%] lg:flex-1 text-left flex flex-col items-start z-10">
                             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[8px] sm:text-[10px] font-bold tracking-wider uppercase mb-1.5 sm:mb-4">
@@ -163,14 +170,14 @@ body {
                         
                         <!-- Right Column (Mockup) -->
                         <div class="w-[42%] lg:flex-1 flex justify-center lg:justify-end z-10 relative mt-0">
-                            <div class="relative w-full max-w-[120px] xs:max-w-[160px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-[440px] h-[100px] xs:h-[130px] sm:h-[180px] md:h-[220px] lg:h-[320px] flex justify-center items-center">
+                            <div class="relative w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[540px] h-[125px] xs:h-[160px] sm:h-[230px] md:h-[280px] lg:h-[400px] flex justify-center items-center">
                                 <img src="{{ asset('storage/banners/hero_mockup.png') }}" alt="Dashboard Mockup" class="w-full h-full object-contain drop-shadow-2xl">
                             </div>
                         </div>
                     </div>
 
                     <!-- Slide 2: Dynamic Social Ads -->
-                    <div class="w-full shrink-0 px-3 py-4 xs:px-5 xs:py-6 sm:px-10 sm:py-12 lg:p-16 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
+                    <div class="w-full shrink-0 px-4 py-6 xs:px-6 xs:py-8 sm:px-12 sm:py-16 lg:px-20 lg:py-24 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
                         <!-- Left Column -->
                         <div class="w-[58%] lg:flex-1 text-left flex flex-col items-start z-10">
                             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[8px] sm:text-[10px] font-bold tracking-wider uppercase mb-1.5 sm:mb-4">
@@ -191,14 +198,14 @@ body {
                         
                         <!-- Right Column (Mockup) -->
                         <div class="w-[42%] lg:flex-1 flex justify-center lg:justify-end z-10 relative mt-0">
-                            <div class="relative w-full max-w-[120px] xs:max-w-[160px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-[440px] h-[100px] xs:h-[130px] sm:h-[180px] md:h-[220px] lg:h-[320px] flex justify-center items-center">
+                            <div class="relative w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[540px] h-[125px] xs:h-[160px] sm:h-[230px] md:h-[280px] lg:h-[400px] flex justify-center items-center">
                                 <img src="{{ asset('storage/banners/srv_fb.png') }}" alt="Social Media Ads" class="w-full h-full object-contain drop-shadow-2xl">
                             </div>
                         </div>
                     </div>
 
                     <!-- Slide 3: Web & App Dev -->
-                    <div class="w-full shrink-0 px-3 py-4 xs:px-5 xs:py-6 sm:px-10 sm:py-12 lg:p-16 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
+                    <div class="w-full shrink-0 px-4 py-6 xs:px-6 xs:py-8 sm:px-12 sm:py-16 lg:px-20 lg:py-24 flex flex-row items-center justify-between gap-2 sm:gap-6 lg:gap-10">
                         <!-- Left Column -->
                         <div class="w-[58%] lg:flex-1 text-left flex flex-col items-start z-10">
                             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-fuchsia-100 text-fuchsia-800 text-[8px] sm:text-[10px] font-bold tracking-wider uppercase mb-1.5 sm:mb-4">
@@ -219,7 +226,7 @@ body {
                         
                         <!-- Right Column (Mockup) -->
                         <div class="w-[42%] lg:flex-1 flex justify-center lg:justify-end z-10 relative mt-0">
-                            <div class="relative w-full max-w-[120px] xs:max-w-[160px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-[440px] h-[100px] xs:h-[130px] sm:h-[180px] md:h-[220px] lg:h-[320px] flex justify-center items-center">
+                            <div class="relative w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[540px] h-[125px] xs:h-[160px] sm:h-[230px] md:h-[280px] lg:h-[400px] flex justify-center items-center">
                                 <img src="{{ asset('storage/banners/srv_ecommerce.png') }}" alt="Web Development" class="w-full h-full object-contain drop-shadow-2xl">
                             </div>
                         </div>
@@ -247,96 +254,94 @@ body {
         </a>
     </div>
 
+    @php
+        $getServiceRoute = function($keyword, $fallbackSlug = null) use ($servicesByCategory) {
+            $services = $servicesByCategory->flatten(1);
+            $match = $services->first(function($svc) use ($keyword) {
+                return str_contains(strtolower($svc->name), strtolower($keyword)) || 
+                       str_contains(strtolower($svc->slug), strtolower($keyword)) ||
+                       str_contains(strtolower($svc->category), strtolower($keyword));
+            });
+            if ($match) {
+                return route('services.show', $match->slug);
+            }
+            if ($fallbackSlug) {
+                $fallbackMatch = $services->firstWhere('slug', $fallbackSlug);
+                if ($fallbackMatch) {
+                    return route('services.show', $fallbackMatch->slug);
+                }
+            }
+            return route('services.index');
+        };
+
+        // Helper to find premium match for services that don't have user banners
+        $findPremiumMatch = function($name) {
+            $nameLower = strtolower($name);
+            $mapping = [
+                'web' => [
+                    'bg' => 'from-indigo-50 to-purple-100/40',
+                    'img' => asset('storage/banners/srv_web.png'),
+                    'icon' => 'globe',
+                    'icon_color' => 'text-indigo-600'
+                ],
+                'app' => [
+                    'bg' => 'from-rose-50 to-pink-100/40',
+                    'img' => asset('storage/banners/srv_app.png'),
+                    'icon' => 'smartphone',
+                    'icon_color' => 'text-rose-600'
+                ],
+                'video' => [
+                    'bg' => 'from-amber-50 to-orange-100/40',
+                    'img' => asset('storage/banners/srv_video.png'),
+                    'icon' => 'video',
+                    'icon_color' => 'text-amber-600'
+                ],
+                'graphics' => [
+                    'bg' => 'from-emerald-50 to-teal-100/40',
+                    'img' => asset('storage/banners/srv_graphics.png'),
+                    'icon' => 'palette',
+                    'icon_color' => 'text-emerald-600'
+                ],
+                'seo' => [
+                    'bg' => 'from-sky-50 to-blue-100/40',
+                    'img' => asset('storage/banners/srv_seo.png'),
+                    'icon' => 'search',
+                    'icon_color' => 'text-sky-600'
+                ],
+                'marketing' => [
+                    'bg' => 'from-violet-50 to-purple-100/40',
+                    'img' => asset('storage/banners/srv_marketing.png'),
+                    'icon' => 'megaphones',
+                    'icon_color' => 'text-violet-600'
+                ]
+            ];
+            
+            foreach ($mapping as $key => $data) {
+                if (str_contains($nameLower, $key)) {
+                    return $data;
+                }
+            }
+            return null;
+        };
+    @endphp
+
     <!-- Responsive Grid utilizing gap-px structure for a beautiful border layout -->
-    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-px bg-slate-150 bg-slate-200 rounded-[24px] overflow-hidden shadow-sm border border-slate-200">
+    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-px bg-slate-200 rounded-[24px] overflow-hidden shadow-sm border border-slate-200">
         
-        <!-- E-commerce -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-indigo-800 flex items-center justify-center">
-                <i data-lucide="shopping-cart" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350"></i>
+        @foreach($servicesByCategory->flatten(1) as $svc)
+        @php
+            $match = $findPremiumMatch($svc->name);
+            $img = $svc->banner_image ? asset('storage/'.$svc->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
+        @endphp
+        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col group hover:bg-indigo-50/20 transition-all duration-300 overflow-hidden min-h-[120px] sm:min-h-[155px]">
+            <div class="h-[60px] sm:h-[80px] w-full overflow-hidden shrink-0 border-b border-slate-100/50 relative bg-slate-50 flex items-center justify-center">
+                <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-350">
             </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">E-commerce Website Design & Development</span>
-        </a>
-
-        <!-- Informative Website -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-slate-850 text-slate-700 flex items-center justify-center">
-                <i data-lucide="layout-template" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350"></i>
+            <div class="flex-1 flex items-center justify-center p-2 sm:p-3 text-center">
+                <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
             </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">Informative Website Design & Development</span>
         </a>
-
-        <!-- Facebook Ads -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-[#1877F2] flex items-center justify-center">
-                <i data-lucide="facebook" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" fill="currentColor" stroke="none"></i>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">Facebook Ads</span>
-        </a>
-
-        <!-- Instagram Ads -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 flex items-center justify-center">
-                <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" viewBox="0 0 24 24" fill="none" stroke="url(#ig-grad-home)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <defs>
-                        <linearGradient id="ig-grad-home" x1="2" y1="2" x2="22" y2="22">
-                            <stop offset="0%" stop-color="#f58529" />
-                            <stop offset="50%" stop-color="#dd2a7b" />
-                            <stop offset="100%" stop-color="#8134af" />
-                        </linearGradient>
-                    </defs>
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">Instagram Ads</span>
-        </a>
-
-        <!-- Google Ads -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 flex items-center justify-center">
-                <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M23.766 12.2764C23.766 11.4607 23.6999 10.6406 23.5588 9.83807H12.24V14.4591H18.7217C18.4528 15.9494 17.5885 17.2678 16.323 18.1056V21.1039H20.19C22.4608 19.0139 23.766 15.9274 23.766 12.2764Z" fill="#4285F4"/>
-                    <path d="M12.2401 24.0008C15.4766 24.0008 18.2059 22.9382 20.1945 21.1039L16.3276 18.1056C15.2543 18.8378 13.8627 19.252 12.2445 19.252C9.11388 19.252 6.45946 17.1399 5.50705 14.3003H1.5166V17.3912C3.55371 21.4434 7.7029 24.0008 12.2401 24.0008Z" fill="#34A853"/>
-                    <path d="M5.50253 14.3003C5.00047 12.8099 5.00047 11.1961 5.50253 9.70575V6.61481H1.51649C-0.18551 10.0056 -0.18551 14.0004 1.51649 17.3912L5.50253 14.3003Z" fill="#FBBC05"/>
-                    <path d="M12.2401 4.74966C13.9509 4.7232 15.6044 5.36697 16.8434 6.54867L20.2695 3.12262C18.1001 1.08427 15.2208 -0.034466 12.2401 0.000808666C7.7029 0.000808666 3.55371 2.55822 1.5166 6.61481L5.50264 9.70575C6.45064 6.86173 9.10947 4.74966 12.2401 4.74966Z" fill="#EA4335"/>
-                </svg>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">Google Ads</span>
-        </a>
-
-        <!-- YouTube Ads -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-[#FF0000] flex items-center justify-center">
-                <i data-lucide="youtube" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" fill="currentColor" stroke="none"></i>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">YouTube Ads</span>
-        </a>
-
-        <!-- SEO -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-indigo-850 text-indigo-800 flex items-center justify-center">
-                <i data-lucide="search" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" stroke-width="3"></i>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">SEO (Search Engine Optimization)</span>
-        </a>
-
-        <!-- Reels & Video -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-indigo-850 text-indigo-850 flex items-center justify-center">
-                <i data-lucide="clapperboard" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" stroke-width="2.5" fill="currentColor" stroke="white"></i>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">Reels & Video Editing</span>
-        </a>
-
-        <!-- Mobile App -->
-        <a href="{{ route('services.index') }}" class="service-card p-3 sm:p-5 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[115px] sm:min-h-[145px]">
-            <div class="w-10 h-10 mb-2 text-indigo-850 text-indigo-800 flex items-center justify-center">
-                <i data-lucide="smartphone" class="w-7 h-7 group-hover:scale-110 transition-transform duration-350" stroke-width="2.5"></i>
-            </div>
-            <span class="text-[9px] sm:text-[11px] md:text-xs font-bold text-slate-800 leading-tight">Mobile App Development</span>
-        </a>
+        @endforeach
         
     </div>
 </section>

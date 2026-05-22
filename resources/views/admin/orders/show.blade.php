@@ -116,8 +116,14 @@
                 </h2>
                 @if($order->service)
                     <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                            <i data-lucide="{{ $order->service->icon ?? 'box' }}" class="w-5 h-5"></i>
+                        <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+                            @if($order->service->banner_image)
+                                <img src="{{ asset('storage/' . $order->service->banner_image) }}" alt="{{ $order->service->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-purple-50 text-purple-600 flex items-center justify-center">
+                                    <i data-lucide="{{ $order->service->icon ?? 'box' }}" class="w-5 h-5"></i>
+                                </div>
+                            @endif
                         </div>
                         <div>
                             <div class="font-semibold text-slate-900">{{ $order->service->name }}</div>

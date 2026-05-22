@@ -30,8 +30,14 @@
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between gap-4">
                 <div class="flex items-start gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                        <i data-lucide="{{ $item->service->icon ?? 'box' }}" class="w-7 h-7"></i>
+                    <div class="w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-slate-100 shadow-sm">
+                        @if($item->service->banner_image)
+                            <img src="{{ asset('storage/' . $item->service->banner_image) }}" alt="{{ $item->service->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <i data-lucide="{{ $item->service->icon ?? 'box' }}" class="w-7 h-7"></i>
+                            </div>
+                        @endif
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900">{{ $item->service->name }}</h3>

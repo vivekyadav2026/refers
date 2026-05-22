@@ -106,8 +106,14 @@
                 <div class="space-y-3 pb-4 border-b border-slate-100">
                     @foreach($cartItems as $item)
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                            <i data-lucide="{{ $item->service->icon ?? 'box' }}" class="w-4 h-4"></i>
+                        <div class="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-slate-100">
+                            @if($item->service->banner_image)
+                                <img src="{{ asset('storage/' . $item->service->banner_image) }}" alt="{{ $item->service->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i data-lucide="{{ $item->service->icon ?? 'box' }}" class="w-4 h-4"></i>
+                                </div>
+                            @endif
                         </div>
                         <div class="flex-1">
                             <div class="text-sm font-medium text-slate-900">{{ $item->service->name }}</div>

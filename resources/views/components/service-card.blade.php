@@ -1,5 +1,59 @@
 @props(['service', 'isPartnerView' => false])
 
+@php
+    $findPremiumMatch = function($name) {
+        $nameLower = strtolower($name);
+        $mapping = [
+            'web' => [
+                'bg' => 'from-indigo-50 to-purple-100/40',
+                'img' => asset('storage/banners/srv_web.png'),
+                'icon' => 'globe',
+                'icon_color' => 'text-indigo-600'
+            ],
+            'app' => [
+                'bg' => 'from-rose-50 to-pink-100/40',
+                'img' => asset('storage/banners/srv_app.png'),
+                'icon' => 'smartphone',
+                'icon_color' => 'text-rose-600'
+            ],
+            'video' => [
+                'bg' => 'from-amber-50 to-orange-100/40',
+                'img' => asset('storage/banners/srv_video.png'),
+                'icon' => 'video',
+                'icon_color' => 'text-amber-600'
+            ],
+            'graphics' => [
+                'bg' => 'from-emerald-50 to-teal-100/40',
+                'img' => asset('storage/banners/srv_graphics.png'),
+                'icon' => 'palette',
+                'icon_color' => 'text-emerald-600'
+            ],
+            'seo' => [
+                'bg' => 'from-sky-50 to-blue-100/40',
+                'img' => asset('storage/banners/srv_seo.png'),
+                'icon' => 'search',
+                'icon_color' => 'text-sky-600'
+            ],
+            'marketing' => [
+                'bg' => 'from-violet-50 to-purple-100/40',
+                'img' => asset('storage/banners/srv_marketing.png'),
+                'icon' => 'megaphones',
+                'icon_color' => 'text-violet-600'
+            ]
+        ];
+        
+        foreach ($mapping as $key => $data) {
+            if (str_contains($nameLower, $key)) {
+                return $data;
+            }
+        }
+        return null;
+    };
+
+    $match = $findPremiumMatch($service->name);
+    $img = $service->banner_image ? asset('storage/'.$service->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
+@endphp
+
 <div class="relative bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05),0_10px_20px_-8px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_24px_-10px_rgba(124,58,237,0.12),0_4px_12px_-5px_rgba(0,0,0,0.04)] hover:border-purple-200/60 hover:-translate-y-0.5 transition-all duration-300 group flex items-center p-4 gap-4 overflow-hidden">
     
     <!-- Top-Accent Animated Glow Line -->
@@ -17,13 +71,7 @@
 
     <!-- Logo Section (Left) -->
     <a href="{{ url('/services/' . $service->slug) }}" class="w-16 h-16 shrink-0 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/50 border border-slate-200/60 flex items-center justify-center overflow-hidden p-0 group-hover:scale-105 group-hover:border-purple-100 transition-all duration-300 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]">
-        @if($service->banner_image)
-            <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
-        @else
-            <div class="p-3 bg-purple-50 rounded-xl text-purple-600 group-hover:bg-purple-100/80 group-hover:text-purple-700 transition-colors">
-                <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-7 h-7"></i>
-            </div>
-        @endif
+        <img src="{{ $img }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
     </a>
 
     <!-- Content Section (Middle) -->

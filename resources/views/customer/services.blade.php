@@ -35,8 +35,63 @@
 </div>
 
 {{-- Services Grid --}}
+@php
+    $findPremiumMatch = function($name) {
+        $nameLower = strtolower($name);
+        $mapping = [
+            'web' => [
+                'bg' => 'from-indigo-50 to-purple-100/40',
+                'img' => asset('storage/banners/srv_web.png'),
+                'icon' => 'globe',
+                'icon_color' => 'text-indigo-600'
+            ],
+            'app' => [
+                'bg' => 'from-rose-50 to-pink-100/40',
+                'img' => asset('storage/banners/srv_app.png'),
+                'icon' => 'smartphone',
+                'icon_color' => 'text-rose-600'
+            ],
+            'video' => [
+                'bg' => 'from-amber-50 to-orange-100/40',
+                'img' => asset('storage/banners/srv_video.png'),
+                'icon' => 'video',
+                'icon_color' => 'text-amber-600'
+            ],
+            'graphics' => [
+                'bg' => 'from-emerald-50 to-teal-100/40',
+                'img' => asset('storage/banners/srv_graphics.png'),
+                'icon' => 'palette',
+                'icon_color' => 'text-emerald-600'
+            ],
+            'seo' => [
+                'bg' => 'from-sky-50 to-blue-100/40',
+                'img' => asset('storage/banners/srv_seo.png'),
+                'icon' => 'search',
+                'icon_color' => 'text-sky-600'
+            ],
+            'marketing' => [
+                'bg' => 'from-violet-50 to-purple-100/40',
+                'img' => asset('storage/banners/srv_marketing.png'),
+                'icon' => 'megaphones',
+                'icon_color' => 'text-violet-600'
+            ]
+        ];
+        
+        foreach ($mapping as $key => $data) {
+            if (str_contains($nameLower, $key)) {
+                return $data;
+            }
+        }
+        return null;
+    };
+@endphp
+
 <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 mb-10">
     @forelse($servicesByCategory->flatten(1) as $svc)
+    @php
+        $match = $findPremiumMatch($svc->name);
+        $img = $svc->banner_image ? asset('storage/'.$svc->banner_image) : ($match ? $match['img'] : asset('storage/banners/srv_web.png'));
+    @endphp
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden group relative">
 
         {{-- Popular badge --}}
@@ -45,12 +100,8 @@
         @endif
 
         {{-- Service image / icon --}}
-        <div class="h-28 sm:h-40 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center overflow-hidden relative">
-            @if($svc->banner_image)
-                <img src="{{ asset('storage/' . $svc->banner_image) }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-            @else
-                <i data-lucide="{{ $svc->icon ?? 'box' }}" class="w-10 h-10 sm:w-14 sm:h-14 text-blue-400 group-hover:scale-110 transition-transform duration-500"></i>
-            @endif
+        <div class="h-28 sm:h-40 w-full overflow-hidden relative bg-slate-50 flex items-center justify-center shrink-0">
+            <img src="{{ $img }}" alt="{{ $svc->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
             <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             {{-- Category overlay --}}
             <div class="absolute bottom-2 left-2">
