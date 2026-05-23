@@ -123,6 +123,30 @@ body {
     scrollbar-width: none;
 }
 
+/* ── Buttons ────────────────────────────────────────────── */
+.btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #5b21b6;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(91,33,182,0.25);
+    text-decoration: none;
+}
+@media (min-width: 640px) {
+    .btn-cta { font-size: 0.82rem; padding: 11px 22px; gap: 8px; }
+}
+.btn-cta:hover {
+    background: #4c1d95;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(91,33,182,0.45);
+}
+
 /* ── Bottom nav ─────────────────────────────────────────── */
 .bottom-nav-bar {
     position: fixed;
