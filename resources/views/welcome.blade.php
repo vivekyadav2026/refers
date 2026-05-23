@@ -583,7 +583,7 @@ body {
         <div class="services-grid">
 
             <!-- 1. E-commerce Website -->
-            <a href="{{ $getServiceRoute('ecommerce', 'ecommerce-website') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('e-commerce', 'custom-e-commerce-website-development') }}" class="svc-card">
                 <div class="svc-icon-wrap">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -593,7 +593,7 @@ body {
             </a>
 
             <!-- 2. Informative Website -->
-            <a href="{{ $getServiceRoute('informative', 'informative-website') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('informative', 'uiux-brand-identity-figma-design') }}" class="svc-card">
                 <div class="svc-icon-wrap">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -605,7 +605,7 @@ body {
             </a>
 
             <!-- 3. Facebook Ads -->
-            <a href="{{ $getServiceRoute('facebook', 'facebook-ads') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('facebook', 'facebook-instagram-viral-ads-mastery') }}" class="svc-card">
                 <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#e8f4fe,#dbeafe);">
                     <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="20" cy="20" r="20" fill="#1877F2"/>
@@ -616,7 +616,7 @@ body {
             </a>
 
             <!-- 4. Instagram Ads -->
-            <a href="{{ $getServiceRoute('instagram', 'instagram-ads') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('instagram', 'facebook-instagram-viral-ads-mastery') }}" class="svc-card">
                 <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#fde8f4,#fce7f3);">
                     <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -634,7 +634,7 @@ body {
             </a>
 
             <!-- 5. Google Ads -->
-            <a href="{{ $getServiceRoute('google', 'google-ads') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('google', 'advanced-seo-google-search-ranking') }}" class="svc-card">
                 <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
                     <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <!-- Google Ads / Campaign Manager icon approximation -->
@@ -647,7 +647,7 @@ body {
             </a>
 
             <!-- 6. YouTube Ads -->
-            <a href="{{ $getServiceRoute('youtube', 'youtube-ads') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('youtube', 'cinematic-video-editing-viral-reels') }}" class="svc-card">
                 <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">
                     <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect width="40" height="40" rx="10" fill="#FF0000"/>
@@ -659,7 +659,7 @@ body {
             </a>
 
             <!-- 7. SEO -->
-            <a href="{{ $getServiceRoute('seo', 'search-engine-optimization') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('seo', 'advanced-seo-google-search-ranking') }}" class="svc-card">
                 <div class="svc-icon-wrap">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
@@ -669,7 +669,7 @@ body {
             </a>
 
             <!-- 8. Reels & Video Editing -->
-            <a href="{{ $getServiceRoute('video', 'reels-video-editing') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('video', 'cinematic-video-editing-viral-reels') }}" class="svc-card">
                 <div class="svc-icon-wrap">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
@@ -679,7 +679,7 @@ body {
             </a>
 
             <!-- 9. Mobile App Development -->
-            <a href="{{ $getServiceRoute('app', 'mobile-app-development') }}" class="svc-card">
+            <a href="{{ $getServiceRoute('app', 'premium-mobile-app-development') }}" class="svc-card">
                 <div class="svc-icon-wrap">
                     <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <rect x="5" y="2" width="14" height="20" rx="2" stroke-linecap="round" stroke-linejoin="round"/>

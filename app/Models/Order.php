@@ -63,4 +63,9 @@ class Order extends Model
     {
         return $this->hasOne(PartnerReferral::class);
     }
+
+    public function businessDetail()
+    {
+        return $this->hasOne(BusinessDetail::class);
+    }
 }

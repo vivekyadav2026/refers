@@ -95,6 +95,10 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
             'selectedCategory'   => request('category'),
         ]);
     })->name('services');
+
+    // Business Details Form
+    Route::get('/orders/{order}/business-details', [\App\Http\Controllers\BusinessDetailController::class, 'create'])->name('business-details.create');
+    Route::post('/orders/{order}/business-details', [\App\Http\Controllers\BusinessDetailController::class, 'store'])->name('business-details.store');
 });
 
 // ─── CART ROUTES ──────────────────────────────────────────────────────────

@@ -192,6 +192,79 @@
             </div>
             @endif
 
+            <!-- Business Details -->
+            @if($order->businessDetail)
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i> Business Details
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-slate-50 rounded-xl p-5 border border-slate-100">
+                    <div>
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Business Name</p>
+                        <p class="font-bold text-slate-900">{{ $order->businessDetail->business_name }}</p>
+                    </div>
+                    @if($order->businessDetail->domain_name)
+                    <div>
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Domain Name</p>
+                        <p class="font-bold text-slate-900">{{ $order->businessDetail->domain_name }}</p>
+                    </div>
+                    @endif
+                    @if($order->businessDetail->support_phone)
+                    <div>
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Support Phone</p>
+                        <p class="font-bold text-slate-900">{{ $order->businessDetail->support_phone }}</p>
+                    </div>
+                    @endif
+                    @if($order->businessDetail->support_email)
+                    <div>
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Support Email</p>
+                        <p class="font-bold text-slate-900">{{ $order->businessDetail->support_email }}</p>
+                    </div>
+                    @endif
+                    @if($order->businessDetail->office_address)
+                    <div class="md:col-span-2">
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Office Address</p>
+                        <p class="font-bold text-slate-900">{{ $order->businessDetail->office_address }}</p>
+                    </div>
+                    @endif
+
+                    @if($order->businessDetail->logo_path)
+                    <div class="md:col-span-2 mt-2">
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-2">Business Logo</p>
+                        <div class="w-20 h-20 rounded-xl border border-slate-200 overflow-hidden bg-white p-1">
+                            <a href="{{ asset('storage/' . $order->businessDetail->logo_path) }}" target="_blank">
+                                <img src="{{ asset('storage/' . $order->businessDetail->logo_path) }}" alt="Logo" class="w-full h-full object-contain">
+                            </a>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($order->businessDetail->product_images && count($order->businessDetail->product_images) > 0)
+                    <div class="md:col-span-2 mt-2">
+                        <p class="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-2">Product Images ({{ count($order->businessDetail->product_images) }})</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($order->businessDetail->product_images as $imgPath)
+                                <a href="{{ asset('storage/' . $imgPath) }}" target="_blank" class="block w-16 h-16 rounded-xl border border-slate-200 overflow-hidden bg-white shrink-0 hover:ring-2 hover:ring-indigo-500 transition-all">
+                                    <img src="{{ asset('storage/' . $imgPath) }}" alt="Product" class="w-full h-full object-cover">
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @else
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i> Business Details
+                </h2>
+                <div class="bg-amber-50 text-amber-700 text-sm font-medium px-4 py-3 rounded-xl border border-amber-200 flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                    Customer has not submitted their business details yet.
+                </div>
+            </div>
+            @endif
+
         </div>
 
         <!-- Right: Quick Actions + Commissions + Review -->

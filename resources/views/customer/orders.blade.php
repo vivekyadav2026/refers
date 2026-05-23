@@ -22,7 +22,7 @@
 
 {{-- Filters --}}
 <div class="flex gap-2 mb-8 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:flex-wrap whitespace-nowrap scrollbar-none">
-    @foreach(['all' => 'All Orders', 'pending' => 'Pending', 'paid' => 'Paid', 'in_progress' => 'In Progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled'] as $key => $label)
+    @foreach(['all' => 'All Orders', 'pending' => 'Pending', 'paid' => 'Paid', 'in_progress' => 'In Progress', 'completed' => 'Completed'] as $key => $label)
     <a href="{{ route('customer.orders', ['status' => $key]) }}"
        class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all shrink-0 {{ request('status', 'all') === $key ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300' }}">
         {{ $label }}

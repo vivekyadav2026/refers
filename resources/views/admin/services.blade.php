@@ -35,7 +35,7 @@
 <div class="sm:flex sm:justify-between sm:items-center mb-8">
     <div class="mb-4 sm:mb-0">
         <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Services Management</h1>
-        <p class="text-slate-500 mt-1">Configure the services that partners can sell and view their base details.</p>
+        <p class="text-slate-500 mt-1">Configure services with Basic, Standard & Premium plans.</p>
     </div>
     <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-3">
         <button onclick="openModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-medium shadow-sm transition-colors">
@@ -73,7 +73,7 @@
             <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                 <tr>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Service Name & Description</th>
-                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-center">Base Price</th>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-center">Plans (Basic→Premium)</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Category</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Status</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-right">Actions</th>
@@ -98,9 +98,29 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 text-center">
-                        <div class="inline-flex items-center justify-center px-4 py-2 rounded-full border-2 border-emerald-100 bg-emerald-50 text-emerald-700 font-bold text-sm">
-                            ₹{{ number_format($service->min_price, 0) }}
-                        </div>
+                        @php $plans = $service->plans; @endphp
+                        @if($plans && isset($plans['basic']))
+                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Basic</span>
+                                    ₹{{ number_format($plans['basic']['price'], 0) }}
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Standard</span>
+                                    ₹{{ number_format($plans['standard']['price'] ?? 0, 0) }}
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Premium</span>
+                                    ₹{{ number_format($plans['premium']['price'] ?? 0, 0) }}
+                                </span>
+                            </div>
+                        @else
+                            <div class="inline-flex items-center justify-center px-4 py-2 rounded-full border-2 border-emerald-100 bg-emerald-50 text-emerald-700 font-bold text-sm">
+                                ₹{{ number_format($service->min_price, 0) }}
+                            </div>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
                         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
@@ -125,22 +145,41 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-1">
+                            @php
+                                $servicePlans = $service->plans ?? [];
+                                $basicPlan    = $servicePlans['basic']    ?? [];
+                                $stdPlan      = $servicePlans['standard'] ?? [];
+                                $premiumPlan  = $servicePlans['premium']  ?? [];
+                            @endphp
                              <button onclick="openModal({{ json_encode([
-                                'id' => $service->id,
-                                'name' => $service->name,
-                                'category' => $service->category,
-                                'short_description' => $service->short_description,
-                                'description' => $service->description,
-                                'min_price' => $service->min_price,
-                                'icon' => $service->icon,
-                                'banner_image' => $service->banner_image,
-                                'is_popular' => $service->is_popular,
-                                'is_active' => $service->is_active,
-                                'delivery_timeline' => $service->delivery_timeline,
-                                'requirements_text' => $service->requirements_text,
-                                'commission_rate' => $service->commission_rate,
-                                'commission_type' => $service->commission_type,
-                                'features' => is_array($service->features) ? implode('\n', $service->features) : ''
+                                'id'               => $service->id,
+                                'name'             => $service->name,
+                                'category'         => $service->category,
+                                'short_description'=> $service->short_description,
+                                'description'      => $service->description,
+                                'icon'             => $service->icon,
+                                'banner_image'     => $service->banner_image,
+                                'is_popular'       => $service->is_popular,
+                                'is_active'        => $service->is_active,
+                                'delivery_timeline'=> $service->delivery_timeline,
+                                'requirements_text'=> $service->requirements_text,
+                                'commission_rate'  => $service->commission_rate,
+                                'commission_type'  => $service->commission_type,
+                                'basic_price'         => $basicPlan['price']       ?? $service->min_price,
+                                'basic_description'   => $basicPlan['description'] ?? '',
+                                'basic_delivery'      => $basicPlan['delivery']    ?? '',
+                                'basic_revisions'     => $basicPlan['revisions']   ?? '',
+                                'basic_features'      => isset($basicPlan['features']) ? implode("\n", $basicPlan['features']) : (is_array($service->features) ? implode("\n", $service->features) : ''),
+                                'standard_price'         => $stdPlan['price']       ?? '',
+                                'standard_description'   => $stdPlan['description'] ?? '',
+                                'standard_delivery'      => $stdPlan['delivery']    ?? '',
+                                'standard_revisions'     => $stdPlan['revisions']   ?? '',
+                                'standard_features'      => isset($stdPlan['features']) ? implode("\n", $stdPlan['features']) : '',
+                                'premium_price'          => $premiumPlan['price']       ?? '',
+                                'premium_description'    => $premiumPlan['description'] ?? '',
+                                'premium_delivery'       => $premiumPlan['delivery']    ?? '',
+                                'premium_revisions'      => $premiumPlan['revisions']   ?? '',
+                                'premium_features'       => isset($premiumPlan['features']) ? implode("\n", $premiumPlan['features']) : '',
                             ]) }})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
                                 <i data-lucide="edit-2" class="w-4 h-4"></i>
                             </button>
@@ -205,7 +244,7 @@
 
 {{-- ─── SERVICE MODAL (Add/Edit) ────────────────────────────────────────────── --}}
 <div id="serviceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 sm:p-6">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl flex flex-col max-h-[90vh]">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl" style="max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
         
         <!-- Modal Header -->
         <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
@@ -221,11 +260,12 @@
         </div>
 
         <!-- Modal Body (Scrollable) -->
-        <div class="overflow-y-auto p-5 sm:p-6">
+        <div class="p-5 sm:p-6" style="flex: 1 1 0%; overflow-y: auto; min-height: 0;">
             <form id="serviceForm" method="POST" action="{{ route('admin.services.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div id="methodField"></div>
                 
+                {{-- ── BASIC INFO ──────────────────────────────────────────── --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Name <span class="text-red-500">*</span></label>
@@ -237,11 +277,6 @@
                         <input type="text" name="category" id="serviceCategory" required
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                             placeholder="e.g. Development, Marketing">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Base Price (₹) <span class="text-red-500">*</span></label>
-                        <input type="number" name="min_price" id="servicePrice" required min="0" step="0.01"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image (For Details Page)</label>
@@ -265,15 +300,15 @@
                             <div id="bannerPreviewFeedback" class="mt-2 text-[10px] font-bold hidden"></div>
                         </div>
                     </div>
-                </div>
-
-                <div class="mb-5">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Lucide Icon Name</label>
-                    <div class="flex items-center gap-3">
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-sm font-semibold text-slate-700">Lucide Icon Name</label>
+                            <a href="https://lucide.dev/icons" target="_blank" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-bold transition-colors">View Icons Library &rarr;</a>
+                        </div>
                         <input type="text" name="icon" id="serviceIcon" value="box"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                             placeholder="e.g. globe, smartphone, palette">
-                        <a href="https://lucide.dev/icons" target="_blank" class="text-xs text-indigo-600 hover:underline shrink-0 whitespace-nowrap">View Icons</a>
+                        <span class="text-[10px] text-slate-400 font-bold block mt-1.5">Suggested: globe (web), code, smartphone (app), palette (design), megaphone (marketing), search (seo), file-text (writing), briefcase, server, shield.</span>
                     </div>
                 </div>
 
@@ -285,28 +320,152 @@
 
                 <div class="mb-5">
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Long Description (Detailed About Page)</label>
-                    <textarea name="description" id="serviceLongDesc" rows="4"
+                    <textarea name="description" id="serviceLongDesc" rows="3"
                         class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
                         placeholder="Detailed explanation of the project/service..."></textarea>
                 </div>
 
                 <div class="mb-5">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Features (One per line) <span class="text-red-500">*</span></label>
-                    <textarea name="features" id="serviceFeatures" rows="3" required
-                        class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
-                        placeholder="e.g.&#10;Custom Design&#10;Responsive Layout&#10;SEO Optimized"></textarea>
-                </div>
-
-                <div class="mb-5">
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">What We Need From Client (Requirements Text)</label>
-                    <textarea name="requirements_text" id="serviceRequirements" rows="3"
+                    <textarea name="requirements_text" id="serviceRequirements" rows="2"
                         class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
                         placeholder="Key access details, design references, business assets needed..."></textarea>
                 </div>
 
+                {{-- ── PRICING PLANS ─────────────────────────────────────── --}}
+                <div class="mb-5 border border-indigo-100 rounded-2xl overflow-hidden">
+                    <!-- Plan Tab Header -->
+                    <div class="flex bg-slate-50 border-b border-slate-200">
+                        <button type="button" onclick="switchPlanTab('basic')" id="tab-basic"
+                            class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-indigo-700 bg-white border-b-2 border-indigo-500">
+                            🌱 Basic
+                        </button>
+                        <button type="button" onclick="switchPlanTab('standard')" id="tab-standard"
+                            class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">
+                            ⭐ Standard
+                        </button>
+                        <button type="button" onclick="switchPlanTab('premium')" id="tab-premium"
+                            class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">
+                            👑 Premium
+                        </button>
+                    </div>
+
+                    <!-- Basic Plan -->
+                    <div id="panel-basic" class="plan-panel p-5 space-y-4">
+                        <p class="text-[11px] text-slate-500 font-medium">Essential features at an entry-level price.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-red-500">*</span></label>
+                                <input type="number" name="basic_price" id="basicPrice" required min="0" step="0.01"
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 4999">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery <span class="text-red-500">*</span></label>
+                                <input type="text" name="basic_delivery" id="basicDelivery" required
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 5 Days">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Revisions <span class="text-red-500">*</span></label>
+                                <input type="text" name="basic_revisions" id="basicRevisions" required
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 2">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description <span class="text-red-500">*</span></label>
+                            <input type="text" name="basic_description" id="basicDescription" required
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                placeholder="e.g. Perfect for small businesses getting started">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line) <span class="text-red-500">*</span></label>
+                            <textarea name="basic_features" id="basicFeatures" rows="4" required
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                                placeholder="e.g.&#10;5 Page Website&#10;Mobile Responsive&#10;Contact Form"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Standard Plan -->
+                    <div id="panel-standard" class="plan-panel p-5 space-y-4 hidden">
+                        <p class="text-[11px] text-slate-500 font-medium">Great value with more features and faster delivery.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-red-500">*</span></label>
+                                <input type="number" name="standard_price" id="standardPrice" required min="0" step="0.01"
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 9999">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery <span class="text-red-500">*</span></label>
+                                <input type="text" name="standard_delivery" id="standardDelivery" required
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 7 Days">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Revisions <span class="text-red-500">*</span></label>
+                                <input type="text" name="standard_revisions" id="standardRevisions" required
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 5">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description <span class="text-red-500">*</span></label>
+                            <input type="text" name="standard_description" id="standardDescription" required
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                placeholder="e.g. Ideal for growing businesses needing more">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line) <span class="text-red-500">*</span></label>
+                            <textarea name="standard_features" id="standardFeatures" rows="4" required
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                                placeholder="e.g.&#10;10 Page Website&#10;Mobile Responsive&#10;SEO Optimization&#10;Live Chat Integration"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div id="panel-premium" class="plan-panel p-5 space-y-4 hidden">
+                        <p class="text-[11px] text-slate-500 font-medium">Full-featured solution for maximum results.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-red-500">*</span></label>
+                                <input type="number" name="premium_price" id="premiumPrice" required min="0" step="0.01"
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 19999">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery <span class="text-red-500">*</span></label>
+                                <input type="text" name="premium_delivery" id="premiumDelivery" required
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. 14 Days">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Revisions <span class="text-red-500">*</span></label>
+                                <input type="text" name="premium_revisions" id="premiumRevisions" required
+                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                    placeholder="e.g. Unlimited">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description <span class="text-red-500">*</span></label>
+                            <input type="text" name="premium_description" id="premiumDescription" required
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                placeholder="e.g. Complete solution for enterprise-level needs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line) <span class="text-red-500">*</span></label>
+                            <textarea name="premium_features" id="premiumFeatures" rows="4" required
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                                placeholder="e.g.&#10;Unlimited Pages&#10;Custom UI/UX Design&#10;E-Commerce Integration&#10;Priority Support&#10;1 Year Maintenance"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ── COMMISSION & SETTINGS ────────────────────────────── --}}
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5 border-t border-slate-100 pt-5">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Delivery Timeline</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Delivery Timeline (General)</label>
                         <input type="text" name="delivery_timeline" id="serviceTimeline"
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                             placeholder="e.g. 3-4 Weeks">
@@ -356,77 +515,79 @@
 </div>
 
 <script>
-// Helper to parse aspect ratio and return human readable ratio type
+// ── Plan Tab Switcher ──────────────────────────────────────────────────────────
+function switchPlanTab(plan) {
+    const tabs   = ['basic', 'standard', 'premium'];
+    const emojis = { basic: '🌱 Basic', standard: '⭐ Standard', premium: '👑 Premium' };
+    tabs.forEach(t => {
+        const tab   = document.getElementById('tab-' + t);
+        const panel = document.getElementById('panel-' + t);
+        if (t === plan) {
+            tab.className = 'plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-indigo-700 bg-white border-b-2 border-indigo-500';
+            panel.classList.remove('hidden');
+        } else {
+            tab.className = 'plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100';
+            panel.classList.add('hidden');
+        }
+    });
+}
+
+// ── Image Preview Helpers ──────────────────────────────────────────────────────
 function getClosestRatio(width, height) {
     const ratio = width / height;
     const targets = [
         { name: '16:9', val: 16/9, desc: 'Landscape' },
         { name: '16:7', val: 16/7, desc: 'Ideal Detail Banner' },
         { name: '21:9', val: 21/9, desc: 'Widescreen Banner' },
-        { name: '6:5', val: 6/5, desc: 'Ideal Card Thumbnail' },
-        { name: '4:3', val: 4/3, desc: 'Standard Desktop' },
-        { name: '1:1', val: 1, desc: 'Square' }
+        { name: '6:5',  val: 6/5,  desc: 'Ideal Card Thumbnail' },
+        { name: '4:3',  val: 4/3,  desc: 'Standard Desktop' },
+        { name: '1:1',  val: 1,    desc: 'Square' }
     ];
-    let minDiff = Infinity;
-    let closest = null;
-    targets.forEach(t => {
-        const diff = Math.abs(ratio - t.val);
-        if (diff < minDiff) {
-            minDiff = diff;
-            closest = t;
-        }
-    });
-    if (minDiff < 0.15) {
-        return `${closest.name} (${closest.desc})`;
-    }
-    return ratio.toFixed(2) + ' : 1';
+    let minDiff = Infinity, closest = null;
+    targets.forEach(t => { const d = Math.abs(ratio - t.val); if (d < minDiff) { minDiff = d; closest = t; } });
+    return minDiff < 0.15 ? `${closest.name} (${closest.desc})` : ratio.toFixed(2) + ' : 1';
 }
 
 function analyzeImage(imgSrc, isUploadedFile = false, fileSizeKB = null) {
-    const previewWrapper = document.getElementById('bannerPreviewWrapper');
-    const previewImg = document.getElementById('bannerPreviewImg');
+    const previewWrapper    = document.getElementById('bannerPreviewWrapper');
+    const previewImg        = document.getElementById('bannerPreviewImg');
     const previewDimensions = document.getElementById('bannerPreviewDimensions');
-    const previewRatio = document.getElementById('bannerPreviewRatio');
-    const previewSize = document.getElementById('bannerPreviewSize');
-    const previewFeedback = document.getElementById('bannerPreviewFeedback');
-
+    const previewRatio      = document.getElementById('bannerPreviewRatio');
+    const previewSize       = document.getElementById('bannerPreviewSize');
+    const previewFeedback   = document.getElementById('bannerPreviewFeedback');
     previewWrapper.classList.remove('hidden');
     previewFeedback.classList.add('hidden');
     previewImg.src = imgSrc;
-    
     previewDimensions.textContent = 'Dimensions: loading...';
-    previewRatio.textContent = 'Aspect Ratio: loading...';
-    previewSize.textContent = isUploadedFile ? `File Size: ${fileSizeKB} KB` : 'File Size: Existing Server Image';
-
+    previewRatio.textContent      = 'Aspect Ratio: loading...';
+    previewSize.textContent       = isUploadedFile ? `File Size: ${fileSizeKB} KB` : 'File Size: Existing Server Image';
     const imgObj = new Image();
     imgObj.onload = function() {
-        const w = this.naturalWidth;
-        const h = this.naturalHeight;
+        const w = this.naturalWidth, h = this.naturalHeight;
         previewDimensions.textContent = `Dimensions: ${w} x ${h} px`;
-        const ratioStr = getClosestRatio(w, h);
-        previewRatio.textContent = `Aspect Ratio: ${ratioStr}`;
-        
+        previewRatio.textContent      = `Aspect Ratio: ${getClosestRatio(w, h)}`;
         previewFeedback.classList.remove('hidden');
         const ratio = w / h;
         if (ratio >= 2.0) {
-            previewFeedback.innerHTML = '<span class="text-emerald-600 flex items-center gap-1">✓ Perfect aspect ratio for widescreen banner (16:7 / 21:9).</span>';
+            previewFeedback.innerHTML = '<span class="text-emerald-600">✓ Perfect aspect ratio for widescreen banner (16:7 / 21:9).</span>';
         } else if (ratio >= 1.1 && ratio <= 1.3) {
-            previewFeedback.innerHTML = '<span class="text-indigo-600 flex items-center gap-1">ℹ️ Great aspect ratio for Services Grid card thumbnail (6:5). Will render with dynamic background gradient on details banner.</span>';
+            previewFeedback.innerHTML = '<span class="text-indigo-600">ℹ️ Great for card thumbnail (6:5).</span>';
         } else {
-            previewFeedback.innerHTML = '<span class="text-amber-600 flex items-center gap-1">⚠️ Widescreen banner is recommended (16:7 / 21:9). Standard image is uploaded.</span>';
+            previewFeedback.innerHTML = '<span class="text-amber-600">⚠️ Widescreen banner is recommended (16:7 / 21:9).</span>';
         }
     };
     imgObj.src = imgSrc;
 }
 
+// ── Modal Open/Close ────────────────────────────────────────────────────────────
 function openModal(service = null) {
-    const form = document.getElementById('serviceForm');
-    const title = document.getElementById('modalTitle');
+    const form      = document.getElementById('serviceForm');
+    const title     = document.getElementById('modalTitle');
     const methodField = document.getElementById('methodField');
     const submitBtn = document.getElementById('submitBtn');
 
-    // Hide preview first
     document.getElementById('bannerPreviewWrapper').classList.add('hidden');
+    switchPlanTab('basic'); // Reset to basic tab
 
     if (service) {
         title.textContent = 'Edit Service';
@@ -434,23 +595,40 @@ function openModal(service = null) {
         methodField.innerHTML = '@method("PUT")';
         submitBtn.textContent = 'Update Service';
 
-        document.getElementById('serviceName').value = service.name;
-        document.getElementById('serviceCategory').value = service.category;
-        document.getElementById('servicePrice').value = service.min_price;
-        document.getElementById('serviceIcon').value = service.icon || 'box';
-        document.getElementById('serviceBanner').value = '';
-        document.getElementById('serviceDesc').value = service.short_description;
-        document.getElementById('serviceLongDesc').value = service.description || '';
-        // Parse escaped newlines back to actual newlines
-        document.getElementById('serviceFeatures').value = (service.features || '').replace(/\\n/g, '\n');
+        document.getElementById('serviceName').value       = service.name;
+        document.getElementById('serviceCategory').value   = service.category;
+        document.getElementById('serviceIcon').value       = service.icon || 'box';
+        document.getElementById('serviceBanner').value     = '';
+        document.getElementById('serviceDesc').value       = service.short_description;
+        document.getElementById('serviceLongDesc').value   = service.description || '';
         document.getElementById('serviceRequirements').value = service.requirements_text || '';
-        document.getElementById('serviceTimeline').value = service.delivery_timeline || '';
+        document.getElementById('serviceTimeline').value   = service.delivery_timeline || '';
         document.getElementById('serviceCommissionRate').value = service.commission_rate || '';
         document.getElementById('serviceCommissionType').value = service.commission_type || 'percentage';
-        document.getElementById('servicePopular').checked = service.is_popular ? true : false;
-        document.getElementById('serviceActive').checked = service.is_active ? true : false;
+        document.getElementById('servicePopular').checked  = service.is_popular ? true : false;
+        document.getElementById('serviceActive').checked   = service.is_active ? true : false;
 
-        // Show preview of existing image
+        // Basic Plan
+        document.getElementById('basicPrice').value       = service.basic_price || '';
+        document.getElementById('basicDelivery').value    = service.basic_delivery || '';
+        document.getElementById('basicRevisions').value   = service.basic_revisions || '';
+        document.getElementById('basicDescription').value = service.basic_description || '';
+        document.getElementById('basicFeatures').value    = (service.basic_features || '').replace(/\\n/g, '\n');
+
+        // Standard Plan
+        document.getElementById('standardPrice').value       = service.standard_price || '';
+        document.getElementById('standardDelivery').value    = service.standard_delivery || '';
+        document.getElementById('standardRevisions').value   = service.standard_revisions || '';
+        document.getElementById('standardDescription').value = service.standard_description || '';
+        document.getElementById('standardFeatures').value    = (service.standard_features || '').replace(/\\n/g, '\n');
+
+        // Premium Plan
+        document.getElementById('premiumPrice').value       = service.premium_price || '';
+        document.getElementById('premiumDelivery').value    = service.premium_delivery || '';
+        document.getElementById('premiumRevisions').value   = service.premium_revisions || '';
+        document.getElementById('premiumDescription').value = service.premium_description || '';
+        document.getElementById('premiumFeatures').value    = (service.premium_features || '').replace(/\\n/g, '\n');
+
         if (service.banner_image) {
             analyzeImage('/storage/' + service.banner_image, false);
         }
@@ -459,16 +637,9 @@ function openModal(service = null) {
         form.action = "{{ route('admin.services.store') }}";
         methodField.innerHTML = '';
         submitBtn.textContent = 'Save Service';
-
         form.reset();
-        document.getElementById('serviceIcon').value = 'box'; // Default icon
-        document.getElementById('serviceBanner').value = '';
-        document.getElementById('serviceLongDesc').value = '';
-        document.getElementById('serviceRequirements').value = '';
-        document.getElementById('serviceTimeline').value = '';
-        document.getElementById('serviceCommissionRate').value = '';
-        document.getElementById('serviceCommissionType').value = 'percentage';
-        document.getElementById('serviceActive').checked = true; // Default to checked (published)
+        document.getElementById('serviceIcon').value = 'box';
+        document.getElementById('serviceActive').checked = true;
     }
 
     const modal = document.getElementById('serviceModal');
@@ -482,23 +653,13 @@ function closeModal() {
     modal.classList.remove('flex');
 }
 
-// File input selection event listener
+// File input selection
 document.getElementById('serviceBanner').addEventListener('change', function(e) {
     const file = e.target.files[0];
-    if (!file) {
-        // If edit mode and we had an existing image, show it again
-        const isEditMode = document.getElementById('submitBtn').textContent === 'Update Service';
-        if (!isEditMode) {
-            document.getElementById('bannerPreviewWrapper').classList.add('hidden');
-        }
-        return;
-    }
-
+    if (!file) { return; }
     const sizeKB = (file.size / 1024).toFixed(1);
     const reader = new FileReader();
-    reader.onload = function(event) {
-        analyzeImage(event.target.result, true, sizeKB);
-    };
+    reader.onload = function(event) { analyzeImage(event.target.result, true, sizeKB); };
     reader.readAsDataURL(file);
 });
 

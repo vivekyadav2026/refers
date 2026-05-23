@@ -102,13 +102,14 @@ class PaymentController extends Controller
             $user = auth()->user();
             if ($user && in_array($user->role, ['admin', 'superadmin'])) {
                 $redirectRoute = 'admin.orders.show';
+                return redirect()->route($redirectRoute, $order)->with('success', 'Payment successful! Order is now paid.');
             } elseif ($user && $user->isCustomer()) {
-                $redirectRoute = 'customer.order.show';
+                // Redirect customers to fill out the business details form after payment
+                return redirect()->route('customer.business-details.create', $order)->with('success', 'Payment successful! Please provide your business details to start the project.');
             } else {
                 $redirectRoute = 'partner.orders.show';
+                return redirect()->route($redirectRoute, $order)->with('success', 'Payment successful! Order is now paid.');
             }
-
-            return redirect()->route($redirectRoute, $order)->with('success', 'Payment successful! Order is now paid.');
         } else {
             return redirect()->route('customer.orders')->with('error', 'Payment verification failed.');
         }

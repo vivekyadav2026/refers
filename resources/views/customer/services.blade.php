@@ -202,12 +202,8 @@ body {
             ';
         } else {
             $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-            $svg = '
-                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-                    <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-                </svg>
-            ';
+            $iconName = $svc->icon ?? 'box';
+            $svg = '<i data-lucide="' . $iconName . '" class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600"></i>';
         }
     @endphp
     

@@ -28,22 +28,35 @@ class AdminServiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'short_description' => 'required|string',
-            'description' => 'nullable|string',
-            'min_price' => 'required|numeric|min:0',
-            'icon' => 'nullable|string',
-            'banner_image' => 'nullable|image|max:10240',
-            'delivery_timeline' => 'nullable|string|max:255',
-            'requirements_text' => 'nullable|string',
-            'commission_rate' => 'nullable|numeric|min:0',
-            'commission_type' => 'nullable|in:fixed,percentage',
-            'features' => 'required|string',
+            'category'         => 'required|string|max:255',
+            'name'             => 'required|string|max:255',
+            'short_description'=> 'required|string',
+            'description'      => 'nullable|string',
+            'icon'             => 'nullable|string',
+            'banner_image'     => 'nullable|image|max:10240',
+            'delivery_timeline'=> 'nullable|string|max:255',
+            'requirements_text'=> 'nullable|string',
+            'commission_rate'  => 'nullable|numeric|min:0',
+            'commission_type'  => 'nullable|in:fixed,percentage',
+            // Plan fields
+            'basic_price'         => 'required|numeric|min:0',
+            'basic_description'   => 'required|string',
+            'basic_delivery'      => 'required|string|max:100',
+            'basic_revisions'     => 'required|string|max:50',
+            'basic_features'      => 'required|string',
+            'standard_price'      => 'required|numeric|min:0',
+            'standard_description'=> 'required|string',
+            'standard_delivery'   => 'required|string|max:100',
+            'standard_revisions'  => 'required|string|max:50',
+            'standard_features'   => 'required|string',
+            'premium_price'       => 'required|numeric|min:0',
+            'premium_description' => 'required|string',
+            'premium_delivery'    => 'required|string|max:100',
+            'premium_revisions'   => 'required|string|max:50',
+            'premium_features'    => 'required|string',
         ]);
 
-        $featuresArray = array_map('trim', explode("\n", $validated['features']));
-        $featuresArray = array_filter($featuresArray);
+        $plans = $this->buildPlans($request);
 
         $bannerPath = null;
         if ($request->hasFile('banner_image')) {
@@ -51,21 +64,22 @@ class AdminServiceController extends Controller
         }
 
         Service::create([
-            'slug' => Str::slug($validated['name']),
-            'category' => $validated['category'],
-            'name' => $validated['name'],
-            'short_description' => $validated['short_description'],
-            'description' => $validated['description'] ?? null,
-            'min_price' => $validated['min_price'],
-            'icon' => $validated['icon'] ?? 'box',
-            'banner_image' => $bannerPath,
-            'delivery_timeline' => $validated['delivery_timeline'] ?? null,
-            'requirements_text' => $validated['requirements_text'] ?? null,
-            'commission_rate' => $validated['commission_rate'] ?? null,
-            'commission_type' => $validated['commission_type'] ?? 'percentage',
-            'is_popular' => $request->has('is_popular'),
-            'is_active' => $request->has('is_active'),
-            'features' => $featuresArray,
+            'slug'             => Str::slug($validated['name']),
+            'category'         => $validated['category'],
+            'name'             => $validated['name'],
+            'short_description'=> $validated['short_description'],
+            'description'      => $validated['description'] ?? null,
+            'min_price'        => $validated['basic_price'],
+            'icon'             => $validated['icon'] ?? 'box',
+            'banner_image'     => $bannerPath,
+            'delivery_timeline'=> $validated['delivery_timeline'] ?? null,
+            'requirements_text'=> $validated['requirements_text'] ?? null,
+            'commission_rate'  => $validated['commission_rate'] ?? null,
+            'commission_type'  => $validated['commission_type'] ?? 'percentage',
+            'is_popular'       => $request->has('is_popular'),
+            'is_active'        => $request->has('is_active'),
+            'features'         => $this->parseFeatures($request->input('basic_features', '')),
+            'plans'            => $plans,
         ]);
 
         return redirect()->back()->with('success', 'Service created successfully.');
@@ -74,26 +88,38 @@ class AdminServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $validated = $request->validate([
-            'category' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'short_description' => 'required|string',
-            'description' => 'nullable|string',
-            'min_price' => 'required|numeric|min:0',
-            'icon' => 'nullable|string',
-            'banner_image' => 'nullable|image|max:10240',
-            'delivery_timeline' => 'nullable|string|max:255',
-            'requirements_text' => 'nullable|string',
-            'commission_rate' => 'nullable|numeric|min:0',
-            'commission_type' => 'nullable|in:fixed,percentage',
-            'features' => 'required|string',
+            'category'         => 'required|string|max:255',
+            'name'             => 'required|string|max:255',
+            'short_description'=> 'required|string',
+            'description'      => 'nullable|string',
+            'icon'             => 'nullable|string',
+            'banner_image'     => 'nullable|image|max:10240',
+            'delivery_timeline'=> 'nullable|string|max:255',
+            'requirements_text'=> 'nullable|string',
+            'commission_rate'  => 'nullable|numeric|min:0',
+            'commission_type'  => 'nullable|in:fixed,percentage',
+            // Plan fields
+            'basic_price'         => 'required|numeric|min:0',
+            'basic_description'   => 'required|string',
+            'basic_delivery'      => 'required|string|max:100',
+            'basic_revisions'     => 'required|string|max:50',
+            'basic_features'      => 'required|string',
+            'standard_price'      => 'required|numeric|min:0',
+            'standard_description'=> 'required|string',
+            'standard_delivery'   => 'required|string|max:100',
+            'standard_revisions'  => 'required|string|max:50',
+            'standard_features'   => 'required|string',
+            'premium_price'       => 'required|numeric|min:0',
+            'premium_description' => 'required|string',
+            'premium_delivery'    => 'required|string|max:100',
+            'premium_revisions'   => 'required|string|max:50',
+            'premium_features'    => 'required|string',
         ]);
 
-        $featuresArray = array_map('trim', explode("\n", $validated['features']));
-        $featuresArray = array_filter($featuresArray);
+        $plans = $this->buildPlans($request);
 
         $bannerPath = $service->banner_image;
         if ($request->hasFile('banner_image')) {
-            // Delete old one
             if ($bannerPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($bannerPath)) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($bannerPath);
             }
@@ -101,24 +127,63 @@ class AdminServiceController extends Controller
         }
 
         $service->update([
-            'slug' => Str::slug($validated['name']),
-            'category' => $validated['category'],
-            'name' => $validated['name'],
-            'short_description' => $validated['short_description'],
-            'description' => $validated['description'] ?? null,
-            'min_price' => $validated['min_price'],
-            'icon' => $validated['icon'] ?? 'box',
-            'banner_image' => $bannerPath,
-            'delivery_timeline' => $validated['delivery_timeline'] ?? null,
-            'requirements_text' => $validated['requirements_text'] ?? null,
-            'commission_rate' => $validated['commission_rate'] ?? null,
-            'commission_type' => $validated['commission_type'] ?? 'percentage',
-            'is_popular' => $request->has('is_popular'),
-            'is_active' => $request->has('is_active'),
-            'features' => $featuresArray,
+            'slug'             => Str::slug($validated['name']),
+            'category'         => $validated['category'],
+            'name'             => $validated['name'],
+            'short_description'=> $validated['short_description'],
+            'description'      => $validated['description'] ?? null,
+            'min_price'        => $validated['basic_price'],
+            'icon'             => $validated['icon'] ?? 'box',
+            'banner_image'     => $bannerPath,
+            'delivery_timeline'=> $validated['delivery_timeline'] ?? null,
+            'requirements_text'=> $validated['requirements_text'] ?? null,
+            'commission_rate'  => $validated['commission_rate'] ?? null,
+            'commission_type'  => $validated['commission_type'] ?? 'percentage',
+            'is_popular'       => $request->has('is_popular'),
+            'is_active'        => $request->has('is_active'),
+            'features'         => $this->parseFeatures($request->input('basic_features', '')),
+            'plans'            => $plans,
         ]);
 
         return redirect()->back()->with('success', 'Service updated successfully.');
+    }
+
+    /**
+     * Build the plans array from request inputs.
+     */
+    private function buildPlans(Request $request): array
+    {
+        return [
+            'basic' => [
+                'price'       => (float) $request->input('basic_price', 0),
+                'description' => $request->input('basic_description', ''),
+                'delivery'    => $request->input('basic_delivery', ''),
+                'revisions'   => $request->input('basic_revisions', ''),
+                'features'    => $this->parseFeatures($request->input('basic_features', '')),
+            ],
+            'standard' => [
+                'price'       => (float) $request->input('standard_price', 0),
+                'description' => $request->input('standard_description', ''),
+                'delivery'    => $request->input('standard_delivery', ''),
+                'revisions'   => $request->input('standard_revisions', ''),
+                'features'    => $this->parseFeatures($request->input('standard_features', '')),
+            ],
+            'premium' => [
+                'price'       => (float) $request->input('premium_price', 0),
+                'description' => $request->input('premium_description', ''),
+                'delivery'    => $request->input('premium_delivery', ''),
+                'revisions'   => $request->input('premium_revisions', ''),
+                'features'    => $this->parseFeatures($request->input('premium_features', '')),
+            ],
+        ];
+    }
+
+    /**
+     * Parse a newline-separated string into a clean array of features.
+     */
+    private function parseFeatures(string $raw): array
+    {
+        return array_values(array_filter(array_map('trim', explode("\n", $raw))));
     }
 
     public function destroy(Service $service)
