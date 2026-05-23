@@ -1,303 +1,348 @@
 @extends('layouts.app')
-@section('title', 'Services — SKSolutions Digital Agency')
+@section('title', 'Services — SK Solutions')
 @section('hide_nav_footer', true)
 
 @section('content')
 
 <style>
-/* Add the font from the design */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Style+Script&display=swap');
+/* ── Fonts ──────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap');
 
+/* ── Base ───────────────────────────────────────────────── */
 body {
-    background-color: #fafafa;
+    background: #f8f8fb;
     font-family: 'Outfit', sans-serif;
     -webkit-tap-highlight-color: transparent;
 }
 
-.bottom-nav {
-    padding-bottom: env(safe-area-inset-bottom);
+/* ── Service card ───────────────────────────────────────── */
+.svc-card {
+    background: #fff;
+    border: 1px solid #ede9fe;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 8px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(109,40,217,0.07);
+    transition: all 0.22s ease;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 100px;
 }
+@media (min-width: 640px) {
+    .svc-card { border-radius: 18px; gap: 10px; padding: 18px 10px; min-height: 120px; }
+}
+.svc-card:hover {
+    box-shadow: 0 8px 28px rgba(109,40,217,0.14);
+    transform: translateY(-3px);
+    border-color: #c4b5fd;
+}
+
+.svc-icon-wrap {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    flex-shrink: 0;
+}
+@media (min-width: 640px) { .svc-icon-wrap { width: 56px; height: 56px; border-radius: 14px; } }
+
+.svc-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    line-height: 1.3;
+}
+@media (min-width: 640px) { .svc-label { font-size: 0.75rem; } }
+
+/* ── Services grid ──────────────────────────────────────── */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+@media (min-width: 640px)  { .services-grid { gap: 16px; } }
+@media (min-width: 1024px) { .services-grid { grid-template-columns: repeat(5, 1fr); gap: 18px; } }
+
+.brand-icon { width: 36px; height: 36px; }
+@media (min-width: 640px) { .brand-icon { width: 42px; height: 42px; } }
+
+/* ── Premium Filter Chips ───────────────────────────────── */
+.filter-container {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(243, 240, 255, 0.8);
+    border-radius: 100px;
+    padding: 6px;
+    box-shadow: 0 4px 20px rgba(109, 40, 217, 0.04);
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #4b5563;
+    border: 1px solid transparent;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    cursor: pointer;
+    background: transparent;
+    user-select: none;
+}
+
+.filter-chip:hover {
+    color: #6d28d9;
+    background: rgba(109, 40, 217, 0.04);
+    transform: translateY(-1px);
+}
+
+.filter-chip.active {
+    color: #6d28d9;
+    background: rgba(109, 40, 217, 0.08);
+    border-color: rgba(109, 40, 217, 0.2);
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.06);
+    font-weight: 800;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ── Bottom nav ─────────────────────────────────────────── */
+.bottom-nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid #ede9fe;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    z-index: 60;
+    box-shadow: 0 -4px 20px rgba(109,40,217,0.07);
+}
+@media (min-width: 1024px) { .bottom-nav-bar { display: none !important; } }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+    text-decoration: none;
+    color: #9ca3af;
+    transition: color 0.2s;
+    font-size: 0.58rem;
+    font-weight: 700;
+}
+.nav-item.active, .nav-item:hover { color: #6d28d9; }
+
+/* ── Header ─────────────────────────────────────────────── */
+.sk-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f3f0ff;
+    box-shadow: 0 1px 8px rgba(109,40,217,0.06);
+}
+
+/* ── Page wrapper ───────────────────────────────────────── */
+.page-content {
+    padding-bottom: 96px;
+}
+@media (min-width: 1024px) { .page-content { padding-bottom: 0; } }
 </style>
 
-<!-- Responsive Sticky Top Header -->
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100/80 shadow-sm transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+<div class="page-content">
+
+<!-- ═══════════════════════════════════════════════════════
+     TOP HEADER
+════════════════════════════════════════════════════════ -->
+<header class="sk-header">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+
         <!-- Logo -->
-        <a href="{{ url('/') }}" class="flex items-center gap-2 select-none">
-            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+        <a href="{{ url('/') }}" class="flex flex-col leading-none select-none shrink-0">
+            <span style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:#6d28d9;line-height:1;">SK</span>
+            <span style="font-size:0.6rem;font-weight:700;color:#374151;letter-spacing:0.06em;line-height:1.2;">Solutions</span>
         </a>
 
-        <!-- Desktop Navigation Menu -->
+        <!-- Search Bar (Desktop & Mobile) -->
+        <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-gray-50 hover:bg-gray-100/80 focus:bg-white text-[11px] sm:text-xs font-bold text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" style="margin-left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </form>
+
+        <!-- Desktop nav links -->
         <nav class="hidden lg:flex items-center gap-8">
-            <a href="{{ route('landing') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('landing') ? 'text-indigo-800' : 'text-slate-600 hover:text-indigo-800' }}">Home</a>
-            <a href="{{ route('services.index') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('services.*') ? 'text-indigo-800' : 'text-slate-600 hover:text-indigo-800' }}">Services</a>
-            <a href="{{ route('landing') }}#why-choose-us" class="text-sm font-bold text-slate-600 hover:text-indigo-800 transition-colors">Why Choose Us</a>
-            <a href="{{ route('contact') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('contact') ? 'text-indigo-800' : 'text-slate-600 hover:text-indigo-800' }}">Contact</a>
+            <a href="{{ url('/') }}"           class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Home</a>
+            <a href="{{ route('services.index') }}" class="text-sm font-bold text-violet-700">Services</a>
+            <a href="{{ url('/') }}#why-choose-us"           class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Why Us</a>
+            <a href="{{ route('contact') }}"   class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Contact</a>
         </nav>
 
-        <!-- Right Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notification Bell with Alpine Dropdown -->
-            <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
-                <button type="button" @click="notifOpen = !notifOpen" class="p-2 text-slate-700 hover:text-indigo-800 transition-colors relative focus:outline-none rounded-full hover:bg-slate-100">
-                    <i data-lucide="bell" class="w-6 h-6"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+        <!-- Right side actions -->
+        <div class="flex items-center gap-3">
+
+            <!-- Notification bell -->
+            <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" class="relative p-2 rounded-full hover:bg-violet-50 transition-colors" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
                 </button>
-                
-                <!-- Notification Dropdown Panel -->
-                <div x-show="notifOpen" 
+
+                <!-- Dropdown -->
+                <div x-show="open"
                      x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                     x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                      x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                     class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 z-50 overflow-hidden" 
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-violet-100 z-50 overflow-hidden"
                      style="display:none">
-                     <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/50">
-                         <span class="text-sm font-black text-slate-800">Notifications</span>
-                         <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-black">2 new</span>
-                     </div>
-                     <div class="max-h-[300px] overflow-y-auto divide-y divide-slate-50">
-                         <div class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3">
-                             <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 shrink-0">
-                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                             </div>
-                             <div>
-                                 <div class="text-xs font-bold text-slate-900">Welcome to SK Solutions!</div>
-                                 <div class="text-[10px] text-slate-500 mt-0.5">Explore our premium digital agency services and scale your business today.</div>
-                                 <div class="text-[9px] text-slate-400 mt-1">Just now</div>
-                             </div>
-                         </div>
-                         <div class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3">
-                             <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 shrink-0">
-                                 <i data-lucide="tag" class="w-4 h-4"></i>
-                             </div>
-                             <div>
-                                 <div class="text-xs font-bold text-slate-900">Special Offer!</div>
-                                 <div class="text-[10px] text-slate-500 mt-0.5">Get 15% off on your first mobile app development project. Use code: APPS15.</div>
-                                 <div class="text-[9px] text-slate-400 mt-1">2 hours ago</div>
-                             </div>
-                         </div>
-                     </div>
+                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                        <span class="text-xs font-black text-gray-800">Notifications</span>
+                        <span class="text-[10px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">2 new</span>
+                    </div>
+                    <div class="divide-y divide-gray-50">
+                        <div class="p-3 flex gap-3 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-800">Welcome to SK Solutions!</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Scale your business with premium digital services.</p>
+                                <p class="text-[9px] text-gray-400 mt-1">Just now</p>
+                            </div>
+                        </div>
+                        <div class="p-3 flex gap-3 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-800">Special Offer!</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">15% off your first mobile app. Use: <b>APPS15</b></p>
+                                <p class="text-[9px] text-gray-400 mt-1">2 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             @auth
-                <!-- User Profile Dropdown -->
+                <!-- User avatar -->
                 @php
-                    $user = auth()->user();
-                    $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice(array_filter(explode(' ', trim($user->name))), 0, 2))));
-                    $dashUrl = match($user->role) {
-                        'admin' => route('admin.dashboard'),
-                        'partner' => route('partner.dashboard'),
-                        default => route('customer.dashboard'),
-                    };
+                    $u = auth()->user();
+                    $ini = strtoupper(implode('', array_map(fn($w)=>mb_substr($w,0,1), array_slice(array_filter(explode(' ',trim($u->name))),0,2))));
+                    $dashUrl = match($u->role){ 'admin'=>route('admin.dashboard'),'partner'=>route('partner.dashboard'),default=>route('customer.dashboard')};
                 @endphp
-                <div class="relative" x-data="{ profileOpen: false }" @click.away="profileOpen = false">
-                    <button type="button" @click="profileOpen = !profileOpen" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold text-xs sm:text-sm flex items-center justify-center transition-colors focus:outline-none ring-2 ring-indigo-50/50 hover:ring-indigo-100">
-                        {{ $initials }}
-                    </button>
-                    
-                    <!-- Dropdown Menu -->
-                    <div x-show="profileOpen" 
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-                         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                         x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                         x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                         class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden" 
-                         style="display:none">
-                         <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
-                             <div class="text-xs font-bold text-slate-800 truncate">{{ $user->name }}</div>
-                             <div class="text-[10px] text-slate-500 truncate mt-0.5">{{ $user->email ?: $user->phone }}</div>
-                         </div>
-                         <div class="py-1.5">
-                             <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-800 transition-colors">
-                                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-                             </a>
-                             <form method="POST" action="{{ route('logout') }}" class="w-full m-0">
-                                 @csrf
-                                 <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-650 hover:bg-red-50 hover:text-red-700 transition-colors text-left border-none bg-transparent cursor-pointer">
-                                     <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
-                                 </button>
-                             </form>
-                         </div>
+                <div class="relative" x-data="{ pOpen:false }" @click.away="pOpen=false">
+                    <button @click="pOpen=!pOpen" class="w-9 h-9 rounded-full bg-violet-100 text-violet-700 font-black text-xs flex items-center justify-center ring-2 ring-violet-50 hover:ring-violet-200 transition-all">{{ $ini }}</button>
+                    <div x-show="pOpen" x-transition class="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden" style="display:none">
+                        <div class="px-4 py-3 border-b border-gray-50 bg-gray-50/60">
+                            <p class="text-xs font-bold text-gray-800 truncate">{{ $u->name }}</p>
+                            <p class="text-[10px] text-gray-400 truncate mt-0.5">{{ $u->email ?: $u->phone }}</p>
+                        </div>
+                        <div class="py-1">
+                            <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 hover:text-violet-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                                Dashboard
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}">@csrf
+                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors text-left bg-transparent border-0 cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    Log Out
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+            @else
+                <!-- Desktop login / explore -->
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="{{ route('login') }}" class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Log in</a>
+                    <a href="{{ route('services.index') }}" class="btn-cta">Explore Services <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                </div>
             @endauth
-
-            <!-- Desktop CTA Button -->
-            <div class="hidden lg:flex items-center gap-3">
-                @auth
-                    @php
-                        $dashUrl = match(auth()->user()->role) {
-                            'admin' => route('admin.dashboard'),
-                            'partner' => route('partner.dashboard'),
-                            default => route('customer.dashboard'),
-                        };
-                    @endphp
-                    <a href="{{ $dashUrl }}" class="inline-flex items-center gap-2 bg-indigo-800 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-indigo-900 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 hover:text-indigo-800 transition-colors px-3 py-2">Log in</a>
-                    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 bg-indigo-800 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-indigo-900 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                        Explore Services <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                @endauth
-            </div>
         </div>
     </div>
 </header>
 
 <!-- Services Hero Header -->
-<section class="px-4 sm:px-6 lg:px-8 py-12 md:py-16 bg-white border-b border-slate-100">
-    <div class="max-w-7xl mx-auto text-center flex flex-col items-center">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-bold tracking-wider uppercase mb-4">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Discover Services
+<section class="px-4 sm:px-6 lg:px-8 py-10 md:py-14 bg-white border-b border-violet-50">
+    <div class="max-w-5xl mx-auto text-center flex flex-col items-center">
+        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-violet-100 text-violet-850 text-violet-700 text-[10px] font-black tracking-wider uppercase mb-3">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg> Discover Services
         </span>
-        <h1 class="text-3.5xl sm:text-5xl font-black text-slate-900 leading-tight tracking-tight mb-4 select-none">
-            Tailored Digital <span class="text-indigo-800">Services</span>
+        <h1 class="text-3xl sm:text-4.5xl font-black text-gray-900 leading-tight tracking-tight mb-3 select-none">
+            Tailored Digital <span class="text-violet-700">Services</span>
         </h1>
-        <p class="text-xs sm:text-sm md:text-base text-slate-500 max-w-xl leading-relaxed font-semibold">
+        <p class="text-xs sm:text-sm text-gray-500 max-w-lg leading-relaxed font-semibold">
             Explore our bespoke web development, performance marketing, and creative production services customized to skyrocket your brand.
         </p>
     </div>
 </section>
 
 @php
-  // Define mapping of name substrings to custom generated 3D images and specific theme styling.
-  $premiumMappingRules = [
-      'e-commerce' => [
-          'img' => asset('storage/banners/srv_ecommerce.png'),
-          'bg' => 'from-indigo-50 to-purple-50',
-          'icon_color' => 'text-indigo-700',
-          'icon' => 'shopping-cart'
-      ],
-      'web' => [
-          'img' => asset('storage/banners/srv_web.png'),
-          'bg' => 'from-blue-50 to-indigo-50',
-          'icon_color' => 'text-blue-700',
-          'icon' => 'layout-template'
-      ],
-      'app' => [
-          'img' => asset('storage/banners/srv_app.png'),
-          'bg' => 'from-sky-50 to-indigo-100',
-          'icon_color' => 'text-sky-750 text-indigo-800',
-          'icon' => 'smartphone'
-      ],
-      'facebook' => [
-          'img' => asset('storage/banners/srv_fb.png'),
-          'bg' => 'from-blue-50 to-blue-100',
-          'icon_color' => 'text-[#1877F2]',
-          'icon' => 'facebook'
-      ],
-      'instagram' => [
-          'img' => asset('storage/banners/srv_ig.png'),
-          'bg' => 'from-pink-50 to-rose-100',
-          'icon_color' => 'text-pink-600',
-          'icon' => 'instagram'
-      ],
-      'google' => [
-          'img' => asset('storage/banners/srv_google.png'),
-          'bg' => 'from-green-50 to-emerald-100',
-          'icon_color' => 'text-green-600',
-          'icon' => 'bar-chart'
-      ],
-      'youtube' => [
-          'img' => asset('storage/banners/srv_yt.png'),
-          'bg' => 'from-red-50 to-rose-100',
-          'icon_color' => 'text-red-600',
-          'icon' => 'youtube'
-      ],
-      'seo' => [
-          'img' => asset('storage/banners/srv_seo.png'),
-          'bg' => 'from-purple-50 to-fuchsia-100',
-          'icon_color' => 'text-purple-700',
-          'icon' => 'search'
-      ],
-      'video' => [
-          'img' => asset('storage/banners/srv_reels.png'),
-          'bg' => 'from-fuchsia-50 to-pink-100',
-          'icon_color' => 'text-fuchsia-700',
-          'icon' => 'clapperboard'
-      ],
-      'reels' => [
-          'img' => asset('storage/banners/srv_reels.png'),
-          'bg' => 'from-fuchsia-50 to-pink-100',
-          'icon_color' => 'text-fuchsia-700',
-          'icon' => 'clapperboard'
-      ],
-      'ui/ux' => [
-          'img' => asset('storage/banners/srv_web.png'),
-          'bg' => 'from-amber-50 to-orange-100',
-          'icon_color' => 'text-orange-700',
-          'icon' => 'palette'
-      ],
-      'figma' => [
-          'img' => asset('storage/banners/srv_web.png'),
-          'bg' => 'from-amber-50 to-orange-100',
-          'icon_color' => 'text-orange-700',
-          'icon' => 'palette'
-      ],
-      'chatbot' => [
-          'img' => asset('storage/banners/srv_web.png'),
-          'bg' => 'from-violet-50 to-indigo-100',
-          'icon_color' => 'text-violet-700',
-          'icon' => 'message-square'
-      ],
-      'ai' => [
-          'img' => asset('storage/banners/srv_web.png'),
-          'bg' => 'from-violet-50 to-indigo-100',
-          'icon_color' => 'text-violet-755 text-violet-700',
-          'icon' => 'cpu'
-      ]
-  ];
-
-  $findPremiumMatch = function ($serviceName) use ($premiumMappingRules) {
-      $lowerName = strtolower($serviceName);
-      foreach ($premiumMappingRules as $key => $mapping) {
-          if (str_contains($lowerName, $key)) {
-              return $mapping;
-          }
-      }
-      return null;
-  };
-
-  $categoryIcons = [
-      'Web Development' => 'layout-template',
-      'App Development' => 'smartphone',
-      'Digital Marketing' => 'trending-up',
-      'Video Editing' => 'clapperboard',
-      'Design & Branding' => 'palette',
-      'AI & Automation' => 'cpu',
-  ];
-
-  $allSvcs = $servicesByCategory->flatten(1);
+    $allSvcs = $servicesByCategory->flatten(1);
 @endphp
 
 <!-- Category Selector Tabs -->
-<div class="mt-8 mb-10 max-w-7xl mx-auto px-4">
-    <!-- Horizontal Scroll wrapper for Mobile, centered flex for Desktop -->
-    <div class="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:justify-center">
+<div class="mt-6 mb-8 max-w-5xl mx-auto px-4">
+    <!-- Centered modern floating bar -->
+    <div class="filter-container flex items-center gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-2 scroll-smooth">
         <!-- "All Services" Tab -->
         <a href="{{ route('services.index') }}" 
-           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm shrink-0 border transition-all duration-300 {{ !$selectedCategory ? 'bg-indigo-800 border-indigo-800 text-white shadow-lg shadow-indigo-800/20' : 'bg-white border-slate-200 text-slate-600 hover:text-indigo-800 hover:border-indigo-100 shadow-sm' }}">
-            <i data-lucide="grid-3x3" class="w-4 h-4"></i>
+           class="filter-chip shrink-0 {{ !$selectedCategory ? 'active' : '' }}">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
             <span>All Services</span>
         </a>
         
         <!-- Loop categories -->
         @foreach($allCategories as $cat)
         @php
-            $catIcon = $categoryIcons[$cat] ?? 'box';
             $isActive = $selectedCategory === $cat;
+            
+            // Render beautiful custom icons for categories
+            if (str_contains(strtolower($cat), 'web')) {
+                $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 000 20 14.5 14.5 0 000-20M2 12h20"/></svg>';
+            } elseif (str_contains(strtolower($cat), 'app')) {
+                $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>';
+            } elseif (str_contains(strtolower($cat), 'marketing') || str_contains(strtolower($cat), 'ads')) {
+                $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>';
+            } elseif (str_contains(strtolower($cat), 'video') || str_contains(strtolower($cat), 'editing')) {
+                $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>';
+            } elseif (str_contains(strtolower($cat), 'design') || str_contains(strtolower($cat), 'brand')) {
+                $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 2 12 22Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6V12L16 14" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            } else {
+                $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
+            }
         @endphp
         <a href="{{ route('services.index', ['category' => $cat]) }}" 
-           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm shrink-0 border transition-all duration-300 {{ $isActive ? 'bg-indigo-800 border-indigo-800 text-white shadow-lg shadow-indigo-800/20' : 'bg-white border-slate-200 text-slate-600 hover:text-indigo-800 hover:border-indigo-100 shadow-sm' }}">
-            <i data-lucide="{{ $catIcon }}" class="w-4 h-4"></i>
+           class="filter-chip shrink-0 {{ $isActive ? 'active' : '' }}">
+            {!! $tabSvg !!}
             <span>{{ $cat }}</span>
         </a>
         @endforeach
@@ -305,114 +350,126 @@ body {
 </div>
 
 <!-- Services Grid Section -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 lg:pb-16">
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-5 bg-transparent pb-4 px-1">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="services-grid">
         
         @foreach($allSvcs as $svc)
         @php
-            $match = $findPremiumMatch($svc->name);
-            $dbIcon = $svc->icon && $svc->icon !== 'box' ? $svc->icon : null;
-            $icon = $dbIcon ?? ($match ? $match['icon'] : 'layout-grid');
-            $bg = $match ? $match['bg'] : 'from-slate-50 to-slate-100';
-            $icon_color = $match ? $match['icon_color'] : 'text-slate-500';
+            $lowerName = strtolower($svc->name);
+            $lowerSlug = strtolower($svc->slug);
+            
+            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $isBrandIcon = false;
+            
+            if (str_contains($lowerName, 'e-commerce') || str_contains($lowerSlug, 'ecommerce')) {
+                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+                $svg = '
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'informative') || str_contains($lowerSlug, 'informative')) {
+                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+                $svg = '
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 11h6"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'facebook')) {
+                $bg = 'linear-gradient(135deg, #e8f4fe, #dbeafe)';
+                $isBrandIcon = true;
+                $svg = '
+                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="20" fill="#1877F2"/>
+                        <path d="M27.5 20H22.5V17.5C22.5 16.67 23.17 16.25 24 16.25H27V12.5H24C21.24 12.5 19 14.74 19 17.5V20H16V24H19V32.5H22.5V24H26L27.5 20Z" fill="white"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'instagram')) {
+                $bg = 'linear-gradient(135deg, #fde8f4, #fce7f3)';
+                $isBrandIcon = true;
+                $svg = '
+                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#ffd600"/><stop offset="50%" stop-color="#ff6a00"/><stop offset="100%" stop-color="#ee0979"/></radialGradient>
+                            <radialGradient id="ig2" cx="5%" cy="100%" r="60%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+                        </defs>
+                        <rect width="40" height="40" rx="10" fill="url(#ig1)"/>
+                        <rect width="40" height="40" rx="10" fill="url(#ig2)"/>
+                        <rect x="10" y="10" width="20" height="20" rx="5" stroke="white" stroke-width="2.2" fill="none"/>
+                        <circle cx="20" cy="20" r="5.5" stroke="white" stroke-width="2.2" fill="none"/>
+                        <circle cx="27" cy="13" r="1.5" fill="white"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'google')) {
+                $bg = 'linear-gradient(135deg, #f0fdf4, #dcfce7)';
+                $isBrandIcon = true;
+                $svg = '
+                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 5L32 27H8L20 5Z" fill="#4285F4"/>
+                        <circle cx="32" cy="27" r="6" fill="#FBBC05"/>
+                        <circle cx="8" cy="27" r="6" fill="#34A853"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'youtube')) {
+                $bg = 'linear-gradient(135deg, #fef2f2, #fee2e2)';
+                $isBrandIcon = true;
+                $svg = '
+                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="40" height="40" rx="10" fill="#FF0000"/>
+                        <path d="M30.5 14.8C30.3 13.9 29.6 13.2 28.7 13C26.7 12.5 20 12.5 20 12.5C20 12.5 13.3 12.5 11.3 13C10.4 13.2 9.7 13.9 9.5 14.8C9 16.8 9 21 9 21C9 21 9 25.2 9.5 27.2C9.7 28.1 10.4 28.8 11.3 29C13.3 29.5 20 29.5 20 29.5C20 29.5 26.7 29.5 28.7 29C29.6 28.8 30.3 28.1 30.5 27.2C31 25.2 31 21 31 21C31 21 31 16.8 30.5 14.8Z" fill="white"/>
+                        <path d="M17.5 24.5V17.5L23.5 21L17.5 24.5Z" fill="#FF0000"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'seo') || str_contains($lowerSlug, 'seo')) {
+                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+                $svg = '
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'video') || str_contains($lowerName, 'reels') || str_contains($lowerName, 'edit')) {
+                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+                $svg = '
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
+                    </svg>
+                ';
+            } elseif (str_contains($lowerName, 'app') || str_contains($lowerName, 'mobile') || str_contains($lowerSlug, 'app')) {
+                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+                $svg = '
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <rect x="5" y="2" width="14" height="20" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01"/>
+                    </svg>
+                ';
+            } else {
+                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+                $svg = '
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                ';
+            }
         @endphp
         
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 min-h-[180px] sm:min-h-[220px] p-4 sm:p-6 text-center rounded-2xl shadow-md hover:shadow-xl hover:shadow-indigo-500/10 border border-slate-100/50 hover:-translate-y-1">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br {{ $bg }} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50">
-                <i data-lucide="{{ $icon }}" class="w-6 h-6 sm:w-8 sm:h-8 {{ $icon_color }}"></i>
+        <a href="{{ route('services.show', $svc->slug) }}" class="svc-card">
+            <div class="svc-icon-wrap" style="background: {{ $bg }}">
+                {!! $svg !!}
             </div>
-            <span class="text-xs sm:text-sm font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
-            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-2 line-clamp-2 leading-relaxed">{{ $svc->short_description }}</p>
-            @auth
-                <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
-            @else
-                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Login for Pricing</span>
-            @endauth
+            <span class="svc-label">{{ $svc->name }}</span>
         </a>
         @endforeach
 
         @if($allSvcs->isEmpty())
-            <div class="col-span-full py-16 flex flex-col items-center justify-center text-center bg-slate-50 rounded-[32px] border border-slate-200 border-dashed">
-                <i data-lucide="folder-open" class="w-12 h-12 text-slate-400 mb-4 animate-bounce"></i>
-                <p class="text-slate-800 font-bold text-lg">No services found</p>
-                <p class="text-slate-500 text-sm mt-1">Try selecting a different category or check back later.</p>
+            <div class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-violet-50/40 rounded-2xl border border-violet-100 border-dashed">
+                <svg class="w-10 h-10 text-violet-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2zm0 0h18M5 17h14M9 12h6"/></svg>
+                <p class="text-gray-800 font-bold text-sm">No services found</p>
+                <p class="text-gray-500 text-xs mt-1">Try selecting a different category or check back later.</p>
             </div>
         @endif
-
-        <!-- Mobile "Why Choose SK Solutions?" Card -->
-        <a href="{{ route('landing') }}#why-choose-us" class="service-card p-3 bg-white flex flex-col items-center justify-center text-center group hover:bg-indigo-50/20 transition-all duration-300 min-h-[125px] sm:hidden rounded-2xl shadow-md border border-slate-100/50">
-            <div class="w-10 h-10 mb-2 text-orange-600 flex items-center justify-center bg-orange-50 rounded-full group-hover:bg-orange-100 transition-colors">
-                <i data-lucide="help-circle" class="w-6 h-6 group-hover:scale-110 transition-transform duration-350" stroke-width="2.5"></i>
-            </div>
-            <span class="text-[9px] font-bold text-slate-800 leading-tight">Why Choose SK Solutions?</span>
-        </a>
-
-        <!-- Desktop/Tablet Final Card: Why Choose SKSolutions -->
-        <div class="hidden sm:block bg-gradient-to-br from-amber-50 to-orange-100 rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:shadow-xl transition-all duration-300 border border-orange-200/50">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
-
-            <div class="flex flex-col justify-between h-full relative z-10">
-                <div>
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-md shadow-orange-100">
-                            <i data-lucide="help-circle" class="w-6 h-6 text-orange-600" stroke-width="2.5"></i>
-                        </div>
-                        <span class="px-3 py-1 rounded-full bg-white/70 backdrop-blur-sm border border-orange-100 text-orange-800 text-[10px] font-bold tracking-wider uppercase">
-                            Core Values
-                        </span>
-                    </div>
-                    
-                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 mb-4 leading-tight tracking-tight">
-                        Why Choose SK Solutions?
-                    </h3>
-                    
-                    <ul class="space-y-3.5 mb-6">
-                        <li class="flex items-center gap-3 text-xs font-bold text-slate-800">
-                            <div class="w-5 h-5 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
-                                <i data-lucide="users" class="w-3 h-3 text-orange-600"></i>
-                            </div>
-                            Experienced Team
-                        </li>
-                        <li class="flex items-center gap-3 text-xs font-bold text-slate-800">
-                            <div class="w-5 h-5 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
-                                <i data-lucide="award" class="w-3 h-3 text-orange-660 text-orange-600"></i>
-                            </div>
-                            Quality Solutions
-                        </li>
-                        <li class="flex items-center gap-3 text-xs font-bold text-slate-800">
-                            <div class="w-5 h-5 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
-                                <i data-lucide="clock" class="w-3 h-3 text-orange-660 text-orange-600"></i>
-                            </div>
-                            Timely Delivery
-                        </li>
-                        <li class="flex items-center gap-3 text-xs font-bold text-slate-800">
-                            <div class="w-5 h-5 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
-                                <i data-lucide="headphones" class="w-3 h-3 text-orange-660 text-orange-600"></i>
-                            </div>
-                            Dedicated Support
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="flex items-end justify-between mt-auto gap-4">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-bold text-orange-500 uppercase tracking-widest leading-none">Your Success</span>
-                        <span class="text-sm font-black text-slate-900 mt-1">Is Our Priority</span>
-                    </div>
-                    
-                    <div class="w-[120px] h-[100px] flex items-center justify-end relative opacity-85 group-hover:opacity-100 transition-opacity">
-                        <svg class="w-20 h-20 text-orange-500 group-hover:scale-110 transition-all duration-500 drop-shadow-xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <circle cx="12" cy="12" r="6"></circle>
-                            <circle cx="12" cy="12" r="2"></circle>
-                            <path d="m22 2-7.5 7.5"></path>
-                            <path d="M22 2v6"></path>
-                            <path d="M22 2h-6"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>
@@ -423,15 +480,23 @@ body {
 </div>
 
 <!-- Fixed Bottom Navigation (Public Mobile Only) -->
-<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex items-center justify-around z-50 bottom-nav shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pb-2 pt-1">
-    <a href="{{ url('/') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Home</span>
+<nav class="bottom-nav-bar lg:hidden">
+
+    <a href="{{ url('/') }}" class="nav-item" id="nav-home">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Home
     </a>
-    <a href="{{ route('services.index') }}" class="flex flex-col items-center py-2 gap-1 w-full text-indigo-800">
-        <i data-lucide="grid-3x3" class="w-5 h-5" fill="currentColor" stroke="currentColor"></i>
-        <span class="text-[10px] font-bold">Services</span>
+
+    <a href="{{ route('services.index') }}" class="nav-item active" id="nav-services">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        Services
     </a>
+
     @auth
         @php
             $ordersUrl = match(auth()->user()->role) {
@@ -440,24 +505,30 @@ body {
                 default => route('customer.orders'),
             };
         @endphp
-        <a href="{{ $ordersUrl }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-            <span class="text-[10px] font-bold">Orders</span>
-        </a>
+        <a href="{{ $ordersUrl }}" class="nav-item" id="nav-orders">
     @else
-        <a href="{{ route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-            <span class="text-[10px] font-bold">Orders</span>
-        </a>
+        <a href="{{ route('login') }}" class="nav-item" id="nav-orders">
     @endauth
-    <a href="{{ route('contact') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="headphones" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Support</span>
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        Orders
     </a>
-    <a href="{{ auth()->check() ? url('/dashboard') : route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="user" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">{{ auth()->check() ? 'Dashboard' : 'Profile' }}</span>
+
+    <a href="{{ route('contact') }}" class="nav-item" id="nav-support">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Support
     </a>
+
+    <a href="{{ auth()->check() ? url('/dashboard') : route('login') }}" class="nav-item" id="nav-profile">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        {{ auth()->check() ? 'Dashboard' : 'Profile' }}
+    </a>
+
 </nav>
 
 @endsection

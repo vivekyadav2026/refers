@@ -49,8 +49,16 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ─── PUBLIC SERVICE ROUTES ────────────────────────────────────────────────
 Route::get('/services', function () {
     $query = Service::where('is_active', true);
-    if (request()->has('category')) {
+    if (request()->filled('category')) {
         $query->where('category', request('category'));
+    }
+    if (request()->filled('search')) {
+        $search = request('search');
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhere('description', 'like', '%' . $search . '%')
+              ->orWhere('category', 'like', '%' . $search . '%');
+        });
     }
     $servicesByCategory = $query->get()->groupBy('category');
     $allCategories = Service::where('is_active', true)->distinct()->pluck('category');
