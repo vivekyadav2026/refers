@@ -76,6 +76,7 @@ class AuthController extends Controller
     public function sendOtp(Request $request)
     {
         $request->validate([
+            'name'  => 'nullable|string|max:255',
             'phone' => 'required|numeric|digits:10',
             'referral_code' => 'nullable|string|max:50',
         ]);
@@ -114,6 +115,9 @@ class AuthController extends Controller
         // Store in cache for 5 minutes
         Cache::put('otp_' . $phone, $otp, now()->addMinutes(5));
         Cache::put('login_as_' . $phone, $loginAs, now()->addMinutes(5));
+        if ($request->filled('name')) {
+            Cache::put('name_' . $phone, $request->name, now()->addMinutes(5));
+        }
 
         // Send OTP via SMS Service
         $smsService = new SmsService();
@@ -158,6 +162,7 @@ class AuthController extends Controller
         // Clear OTP
         Cache::forget('otp_' . $phone);
         $loginAs = Cache::pull('login_as_' . $phone, 'customer');
+        $nameFromCache = Cache::pull('name_' . $phone);
 
         // Find or create user
         $user = User::where('phone', $phone)->first();
@@ -178,7 +183,7 @@ class AuthController extends Controller
             }
 
             $user = User::create([
-                'name'         => 'User ' . substr($phone, -4),
+                'name'         => $nameFromCache ?: 'User ' . substr($phone, -4),
                 'phone'        => $phone,
                 'password'     => Hash::make(Str::random(16)),
                 'pin'          => Hash::make($request->pin),

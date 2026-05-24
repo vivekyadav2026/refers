@@ -265,6 +265,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Admin: Banners
     Route::get('/banners', [\App\Http\Controllers\Admin\AdminBannerController::class, 'index'])->name('banners.index');
     Route::post('/banners', [\App\Http\Controllers\Admin\AdminBannerController::class, 'store'])->name('banners.store');
+    Route::put('/banners/{banner}', [\App\Http\Controllers\Admin\AdminBannerController::class, 'update'])->name('banners.update');
     Route::post('/banners/{banner}/toggle', [\App\Http\Controllers\Admin\AdminBannerController::class, 'toggle'])->name('banners.toggle');
     Route::delete('/banners/{banner}', [\App\Http\Controllers\Admin\AdminBannerController::class, 'destroy'])->name('banners.destroy');
 

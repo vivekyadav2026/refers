@@ -4,7 +4,7 @@
             <!-- Brand -->
             <div class="md:col-span-2">
                 <div class="flex items-center gap-2.5 mb-4">
-                    <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+                    <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
                 </div>
                 <p class="text-slate-500 text-sm leading-relaxed max-w-sm font-medium">
                     We deliver high-quality digital solutions to help you scale your business efficiently. Join our partner network and grow with us.
@@ -50,3 +50,4 @@
         </div>
     </div>
 </footer>
+

@@ -337,6 +337,21 @@
             <input type="hidden" name="login_as" value="partner">
 
             <div class="form-group">
+                <label class="form-label" for="name">Full Name (New Users)</label>
+                <div class="input-wrap">
+                    <span class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </span>
+                    <input id="name" name="name" type="text"
+                           class="form-input"
+                           placeholder="John Doe"
+                           value="{{ old('name') }}">
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label" for="phone">Mobile Number</label>
                 <div class="input-wrap">
                     <span class="phone-prefix">+91</span>

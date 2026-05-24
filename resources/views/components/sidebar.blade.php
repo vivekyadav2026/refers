@@ -1,5 +1,5 @@
 <div class="flex h-20 shrink-0 items-center gap-3.5 border-b border-slate-100/80 -mx-6 px-8 mb-6">
-    <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+    <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
 </div>
 
 <nav class="flex flex-1 flex-col">
@@ -25,9 +25,9 @@
             ['route'=>'admin.kyc','icon'=>'shield-check','label'=>'KYC Approvals'],
             ['route'=>'admin.services','icon'=>'box','label'=>'Services Catalog'],
             ['route'=>'admin.training.index','icon'=>'graduation-cap','label'=>'Training Center'],
+            ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'],
             ] as $item)
             <!-- ['route'=>'admin.cms.index','icon'=>'file-text','label'=>'CMS Content'], -->
-            <!-- ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'], -->
             <!-- ['route'=>'admin.settings','icon'=>'settings','label'=>'Global Settings'], -->
             <!-- ['route'=>'admin.coupons.index','icon'=>'tag','label'=>'Coupons Manager'], -->
             <!-- ['route'=>'admin.marketing.index','icon'=>'image','label'=>'Marketing Assets'], -->
@@ -153,3 +153,4 @@
         </li>
     </ul>
 </nav>
+

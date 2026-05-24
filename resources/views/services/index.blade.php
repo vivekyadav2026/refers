@@ -203,9 +203,8 @@ body {
     <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
 
         <!-- Logo -->
-        <a href="{{ url('/') }}" class="flex flex-col leading-none select-none shrink-0">
-            <span style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:#6d28d9;line-height:1;">SK</span>
-            <span style="font-size:0.6rem;font-weight:700;color:#374151;letter-spacing:0.06em;line-height:1.2;">Solutions</span>
+        <a href="{{ url('/') }}" class="flex items-center gap-2 select-none shrink-0">
+            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-10 sm:h-12 w-auto object-contain">
         </a>
 
         <!-- Search Bar (Desktop & Mobile) -->
@@ -378,106 +377,17 @@ body {
     <div class="services-grid">
         
         @foreach($allSvcs as $svc)
-        @php
-            $lowerName = strtolower($svc->name);
-            $lowerSlug = strtolower($svc->slug);
-            
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-            $isBrandIcon = false;
-            
-            if (str_contains($lowerName, 'e-commerce') || str_contains($lowerSlug, 'ecommerce')) {
-                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-                $svg = '
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'informative') || str_contains($lowerSlug, 'informative')) {
-                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-                $svg = '
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 11h6"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'facebook')) {
-                $bg = 'linear-gradient(135deg, #e8f4fe, #dbeafe)';
-                $isBrandIcon = true;
-                $svg = '
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="20" fill="#1877F2"/>
-                        <path d="M27.5 20H22.5V17.5C22.5 16.67 23.17 16.25 24 16.25H27V12.5H24C21.24 12.5 19 14.74 19 17.5V20H16V24H19V32.5H22.5V24H26L27.5 20Z" fill="white"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'instagram')) {
-                $bg = 'linear-gradient(135deg, #fde8f4, #fce7f3)';
-                $isBrandIcon = true;
-                $svg = '
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#ffd600"/><stop offset="50%" stop-color="#ff6a00"/><stop offset="100%" stop-color="#ee0979"/></radialGradient>
-                            <radialGradient id="ig2" cx="5%" cy="100%" r="60%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-                        </defs>
-                        <rect width="40" height="40" rx="10" fill="url(#ig1)"/>
-                        <rect width="40" height="40" rx="10" fill="url(#ig2)"/>
-                        <rect x="10" y="10" width="20" height="20" rx="5" stroke="white" stroke-width="2.2" fill="none"/>
-                        <circle cx="20" cy="20" r="5.5" stroke="white" stroke-width="2.2" fill="none"/>
-                        <circle cx="27" cy="13" r="1.5" fill="white"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'google')) {
-                $bg = 'linear-gradient(135deg, #f0fdf4, #dcfce7)';
-                $isBrandIcon = true;
-                $svg = '
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 5L32 27H8L20 5Z" fill="#4285F4"/>
-                        <circle cx="32" cy="27" r="6" fill="#FBBC05"/>
-                        <circle cx="8" cy="27" r="6" fill="#34A853"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'youtube')) {
-                $bg = 'linear-gradient(135deg, #fef2f2, #fee2e2)';
-                $isBrandIcon = true;
-                $svg = '
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="40" height="40" rx="10" fill="#FF0000"/>
-                        <path d="M30.5 14.8C30.3 13.9 29.6 13.2 28.7 13C26.7 12.5 20 12.5 20 12.5C20 12.5 13.3 12.5 11.3 13C10.4 13.2 9.7 13.9 9.5 14.8C9 16.8 9 21 9 21C9 21 9 25.2 9.5 27.2C9.7 28.1 10.4 28.8 11.3 29C13.3 29.5 20 29.5 20 29.5C20 29.5 26.7 29.5 28.7 29C29.6 28.8 30.3 28.1 30.5 27.2C31 25.2 31 21 31 21C31 21 31 16.8 30.5 14.8Z" fill="white"/>
-                        <path d="M17.5 24.5V17.5L23.5 21L17.5 24.5Z" fill="#FF0000"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'seo') || str_contains($lowerSlug, 'seo')) {
-                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-                $svg = '
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'video') || str_contains($lowerName, 'reels') || str_contains($lowerName, 'edit')) {
-                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-                $svg = '
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
-                    </svg>
-                ';
-            } elseif (str_contains($lowerName, 'app') || str_contains($lowerName, 'mobile') || str_contains($lowerSlug, 'app')) {
-                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-                $svg = '
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <rect x="5" y="2" width="14" height="20" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01"/>
-                    </svg>
-                ';
-            } else {
-                $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
-                $iconName = $svc->icon ?? 'box';
-                $svg = '<i data-lucide="' . $iconName . '" class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600"></i>';
-            }
-        @endphp
-        
         <a href="{{ route('services.show', $svc->slug) }}" class="svc-card">
-            <div class="svc-icon-wrap" style="background: {{ $bg }}">
-                {!! $svg !!}
+            <div class="svc-icon-wrap {{ $svc->banner_image ? 'overflow-hidden' : '' }}" style="{{ $svc->banner_image ? 'background: transparent;' : '' }}">
+                @if($svc->banner_image)
+                    <img src="{{ asset('storage/' . $svc->banner_image) }}" alt="{{ $svc->name }}" class="w-full h-full object-cover">
+                @elseif($svc->icon)
+                    <i data-lucide="{{ $svc->icon }}" class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600"></i>
+                @else
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                @endif
             </div>
             <span class="svc-label">{{ $svc->name }}</span>
         </a>

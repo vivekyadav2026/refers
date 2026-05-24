@@ -50,7 +50,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Target Link (Optional)</label>
-                            <input type="url" name="link" placeholder="https://example.com" 
+                            <input type="text" name="link" placeholder="https://example.com or /services" 
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                         </div>
                         <div>
@@ -92,7 +92,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-200 bg-white">
                             @foreach($banners as $banner)
-                                <tr class="hover:bg-slate-50 transition-colors group">
+                                <tr x-data="{ editOpen: false }" class="hover:bg-slate-50 transition-colors group">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="h-20 w-36 rounded-lg overflow-hidden border border-slate-200 shadow-sm relative group cursor-pointer">
                                             <img src="{{ Storage::url($banner->image_path) }}" alt="{{ $banner->title }}" class="w-full h-full object-cover">
@@ -121,6 +121,9 @@
                                         </form>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button @click="editOpen = true" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit">
+                                            <i data-lucide="edit" class="w-4 h-4"></i>
+                                        </button>
                                         <form action="{{ route('admin.banners.destroy', $banner) }}" method="POST" class="inline" onsubmit="return confirm('Delete this banner permanently?');">
                                             @csrf
                                             @method('DELETE')
@@ -128,6 +131,46 @@
                                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                                             </button>
                                         </form>
+
+                                        <!-- Edit Modal -->
+                                        <div x-show="editOpen" 
+                                             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm"
+                                             x-transition.opacity
+                                             style="display: none;">
+                                            <div @click.away="editOpen = false" class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden text-left">
+                                                <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                                                    <h3 class="text-lg font-bold text-slate-900">Edit Banner</h3>
+                                                    <button @click="editOpen = false" type="button" class="text-slate-400 hover:text-slate-600">
+                                                        <i data-lucide="x" class="w-5 h-5"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="p-6">
+                                                    <form action="{{ route('admin.banners.update', $banner) }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="space-y-4">
+                                                            <div>
+                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Banner Title</label>
+                                                                <input type="text" name="title" value="{{ $banner->title }}" class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Target Link</label>
+                                                                <input type="text" name="link" value="{{ $banner->link }}" placeholder="/services or https://example.com" class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Update Image (Optional)</label>
+                                                                <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                                                <p class="text-xs text-slate-400 mt-1">Leave empty to keep current image</p>
+                                                            </div>
+                                                            <div class="pt-2 flex justify-end gap-3">
+                                                                <button type="button" @click="editOpen = false" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
+                                                                <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-sm">Save Changes</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

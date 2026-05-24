@@ -369,9 +369,8 @@ body {
     <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
 
         <!-- Logo -->
-        <a href="{{ url('/') }}" class="flex flex-col leading-none select-none shrink-0">
-            <span style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:#6d28d9;line-height:1;">SK</span>
-            <span style="font-size:0.6rem;font-weight:700;color:#374151;letter-spacing:0.06em;line-height:1.2;">Solutions</span>
+        <a href="{{ url('/') }}" class="flex items-center gap-2 select-none shrink-0">
+            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-12 w-auto object-contain">
         </a>
 
         <!-- Search Bar (Desktop & Mobile) -->
@@ -489,14 +488,17 @@ body {
         <!-- Interactive Carousel using Alpine.js -->
         <div x-data="{ 
             activeSlide: 0,
-            slidesCount: 5,
+            slidesCount: {{ $banners->count() ?: 1 }},
             autoPlay() {
-                setInterval(() => {
-                    this.activeSlide = (this.activeSlide + 1) % this.slidesCount;
-                }, 4000);
+                if (this.slidesCount > 1) {
+                    setInterval(() => {
+                        this.activeSlide = (this.activeSlide + 1) % this.slidesCount;
+                    }, 4000);
+                }
             }
         }" x-init="autoPlay()" class="relative group">
             
+            @if($banners->count() > 1)
             <!-- Navigation Buttons (Chevron Next & Prev) -->
             <button @click="activeSlide = (activeSlide - 1 + slidesCount) % slidesCount" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/70 backdrop-blur-md border border-white/80 flex items-center justify-center text-slate-800 hover:bg-white hover:shadow-lg transition-all focus:outline-none opacity-0 group-hover:opacity-100">
                 <svg class="w-4 h-4 sm:w-6 sm:h-6 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -508,36 +510,34 @@ body {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                 </svg>
             </button>
+            @endif
 
             <!-- Slide Wrapper -->
             <div class="relative overflow-hidden rounded-[16px] sm:rounded-[22px] shadow-sm border border-slate-100 aspect-[16/9] lg:aspect-[21/9] bg-slate-50">
                 <!-- Sliding Track -->
                 <div class="flex w-full h-full transition-transform duration-700 ease-in-out" :style="'transform: translateX(-' + (activeSlide * 100) + '%)'">
-                    <!-- Slide 1 -->
+                    @forelse($banners as $banner)
+                    <!-- Slide -->
                     <div class="w-full h-full shrink-0">
-                        <img src="{{ asset('storage/banners/slide1.png') }}" class="w-full h-full object-cover" alt="Informative Website Banner">
+                        @if($banner->link)
+                            <a href="{{ $banner->link }}" target="_blank">
+                                <img src="{{ asset('storage/' . $banner->image_path) }}" class="w-full h-full object-cover" alt="{{ $banner->title ?? 'Banner' }}">
+                            </a>
+                        @else
+                            <img src="{{ asset('storage/' . $banner->image_path) }}" class="w-full h-full object-cover" alt="{{ $banner->title ?? 'Banner' }}">
+                        @endif
                     </div>
-                    <!-- Slide 2 -->
-                    <div class="w-full h-full shrink-0">
-                        <img src="{{ asset('storage/banners/slide2.png') }}" class="w-full h-full object-cover" alt="Instagram Ads Banner">
+                    @empty
+                    <!-- Fallback slide -->
+                    <div class="w-full h-full shrink-0 flex items-center justify-center bg-gray-100">
+                        <span class="text-gray-400 font-medium">No banners available</span>
                     </div>
-                    <!-- Slide 3 -->
-                    <div class="w-full h-full shrink-0">
-                        <img src="{{ asset('storage/banners/slide3.png') }}" class="w-full h-full object-cover" alt="Mobile App Banner">
-                    </div>
-                    <!-- Slide 4 -->
-                    <div class="w-full h-full shrink-0">
-                        <img src="{{ asset('storage/banners/slide4.png') }}" class="w-full h-full object-cover" alt="SEO Banner">
-                    </div>
-                    <!-- Slide 5 -->
-                    <div class="w-full h-full shrink-0">
-                        <img src="{{ asset('storage/banners/slide5.png') }}" class="w-full h-full object-cover" alt="Video Editing Banner">
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
             <!-- Slide Dots Indicator -->
-            <div class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex justify-center gap-1.5 sm:gap-2 z-20">
+            <div x-show="slidesCount > 1" class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex justify-center gap-1.5 sm:gap-2 z-20">
                 <template x-for="i in slidesCount">
                     <button @click="activeSlide = i - 1" class="h-1.5 sm:h-2 rounded-full transition-all duration-300 focus:outline-none backdrop-blur-sm shadow-sm" :class="activeSlide === i - 1 ? 'bg-violet-600 w-4 sm:w-6' : 'bg-slate-300/80 hover:bg-slate-450 w-1.5 sm:w-2'"></button>
                 </template>
@@ -581,114 +581,25 @@ body {
 
         <!-- Services grid -->
         <div class="services-grid">
-
-            <!-- 1. E-commerce Website -->
-            <a href="{{ $getServiceRoute('e-commerce', 'custom-e-commerce-website-development') }}" class="svc-card">
-                <div class="svc-icon-wrap">
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
+            @php
+                $allServices = $servicesByCategory->flatten(1);
+            @endphp
+            @foreach($allServices as $service)
+            <a href="{{ route('services.show', $service->slug) }}" class="svc-card">
+                <div class="svc-icon-wrap {{ $service->banner_image ? 'overflow-hidden' : '' }}" style="{{ $service->banner_image ? 'background: transparent;' : '' }}">
+                    @if($service->banner_image)
+                        <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
+                    @elseif($service->icon)
+                        <i data-lucide="{{ $service->icon }}" class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600"></i>
+                    @else
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    @endif
                 </div>
-                <span class="svc-label">E-commerce Website Design & Development</span>
+                <span class="svc-label">{{ $service->name }}</span>
             </a>
-
-            <!-- 2. Informative Website -->
-            <a href="{{ $getServiceRoute('informative', 'uiux-brand-identity-figma-design') }}" class="svc-card">
-                <div class="svc-icon-wrap">
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 11h6"/>
-                    </svg>
-                </div>
-                <span class="svc-label">Informative Website Design & Development</span>
-            </a>
-
-            <!-- 3. Facebook Ads -->
-            <a href="{{ $getServiceRoute('facebook', 'facebook-instagram-viral-ads-mastery') }}" class="svc-card">
-                <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#e8f4fe,#dbeafe);">
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="20" fill="#1877F2"/>
-                        <path d="M27.5 20H22.5V17.5C22.5 16.67 23.17 16.25 24 16.25H27V12.5H24C21.24 12.5 19 14.74 19 17.5V20H16V24H19V32.5H22.5V24H26L27.5 20Z" fill="white"/>
-                    </svg>
-                </div>
-                <span class="svc-label">Facebook Ads</span>
-            </a>
-
-            <!-- 4. Instagram Ads -->
-            <a href="{{ $getServiceRoute('instagram', 'facebook-instagram-viral-ads-mastery') }}" class="svc-card">
-                <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#fde8f4,#fce7f3);">
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#ffd600"/><stop offset="50%" stop-color="#ff6a00"/><stop offset="100%" stop-color="#ee0979"/></radialGradient>
-                            <radialGradient id="ig2" cx="5%" cy="100%" r="60%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-                        </defs>
-                        <rect width="40" height="40" rx="10" fill="url(#ig1)"/>
-                        <rect width="40" height="40" rx="10" fill="url(#ig2)"/>
-                        <rect x="10" y="10" width="20" height="20" rx="5" stroke="white" stroke-width="2.2" fill="none"/>
-                        <circle cx="20" cy="20" r="5.5" stroke="white" stroke-width="2.2" fill="none"/>
-                        <circle cx="27" cy="13" r="1.5" fill="white"/>
-                    </svg>
-                </div>
-                <span class="svc-label">Instagram Ads</span>
-            </a>
-
-            <!-- 5. Google Ads -->
-            <a href="{{ $getServiceRoute('google', 'advanced-seo-google-search-ranking') }}" class="svc-card">
-                <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Google Ads / Campaign Manager icon approximation -->
-                        <path d="M20 5L32 27H8L20 5Z" fill="#4285F4"/>
-                        <circle cx="32" cy="27" r="6" fill="#FBBC05"/>
-                        <circle cx="8" cy="27" r="6" fill="#34A853"/>
-                    </svg>
-                </div>
-                <span class="svc-label">Google Ads</span>
-            </a>
-
-            <!-- 6. YouTube Ads -->
-            <a href="{{ $getServiceRoute('youtube', 'cinematic-video-editing-viral-reels') }}" class="svc-card">
-                <div class="svc-icon-wrap" style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">
-                    <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="40" height="40" rx="10" fill="#FF0000"/>
-                        <path d="M30.5 14.8C30.3 13.9 29.6 13.2 28.7 13C26.7 12.5 20 12.5 20 12.5C20 12.5 13.3 12.5 11.3 13C10.4 13.2 9.7 13.9 9.5 14.8C9 16.8 9 21 9 21C9 21 9 25.2 9.5 27.2C9.7 28.1 10.4 28.8 11.3 29C13.3 29.5 20 29.5 20 29.5C20 29.5 26.7 29.5 28.7 29C29.6 28.8 30.3 28.1 30.5 27.2C31 25.2 31 21 31 21C31 21 31 16.8 30.5 14.8Z" fill="white"/>
-                        <path d="M17.5 24.5V17.5L23.5 21L17.5 24.5Z" fill="#FF0000"/>
-                    </svg>
-                </div>
-                <span class="svc-label">YouTube Ads</span>
-            </a>
-
-            <!-- 7. SEO -->
-            <a href="{{ $getServiceRoute('seo', 'advanced-seo-google-search-ranking') }}" class="svc-card">
-                <div class="svc-icon-wrap">
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
-                    </svg>
-                </div>
-                <span class="svc-label">SEO (Search Engine Optimization)</span>
-            </a>
-
-            <!-- 8. Reels & Video Editing -->
-            <a href="{{ $getServiceRoute('video', 'cinematic-video-editing-viral-reels') }}" class="svc-card">
-                <div class="svc-icon-wrap">
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
-                    </svg>
-                </div>
-                <span class="svc-label">Reels & Video Editing</span>
-            </a>
-
-            <!-- 9. Mobile App Development -->
-            <a href="{{ $getServiceRoute('app', 'premium-mobile-app-development') }}" class="svc-card">
-                <div class="svc-icon-wrap">
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <rect x="5" y="2" width="14" height="20" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01"/>
-                    </svg>
-                </div>
-                <span class="svc-label">Mobile App Development</span>
-            </a>
-
+            @endforeach
         </div>
     </div>
 </section>
@@ -818,3 +729,4 @@ body {
 </nav>
 
 @endsection
+

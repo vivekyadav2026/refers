@@ -20,7 +20,7 @@ class AdminBannerController extends Controller
         $request->validate([
             'title' => 'nullable|string|max:255',
             'image' => 'required|image|max:5120',
-            'link' => 'nullable|url'
+            'link' => 'nullable|string'
         ]);
 
         $path = $request->file('image')->store('banners', 'public');
@@ -33,6 +33,28 @@ class AdminBannerController extends Controller
         ]);
 
         return back()->with('success', 'Banner uploaded successfully.');
+    }
+
+    public function update(Request $request, Banner $banner)
+    {
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'image' => 'nullable|image|max:5120',
+            'link' => 'nullable|string'
+        ]);
+
+        if ($request->hasFile('image')) {
+            if (Storage::disk('public')->exists($banner->image_path)) {
+                Storage::disk('public')->delete($banner->image_path);
+            }
+            $banner->image_path = $request->file('image')->store('banners', 'public');
+        }
+
+        $banner->title = $request->title;
+        $banner->link = $request->link;
+        $banner->save();
+
+        return back()->with('success', 'Banner updated successfully.');
     }
 
     public function toggle(Banner $banner)

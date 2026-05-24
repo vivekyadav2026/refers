@@ -73,7 +73,7 @@ select.input-field {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center gap-2 select-none shrink-0">
-            <img src="{{ asset('logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
         </a>
 
         <!-- Search Bar (Desktop & Mobile) -->
@@ -480,4 +480,5 @@ select.input-field {
 </nav>
 
 @endsection
+
 
