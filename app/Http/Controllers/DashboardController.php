@@ -80,14 +80,20 @@ class DashboardController extends Controller
 
     public function profile()
     {
-        return view('partner.profile');
+        $categories = \App\Models\BusinessCategory::whereNull('parent_id')
+                        ->with(['subcategories' => function($q) {
+                            $q->where('is_active', true);
+                        }])
+                        ->where('is_active', true)
+                        ->get();
+        return view('partner.profile', compact('categories'));
     }
 
     public function updateProfile(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email,' . auth()->id(),
             'company_name' => 'nullable|string|max:255',
             'business_type' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|max:2048',

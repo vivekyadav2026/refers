@@ -260,11 +260,12 @@
             </div>
 
             <!-- Mobile Bottom Navigation Bar -->
-            @auth
+            @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
             <nav class="mobile-bottom-nav lg:hidden">
                 @php
-                    $isAdmin = auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin';
-                    $isPartner = auth()->user()->role === 'partner';
+                    $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
+                    $isAdmin = in_array($u->role, ['admin', 'superadmin']);
+                    $isPartner = $u->role === 'partner';
                 @endphp
                 @if($isAdmin)
                     <a href="{{ route('admin.dashboard') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('admin.dashboard') ? 'text-indigo-600' : 'text-slate-500' }}">
@@ -307,20 +308,20 @@
                     </a>
                     <a href="{{ route('cart.index') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('cart.index') ? 'text-indigo-600' : 'text-slate-500' }} relative">
                         <i data-lucide="shopping-cart" class="w-5 h-5 mb-0.5"></i>
-                        @if(auth()->user()->cartItems->count() > 0)
-                        <span class="absolute top-1 right-5 w-4 h-4 bg-indigo-600 text-white text-[9px] font-black rounded-full flex items-center justify-center">{{ auth()->user()->cartItems->count() }}</span>
+                        @if($u && method_exists($u, 'cartItems') && $u->cartItems()->count() > 0)
+                        <span class="absolute top-1 right-5 w-4 h-4 bg-indigo-600 text-white text-[9px] font-black rounded-full flex items-center justify-center">{{ $u->cartItems()->count() }}</span>
                         @endif
                         Cart
                     </a>
                     <a href="{{ route('customer.orders') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('customer.orders') ? 'text-indigo-600' : 'text-slate-500' }}">
                         <i data-lucide="package" class="w-5 h-5 mb-0.5"></i> Orders
                     </a>
-                    <a href="{{ route('customer.profile') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('customer.profile') ? 'text-indigo-600' : 'text-slate-500' }}">
-                        <i data-lucide="user" class="w-5 h-5 mb-0.5"></i> Profile
+                    <a href="{{ url('/portfolio') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->is('portfolio') ? 'text-indigo-600' : 'text-slate-500' }}">
+                        <i data-lucide="briefcase" class="w-5 h-5 mb-0.5"></i> Portfolio
                     </a>
                 @endif
             </nav>
-            @endauth
+            @endif
         </div>
 
     @else

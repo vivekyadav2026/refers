@@ -15,7 +15,7 @@ class PartnerUnlockMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
+        $user = auth('partner')->user();
         
         if (!$user) {
             return redirect()->route('login');

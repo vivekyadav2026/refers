@@ -18,6 +18,7 @@
             ['route'=>'admin.dashboard','icon'=>'layout-dashboard','label'=>'Dashboard'],
             ['route'=>'admin.users','icon'=>'users','label'=>'Users Management'],
             ['route'=>'admin.orders','icon'=>'shopping-bag','label'=>'All Orders'],
+            ['route'=>'admin.post-payments.index','icon'=>'file-text','label'=>'Project Submissions'],
             ['route'=>'admin.commissions','icon'=>'coins','label'=>'Commissions'],
             ['route'=>'admin.tickets','icon'=>'message-square','label'=>'Support Tickets'],
             ['route'=>'admin.withdrawals','icon'=>'banknote','label'=>'Withdrawals'],
@@ -26,6 +27,8 @@
             ['route'=>'admin.services','icon'=>'box','label'=>'Services Catalog'],
             ['route'=>'admin.training.index','icon'=>'graduation-cap','label'=>'Training Center'],
             ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'],
+            ['route'=>'admin.portfolios.index','icon'=>'briefcase','label'=>'Portfolio Manager'],
+            ['route'=>'admin.business-categories.index','icon'=>'layers','label'=>'Business Categories'],
             ] as $item)
             <!-- ['route'=>'admin.cms.index','icon'=>'file-text','label'=>'CMS Content'], -->
             <!-- ['route'=>'admin.settings','icon'=>'settings','label'=>'Global Settings'], -->

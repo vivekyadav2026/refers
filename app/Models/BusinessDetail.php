@@ -17,11 +17,13 @@ class BusinessDetail extends Model
         'product_images',
         'support_phone',
         'support_email',
-        'office_address'
+        'office_address',
+        'extra_details'
     ];
 
     protected $casts = [
         'product_images' => 'array',
+        'extra_details' => 'array',
     ];
 
     public function order()

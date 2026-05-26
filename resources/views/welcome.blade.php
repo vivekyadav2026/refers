@@ -375,7 +375,7 @@ body {
 
         <!-- Search Bar (Desktop & Mobile) -->
         <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-gray-50 hover:bg-gray-100/80 focus:bg-white text-[11px] sm:text-xs font-bold text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" style="margin-left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -440,10 +440,10 @@ body {
                 </div>
             </div>
 
-            @auth
+            @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
                 <!-- User avatar -->
                 @php
-                    $u = auth()->user();
+                    $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
                     $ini = strtoupper(implode('', array_map(fn($w)=>mb_substr($w,0,1), array_slice(array_filter(explode(' ',trim($u->name))),0,2))));
                     $dashUrl = match($u->role){ 'admin'=>route('admin.dashboard'),'partner'=>route('partner.dashboard'),default=>route('customer.dashboard')};
                 @endphp
@@ -474,7 +474,7 @@ body {
                     <a href="{{ route('login') }}" class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Log in</a>
                     <a href="{{ route('services.index') }}" class="btn-cta">Explore Services <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
                 </div>
-            @endauth
+            @endif
         </div>
     </div>
 </header>
@@ -584,7 +584,7 @@ body {
             @php
                 $allServices = $servicesByCategory->flatten(1);
             @endphp
-            @foreach($allServices as $service)
+            @foreach($allServices->take(8) as $service)
             <a href="{{ route('services.show', $service->slug) }}" class="svc-card">
                 <div class="svc-icon-wrap {{ $service->banner_image ? 'overflow-hidden' : '' }}" style="{{ $service->banner_image ? 'background: transparent;' : '' }}">
                     @if($service->banner_image)
@@ -600,6 +600,12 @@ body {
                 <span class="svc-label">{{ $service->name }}</span>
             </a>
             @endforeach
+            <a href="{{ route('services.index') }}" class="svc-card">
+                <div class="svc-icon-wrap">
+                    <i data-lucide="grid-3x3" class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600"></i>
+                </div>
+                <span class="svc-label">And More</span>
+            </a>
         </div>
     </div>
 </section>
@@ -611,7 +617,7 @@ body {
 <section id="why-choose-us" class="px-3 sm:px-5 lg:px-8 pt-5 pb-24 sm:pt-8 sm:pb-24 lg:py-12 mb-0 scroll-mt-20" style="background:#f8f8fb;">
     <div class="max-w-5xl mx-auto">
 
-        <h2 class="section-title mb-4 sm:mb-6">Why Choose SK Solutions</h2>
+        <h2 class="section-title mb-4 sm:mb-6 uppercase">WHY CHOOSE SK SOLUTIONS</h2>
 
         <div class="why-row">
 
@@ -637,15 +643,15 @@ body {
                 <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Enterprise-grade security standards and stable hosting guarantees to keep your systems running 24/7.</p>
             </div>
 
-            <!-- Grow Your Business -->
+            <!-- Experienced Team -->
             <div class="why-card group">
                 <div class="why-icon-wrap group-hover:scale-110 transition-transform">
                     <svg class="w-5 h-5 lg:w-6 lg:h-6 text-violet-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                 </div>
-                <span class="why-label">Grow Your Business</span>
-                <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Targeted digital marketing campaigns and sales funnels custom-tailored to skyrocket your conversion metrics.</p>
+                <span class="why-label">Experienced Team</span>
+                <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Our team of experts brings years of experience in delivering high-quality, modern, and scalable digital solutions tailored to your unique needs.</p>
             </div>
 
             <!-- Dedicated Support -->
@@ -694,9 +700,10 @@ body {
         Services
     </a>
 
-    @auth
+    @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
         @php
-            $ordersUrl = match(auth()->user()->role){
+            $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
+            $ordersUrl = match($u->role){
                 'admin' => route('admin.dashboard'),
                 'partner' => route('partner.orders'),
                 default => route('customer.orders'),
@@ -705,7 +712,7 @@ body {
         <a href="{{ $ordersUrl }}" class="nav-item" id="nav-orders">
     @else
         <a href="{{ route('login') }}" class="nav-item" id="nav-orders">
-    @endauth
+    @endif
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>
@@ -719,11 +726,11 @@ body {
         Support
     </a>
 
-    <a href="{{ auth()->check() ? url('/dashboard') : route('login') }}" class="nav-item" id="nav-profile">
+    <a href="{{ url('/portfolio') }}" class="nav-item" id="nav-portfolio">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
         </svg>
-        {{ auth()->check() ? 'Dashboard' : 'Profile' }}
+        Portfolio
     </a>
 
 </nav>

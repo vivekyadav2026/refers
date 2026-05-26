@@ -49,7 +49,7 @@ body {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center gap-2 select-none">
-            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto object-contain">
         </a>
 
         <!-- Desktop Navigation -->
@@ -169,40 +169,41 @@ body {
     // Fallback legacy plan if no plans set
     if (!$hasPlan) {
         $plans = [
-            'basic'    => ['price' => $service->min_price, 'description' => $service->short_description, 'delivery' => $service->delivery_timeline ?? '', 'revisions' => '2', 'features' => $service->features ?? []],
-            'standard' => ['price' => $service->min_price * 1.5, 'description' => 'Standard package with more features', 'delivery' => '', 'revisions' => '5', 'features' => $service->features ?? []],
-            'premium'  => ['price' => $service->min_price * 2.5, 'description' => 'Premium package — everything included', 'delivery' => '', 'revisions' => 'Unlimited', 'features' => $service->features ?? []],
+            'Basic'    => ['price' => $service->min_price, 'description' => $service->short_description, 'delivery' => $service->delivery_timeline ?? '', 'features' => $service->features ?? [], 'emoji' => '🌱'],
+            'Standard' => ['price' => $service->min_price * 1.5, 'description' => 'Standard package with more features', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '⭐'],
+            'Premium'  => ['price' => $service->min_price * 2.5, 'description' => 'Premium package — everything included', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '👑'],
         ];
     }
-
-    // Theme mapping
-    $premiumMappingRules = [
-        'e-commerce' => ['img' => asset('storage/banners/srv_ecommerce.png'), 'bg' => 'from-indigo-50 to-purple-50', 'icon' => 'shopping-cart'],
-        'web'        => ['img' => asset('storage/banners/srv_web.png'),       'bg' => 'from-blue-50 to-indigo-50',   'icon' => 'layout-template'],
-        'app'        => ['img' => asset('storage/banners/srv_app.png'),       'bg' => 'from-sky-50 to-indigo-100',   'icon' => 'smartphone'],
-        'facebook'   => ['img' => asset('storage/banners/srv_fb.png'),        'bg' => 'from-blue-50 to-blue-100',    'icon' => 'facebook'],
-        'instagram'  => ['img' => asset('storage/banners/srv_ig.png'),        'bg' => 'from-pink-50 to-rose-100',    'icon' => 'instagram'],
-        'google'     => ['img' => asset('storage/banners/srv_google.png'),    'bg' => 'from-green-50 to-emerald-100','icon' => 'bar-chart'],
-        'youtube'    => ['img' => asset('storage/banners/srv_yt.png'),        'bg' => 'from-red-50 to-rose-100',     'icon' => 'youtube'],
-        'seo'        => ['img' => asset('storage/banners/srv_seo.png'),       'bg' => 'from-purple-50 to-fuchsia-100','icon' => 'search'],
-        'video'      => ['img' => asset('storage/banners/srv_reels.png'),     'bg' => 'from-fuchsia-50 to-pink-100', 'icon' => 'clapperboard'],
-        'reels'      => ['img' => asset('storage/banners/srv_reels.png'),     'bg' => 'from-fuchsia-50 to-pink-100', 'icon' => 'clapperboard'],
-        'ui/ux'      => ['img' => asset('storage/banners/srv_web.png'),       'bg' => 'from-amber-50 to-orange-100', 'icon' => 'palette'],
-        'figma'      => ['img' => asset('storage/banners/srv_web.png'),       'bg' => 'from-amber-50 to-orange-100', 'icon' => 'palette'],
-        'chatbot'    => ['img' => asset('storage/banners/srv_web.png'),       'bg' => 'from-violet-50 to-indigo-100','icon' => 'message-square'],
-        'ai'         => ['img' => asset('storage/banners/srv_web.png'),       'bg' => 'from-violet-50 to-indigo-100','icon' => 'cpu'],
-    ];
-    $lowerName = strtolower($service->name);
-    $match = null;
-    foreach ($premiumMappingRules as $key => $mapping) {
-        if (str_contains($lowerName, $key)) { $match = $mapping; break; }
-    }
-    $themeBg   = $match ? $match['bg']   : 'from-blue-50 to-indigo-50';
-    $themeImg  = $match ? $match['img']  : asset('storage/banners/srv_web.png');
-    $themeIcon = $match ? $match['icon'] : ($service->icon ?? 'box');
+    
+    // Select first plan as default
+    $defaultPlanKey = array_key_first($plans) ?? 'Basic';
+    
+    // Charges (Admin Toggles)
+    $enableGst = \App\Models\Setting::get_val('enable_gst', '1') == '1';
+    $gstPercent = (float) \App\Models\Setting::get_val('gst_percent', '18');
+    $enableDomain = \App\Models\Setting::get_val('enable_domain_charge', '0') == '1'; // Default off unless toggled
+    $domainCharge = (float) \App\Models\Setting::get_val('domain_charge_amount', '999');
 @endphp
 
-<div x-data="{ buyNowModal: false, isProcessing: false, selectedPlan: 'basic', selectedPlanData: {{ json_encode($plans) }} }"
+<div x-data="{ 
+    buyNowModal: false, 
+    isProcessing: false, 
+    selectedPlan: '{{ addslashes($defaultPlanKey) }}', 
+    selectedPlanData: {{ json_encode($plans) }},
+    enableGst: {{ $enableGst ? 'true' : 'false' }},
+    gstPercent: {{ $gstPercent }},
+    enableDomain: {{ $enableDomain ? 'true' : 'false' }},
+    domainCharge: {{ $domainCharge }},
+    get subtotal() {
+        return Number(this.selectedPlanData[this.selectedPlan]?.price || 0);
+    },
+    get gstAmount() {
+        return this.enableGst ? (this.subtotal * (this.gstPercent / 100)) : 0;
+    },
+    get finalTotal() {
+        return this.subtotal + this.gstAmount + (this.enableDomain ? this.domainCharge : 0);
+    }
+}"
      @processing-start.window="isProcessing = true"
      @processing-end.window="isProcessing = false"
      class="bg-[#FAFAFA] min-h-screen relative overflow-hidden">
@@ -229,7 +230,7 @@ body {
         <div class="mb-6 max-w-4xl relative z-10">
             <div class="flex flex-wrap items-center gap-2 mb-3">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200/40 text-blue-700 text-[9px] font-bold uppercase tracking-wider">
-                    <i data-lucide="{{ $themeIcon }}" class="w-3 h-3"></i> {{ $service->category }}
+                    <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-3 h-3"></i> {{ $service->category }}
                 </span>
                 @if($service->is_popular)
                 <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/40 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
@@ -240,13 +241,17 @@ body {
             <h1 class="text-3xl sm:text-4xl md:text-[42px] font-black text-slate-900 tracking-tight leading-tight mb-3">
                 {{ $service->name }}
             </h1>
+            @if($service->short_description)
             <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-2xl">
                 {{ $service->short_description }}
             </p>
+            @endif
+            @if(isset($plans['basic']['price']) && $plans['basic']['price'] > 0)
             <div class="mt-4 flex items-center gap-3">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Starting from</span>
-                <span class="text-2xl font-black text-indigo-700">₹{{ number_format($plans['basic']['price'] ?? $service->min_price, 0) }}</span>
+                <span class="text-2xl font-black text-indigo-700">₹{{ number_format($plans['basic']['price'], 0) }}</span>
             </div>
+            @endif
         </div>
 
         {{-- TWO-COLUMN GRID --}}
@@ -257,23 +262,8 @@ body {
 
                 {{-- BANNER MEDIA --}}
                 @if($service->banner_image)
-                <div class="w-full aspect-[21/9] sm:aspect-[16/7] rounded-[32px] overflow-hidden border border-slate-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
+                <div class="w-full aspect-[21/9] sm:aspect-[16/7] rounded-[32px] overflow-hidden border border-slate-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.015)] bg-slate-50 flex items-center justify-center">
                     <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
-                </div>
-                @else
-                <div class="w-full min-h-[145px] sm:min-h-[200px] md:min-h-[240px] rounded-[32px] overflow-hidden border border-slate-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.015)] bg-gradient-to-br {{ $themeBg }} flex flex-col sm:flex-row items-center justify-between p-5 sm:p-7 md:p-8 relative">
-                    <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none opacity-80"></div>
-                    <div class="relative z-10 max-w-full sm:max-w-[55%] text-center sm:text-left mb-3 sm:mb-0">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-600/10 border border-indigo-600/20 text-indigo-900 text-[9px] font-black uppercase tracking-wider mb-2">
-                            🌟 Premium SKSolutions Asset
-                        </span>
-                        <h2 class="text-base sm:text-lg md:text-xl font-black text-slate-900 leading-tight tracking-tight select-none">
-                            {{ $service->name }}
-                        </h2>
-                    </div>
-                    <div class="relative z-10 w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center shrink-0">
-                        <img src="{{ $themeImg }}" alt="{{ $service->name }}" class="max-w-full max-h-full drop-shadow-2xl object-contain banner-mockup-float">
-                    </div>
                 </div>
                 @endif
 
@@ -313,14 +303,14 @@ body {
                 <div class="bg-white rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] overflow-hidden">
 
                     <!-- Plan Tabs -->
-                    <div class="flex border-b border-slate-100 bg-slate-50/60">
-                        @foreach(['basic' => ['label' => 'Basic', 'emoji' => '🌱'], 'standard' => ['label' => 'Standard', 'emoji' => '⭐'], 'premium' => ['label' => 'Premium', 'emoji' => '👑']] as $planKey => $planMeta)
+                    <div class="flex border-b border-slate-100 bg-slate-50/60 overflow-x-auto">
+                        @foreach($plans as $planKey => $planMeta)
                         <button
                             type="button"
-                            @click="selectedPlan = '{{ $planKey }}'"
-                            :class="selectedPlan === '{{ $planKey }}' ? 'plan-tab-btn active text-indigo-700 font-black bg-white border-b-2 border-indigo-500' : 'plan-tab-btn text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100'"
-                            class="flex-1 py-4 text-xs uppercase tracking-wider relative transition-all">
-                            {{ $planMeta['emoji'] }} {{ $planMeta['label'] }}
+                            @click="selectedPlan = '{{ addslashes($planKey) }}'"
+                            :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'plan-tab-btn active text-indigo-700 font-black bg-white border-b-2 border-indigo-500' : 'plan-tab-btn text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100'"
+                            class="flex-1 min-w-fit px-4 py-4 text-xs uppercase tracking-wider relative transition-all whitespace-nowrap">
+                            {{ $planMeta['emoji'] ?? '' }} {{ $planKey }}
                         </button>
                         @endforeach
                     </div>
@@ -337,9 +327,9 @@ body {
                             <p class="text-xs text-slate-500 font-medium leading-relaxed" x-text="selectedPlanData[selectedPlan]?.description || ''"></p>
                         </div>
 
-                        <!-- Delivery + Revisions -->
-                        <div class="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100">
-                            <div class="flex items-center gap-2" x-show="selectedPlanData[selectedPlan]?.delivery">
+                        <!-- Delivery -->
+                        <div class="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100" x-show="selectedPlanData[selectedPlan]?.delivery">
+                            <div class="flex items-center gap-2">
                                 <div class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
                                     <i data-lucide="clock" class="w-3.5 h-3.5"></i>
                                 </div>
@@ -348,20 +338,11 @@ body {
                                     <div class="text-xs font-black text-slate-800" x-text="selectedPlanData[selectedPlan]?.delivery"></div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
-                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                                </div>
-                                <div>
-                                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Revisions</div>
-                                    <div class="text-xs font-black text-slate-800" x-text="selectedPlanData[selectedPlan]?.revisions || '—'"></div>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Features List -->
                         <div class="mb-5 space-y-2" x-show="selectedPlanData[selectedPlan]?.features?.length">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-3">What's included</div>
+                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-3">Package Details</div>
                             <template x-for="feature in (selectedPlanData[selectedPlan]?.features || [])" :key="feature">
                                 <div class="flex items-start gap-2.5">
                                     <div class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
@@ -427,7 +408,11 @@ body {
                     </div>
                 </div>
 
-                {{-- COMPARE PLANS MINI TABLE --}}
+                {{-- COMPARE PLANS MINI TABLE: only show if more than 1 plan with real prices --}}
+                @php
+                    $filledPlans = array_filter($plans, fn($p) => !empty($p['price']) && $p['price'] > 0);
+                @endphp
+                @if(count($filledPlans) > 1)
                 <div class="bg-white rounded-[32px] p-5 sm:p-6 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
                     <h3 class="text-sm font-black text-slate-900 mb-4 tracking-tight flex items-center gap-2">
                         <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i> Compare Plans
@@ -439,23 +424,21 @@ body {
                                     <th class="text-left py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Plan</th>
                                     <th class="text-center py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Price</th>
                                     <th class="text-center py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Delivery</th>
-                                    <th class="text-center py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Revisions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
-                                @foreach(['basic' => ['label' => '🌱 Basic', 'color' => 'text-slate-700'], 'standard' => ['label' => '⭐ Standard', 'color' => 'text-indigo-700'], 'premium' => ['label' => '👑 Premium', 'color' => 'text-amber-700']] as $pk => $pm)
-                                @php $pd = $plans[$pk] ?? []; @endphp
+                                @foreach($filledPlans as $pk => $pd)
                                 <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="py-2.5 px-2 font-black {{ $pm['color'] }}">{{ $pm['label'] }}</td>
+                                    <td class="py-2.5 px-2 font-black text-slate-700">{{ $pd['emoji'] ?? '' }} {{ $pk }}</td>
                                     <td class="py-2.5 px-2 text-center font-bold text-slate-800">₹{{ number_format($pd['price'] ?? 0, 0) }}</td>
-                                    <td class="py-2.5 px-2 text-center text-slate-600">{{ $pd['delivery'] ?: '—' }}</td>
-                                    <td class="py-2.5 px-2 text-center text-slate-600">{{ $pd['revisions'] ?: '—' }}</td>
+                                    <td class="py-2.5 px-2 text-center text-slate-600">{{ $pd['delivery'] ?? '—' }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
+                @endif
 
             </div>
         </div>
@@ -484,20 +467,54 @@ body {
                         <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2" id="modal-title">
-                                    <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i> Order Now
+                                    <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i> Order Summary
                                 </h3>
-                                <p class="text-[10px] text-slate-500 font-bold mt-0.5" x-text="'Plan: ' + selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1) + ' — ₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></p>
+                                <p class="text-[10px] text-slate-500 font-bold mt-0.5">Review your package details</p>
                             </div>
                             <button @click="buyNowModal = false" type="button" class="p-2 -mr-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-200/50">
                                 <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </button>
                         </div>
 
+                        <!-- Modal Body -->
+                        <div class="p-5 sm:p-6 bg-slate-50">
+                            <!-- Selected Package Summary -->
+                            <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-black text-slate-900" x-text="selectedPlan + ' Package'"></span>
+                                    <span class="text-sm font-black text-indigo-700" x-text="'₹' + subtotal.toLocaleString('en-IN')"></span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mb-4" x-text="selectedPlanData[selectedPlan]?.description"></p>
+                                
+                                <div class="space-y-2 border-t border-slate-100 pt-3">
+                                    <template x-if="enableDomain">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="text-slate-500 font-medium">Domain & Hosting Charges</span>
+                                            <span class="font-bold text-slate-700" x-text="'₹' + domainCharge.toLocaleString('en-IN')"></span>
+                                        </div>
+                                    </template>
+                                    
+                                    <template x-if="enableGst">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="text-slate-500 font-medium" x-text="'GST (' + gstPercent + '%)'"></span>
+                                            <span class="font-bold text-slate-700" x-text="'₹' + gstAmount.toLocaleString('en-IN')"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            
+                            <!-- Total -->
+                            <div class="flex items-center justify-between bg-indigo-50 rounded-2xl border border-indigo-100 p-4 mb-6">
+                                <span class="text-sm font-black text-indigo-900">Total Amount</span>
+                                <span class="text-lg font-black text-indigo-700" x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
+                            </div>
+                        </div>
+
                         <form id="buyNowForm" class="p-5 sm:p-6 max-h-[80vh] overflow-y-auto">
                             @csrf
                             <input type="hidden" name="service_id" value="{{ $service->id }}">
                             <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
-                            <input type="hidden" name="plan_price" x-bind:value="selectedPlanData[selectedPlan]?.price || {{ $service->min_price }}">
+                            <input type="hidden" name="plan_price" x-bind:value="finalTotal">
 
                             <div class="space-y-4 font-sans">
                                 <div>

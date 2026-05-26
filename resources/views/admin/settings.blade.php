@@ -53,6 +53,14 @@
                     <i data-lucide="wallet" class="w-5 h-5"></i>
                     Withdrawals & Payouts
                 </div>
+                <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 text-blue-700 font-semibold border border-blue-100 transition-colors">
+                    <i data-lucide="headphones" class="w-5 h-5"></i>
+                    Support Contacts
+                </div>
+                <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-50 text-amber-700 font-semibold border border-amber-100 transition-colors">
+                    <i data-lucide="receipt" class="w-5 h-5"></i>
+                    Billing & Taxes
+                </div>
             </div>
 
             <!-- Main Settings Form -->
@@ -138,6 +146,85 @@
                                 <input type="checkbox" name="require_kyc" value="1" class="sr-only peer" {{ old('require_kyc', $settings['require_kyc']) ? 'checked' : '' }}>
                                 <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                             </label>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+                
+                <!-- Support Contacts Settings -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-200 bg-slate-50">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i data-lucide="headphones" class="w-5 h-5 text-blue-500"></i>
+                            Support Contacts
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Contact details displayed to users on the Support page.</p>
+                    </div>
+                    
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Support Email <span class="text-red-500">*</span></label>
+                            <input type="email" name="support_email" value="{{ old('support_email', $settings['support_email']) }}" required
+                                class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block p-3 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Support Phone / WhatsApp <span class="text-red-500">*</span></label>
+                            <input type="text" name="support_phone" value="{{ old('support_phone', $settings['support_phone']) }}" required
+                                class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block p-3 outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing & Taxes Settings -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-200 bg-slate-50">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i data-lucide="receipt" class="w-5 h-5 text-amber-500"></i>
+                            Billing & Taxes
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">Configure global GST rates and mandatory domain charges for checkouts.</p>
+                    </div>
+                    
+                    <div class="p-6 space-y-6">
+                        <div class="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-slate-50">
+                            <div>
+                                <div class="text-sm font-semibold text-slate-900">Enable GST Calculation</div>
+                                <div class="text-xs text-slate-500 mt-1">If enabled, GST will be added during package checkout.</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="enable_gst" value="1" class="sr-only peer" {{ old('enable_gst', $settings['enable_gst']) ? 'checked' : '' }}>
+                                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">GST Percentage (%)</label>
+                            <div class="relative">
+                                <input type="number" name="gst_percent" value="{{ old('gst_percent', $settings['gst_percent']) }}" min="0" max="100" step="0.1"
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block p-3 pr-10 outline-none transition-all">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 font-bold">%</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-slate-50 mt-6">
+                            <div>
+                                <div class="text-sm font-semibold text-slate-900">Enable Domain & Hosting Charge</div>
+                                <div class="text-xs text-slate-500 mt-1">If enabled, a fixed domain charge is added during checkout.</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="enable_domain_charge" value="1" class="sr-only peer" {{ old('enable_domain_charge', $settings['enable_domain_charge']) ? 'checked' : '' }}>
+                                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Domain Charge Amount (₹)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400 font-bold">₹</div>
+                                <input type="number" name="domain_charge_amount" value="{{ old('domain_charge_amount', $settings['domain_charge_amount']) }}" min="0" step="0.01"
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block p-3 pl-8 outline-none transition-all">
+                            </div>
                         </div>
                     </div>
                 </div>

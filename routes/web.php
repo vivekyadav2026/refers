@@ -30,8 +30,8 @@ Route::get('/ref/{code}', [ReferralController::class, 'handleReferral'])->name('
 
 // ─── AUTH ROUTES ──────────────────────────────────────────────────────────
 Route::get('/login', [AuthController::class, 'showCustomerLogin'])->name('login');
+Route::get('/register', [AuthController::class, 'showCustomerRegister'])->name('register');
 Route::get('/partner-login', [AuthController::class, 'showPartnerLogin'])->name('partner.login');
-Route::redirect('/register', '/login')->name('register');
 
 // Phone OTP login (for customers + partners)
 Route::post('/login/send-otp', [AuthController::class, 'sendOtp'])->name('login.send_otp');
@@ -49,9 +49,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ─── PUBLIC SERVICE ROUTES ────────────────────────────────────────────────
 Route::get('/services', function () {
     $query = Service::where('is_active', true);
-    if (request()->filled('category')) {
-        $query->where('category', request('category'));
-    }
     if (request()->filled('search')) {
         $search = request('search');
         $query->where(function($q) use ($search) {
@@ -60,18 +57,20 @@ Route::get('/services', function () {
               ->orWhere('category', 'like', '%' . $search . '%');
         });
     }
-    $servicesByCategory = $query->get()->groupBy('category');
+    $allSvcs = $query->get();
     $allCategories = Service::where('is_active', true)->distinct()->pluck('category');
-    return view('services.index', ['servicesByCategory' => $servicesByCategory, 'allCategories' => $allCategories, 'selectedCategory' => request('category')]);
+    return view('services.index', ['allSvcs' => $allSvcs, 'allCategories' => $allCategories, 'selectedCategory' => request('category')]);
 })->name('services.index');
+
+Route::get('/portfolio', [\App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
 
 Route::get('/services/{slug}', function ($slug) {
     $service = Service::where('slug', $slug)->firstOrFail();
     return view('services.show', ['service' => $service]);
-})->name('services.show')->middleware('auth');
+})->name('services.show')->middleware('auth:customer,partner,admin');
 
 // ─── CUSTOMER ROUTES ──────────────────────────────────────────────────────
-Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(function () {
+Route::middleware(['auth:customer'])->prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [CustomerDashboardController::class, 'orders'])->name('orders');
     Route::get('/orders/{order}', [CustomerDashboardController::class, 'orderShow'])->name('order.show');
@@ -102,7 +101,7 @@ Route::middleware(['auth'])->prefix('customer')->name('customer.')->group(functi
 });
 
 // ─── CART ROUTES ──────────────────────────────────────────────────────────
-Route::middleware(['auth', 'customer.only'])->prefix('cart')->name('cart.')->group(function () {
+Route::middleware(['auth:customer'])->prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
     Route::post('/add', [CartController::class, 'add'])->name('add');
     Route::delete('/{cart}', [CartController::class, 'remove'])->name('remove');
@@ -111,7 +110,7 @@ Route::middleware(['auth', 'customer.only'])->prefix('cart')->name('cart.')->gro
 });
 
 // ─── PARTNER ROUTES ───────────────────────────────────────────────────────
-Route::middleware(['auth'])->prefix('partner')->name('partner.')->group(function () {
+Route::middleware(['auth:partner'])->prefix('partner')->name('partner.')->group(function () {
     // Unlocked onboarding/verification routes
     Route::get('/apply', [\App\Http\Controllers\PartnerOnboardingController::class, 'index'])->name('apply');
     Route::post('/apply', [\App\Http\Controllers\PartnerOnboardingController::class, 'store'])->name('apply.store');
@@ -196,12 +195,16 @@ Route::middleware(['auth'])->prefix('partner')->name('partner.')->group(function
         Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{order}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
         Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderController::class, 'invoice'])->name('orders.invoice');
+
+        // Post-Payment Form
+        Route::get('/orders/{order}/details', [\App\Http\Controllers\PostPaymentController::class, 'create'])->name('post-payment.create');
+        Route::post('/orders/{order}/details', [\App\Http\Controllers\PostPaymentController::class, 'store'])->name('post-payment.store');
         Route::post('/orders/{order}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
     });
 });
 
 // Legacy redirects so old bookmarks still work
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:customer,partner,admin'])->group(function () {
     Route::get('/dashboard', function () {
         $user = auth()->user();
         if (in_array($user->role, ['admin', 'superadmin'])) {
@@ -222,7 +225,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/payment/create/{order}', [PaymentController::class, 'createPayment'])->name('payment.create');
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
 Route::post('/webhook/razorpay', [PaymentController::class, 'webhook'])->name('payment.webhook');
-Route::post('/buy-now', [PaymentController::class, 'buyNow'])->name('payment.buyNow')->middleware('auth');
+Route::post('/buy-now', [PaymentController::class, 'buyNow'])->name('payment.buyNow')->middleware('auth:customer');
 
 // ─── CONTACT ROUTES ───────────────────────────────────────────────────────
 Route::get('/contact', function () {
@@ -234,7 +237,7 @@ Route::post('/contact', function (\Illuminate\Http\Request $r) {
 })->name('contact.store');
 
 // ─── ADMIN ROUTES ─────────────────────────────────────────────────────────
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users');
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
@@ -284,6 +287,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/orders/{order}/status', [\App\Http\Controllers\Admin\AdminOrderController::class, 'status'])->name('orders.status');
     Route::delete('/orders/{order}', [\App\Http\Controllers\Admin\AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
+    // Admin: Post-Payments
+    Route::get('/post-payments', [\App\Http\Controllers\Admin\AdminPostPaymentController::class, 'index'])->name('post-payments.index');
+    Route::get('/post-payments/export', [\App\Http\Controllers\Admin\AdminPostPaymentController::class, 'export'])->name('post-payments.export');
+
     // Admin: Commissions
     Route::get('/commissions', [AdminCommissionController::class, 'index'])->name('commissions');
     Route::post('/commissions/{commission}/approve', [AdminCommissionController::class, 'approve'])->name('commissions.approve');
@@ -316,6 +323,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('/training/{training}', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'destroy'])->name('training.destroy');
     Route::post('/training/{training}/toggle', [\App\Http\Controllers\Admin\AdminTrainingController::class, 'toggle'])->name('training.toggle');
 
+    // Admin: Portfolios
+    Route::resource('portfolios', \App\Http\Controllers\Admin\AdminPortfolioController::class);
+    Route::post('/portfolios/{portfolio}/toggle', [\App\Http\Controllers\Admin\AdminPortfolioController::class, 'toggle'])->name('portfolios.toggle');
+
+    // Admin: Business Categories
+    Route::resource('business-categories', \App\Http\Controllers\Admin\AdminBusinessCategoryController::class);
+    Route::post('/business-categories/{category}/toggle', [\App\Http\Controllers\Admin\AdminBusinessCategoryController::class, 'toggle'])->name('business-categories.toggle');
+
     // Admin: Coupons
     Route::resource('coupons', \App\Http\Controllers\Admin\AdminCouponController::class);
 
@@ -324,7 +339,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 });
 
 // ─── NOTIFICATIONS ────────────────────────────────────────────────────────
-Route::middleware(['auth'])->prefix('notifications')->name('notifications.')->group(function () {
+Route::middleware(['auth:customer,partner,admin'])->prefix('notifications')->name('notifications.')->group(function () {
     Route::post('/{id}/read', function ($id) {
         auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
         $notif = auth()->user()->notifications()->where('id', $id)->first();

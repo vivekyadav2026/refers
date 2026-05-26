@@ -1,0 +1,48 @@
+<USER_REQUEST>
+1- 3 panel chahiye customer,partner aur admin ka jisse koi bhi same browser par 3 panel ka login ho sake(teeno ka alag alag karna time taking aur lenthy process ,old process,dublicate the current all code then proceed )
+2- login page (registration page me name aur number le aur login page me keval number aur mpin se hoga ) 
+3-jo akdam bottom(footer) sabme alag alag bottom banega
+4-sare pages ke logo check karo home page jaisa sab me same hona chahiye 
+5-registration ke time me jis name se login kar raha hai wo name nahi show ho raha hai fix karo ise
+6-servie page me jo dublicate service button hai use remove karo upar jo hai wahi rahna chahiye aur nahi
+7- view profile me date -month -year show karna chahiye show kar raha hai lekin date nahi a rahi hai
+8-koi extra text service page me ho to sab remove kar do
+9-bussiness type me category and subcategory module banao 
+10-search baar me white show ho aur jo search bold me likha hai remove kar do
+11-service me jis category ka filter mai laga raha hu page load hone par wo category selected nahi a rahi hai 
+12-home page par total service ke 9 card show hoge 9 th card me likha hoga and more us par jab clikc karega to service page par jayega aur waha sari service show hogi
+13-use capatilize in why choose sk solution and check other section where section name like this, aur replace karo dedicated team ko experience  team  me aur uska icon bhi use karo
+14-aur home page me jo customer hai uske liye admin notification bhejega
+15- support wale page me text jo hai unki size increse karke do aur jaha sksolution likha ho usko sk solution kar do sare pages me
+16- aur jo support wale page me whatsapp par le jata hai wo kar do msg hi sir sk solutions team ,i need help 
+17-in service page me likha hua hai secure your details remove kar do 
+service page
+18- service details me jo logo a raha hai use remove kar do aur jo details hai admin jisme dalega wo ayega jisme nahi dalega nahi ayega
+19-aur jaha service ka title show hota hai waha plans show kar do like this  example
+<truncated 2404 bytes>
+end jo customer dashboard me hai
+39-customer me jo my order wale module hai uske under explore service ki button hai use remove kar do 
+40- customer me remove kar do you data is encrypted koi bhi extra text na ho
+41- my profile customer me remove kar do account status aur remove kar do quick link
+42-aur profile photo copulsary rahe cucstomer ki
+43- main point ise note kar lo given by sk solution user ka number editable hona chahiye mtlb wo number change kar sakta hai account banana ke baad
+44-aur customer portal me verified customer ka tag remove kar do
+45-after jab customer payment kar de to use detals leni hai aur sari service ke alag alaga form Banega pura lengthy aur jo details leni hai WhatsApp group me msg hai waha se leni hai aur optional hogi sari details 
+46- informative website me koi product details na leni hai 
+47- excel option do ki ye details download ho jaye proper admin se aur image link ho download ki 
+48-aur sare details admin download kar sake 
+49- jo bhi Banega sara sk solution ke suggestion par banega
+changes by sk solution ab navbar me profile ke bagal portfolio nahi rahega bottom me profile wale ki jagah rahega
+just make you page i insert this ye sk soltuion wali website se help full section ke 4 pages jo lene hai uske link yaha add karna hai icon nahi link uska name use karna hai ak ak ke bagal rahega
+domain ka bhi on /off hona chahiye
+.in ,.com aur I have already have domain karna hai
+24 - point me one time complete setup aur monthly ayega
+46- price aur name nahi hoga
+Alag section banana hai after payment wale form ki admin pannel me read all thing and tell me if anything you not understand 
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-05-26T02:34:10+05:30.
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from None to Gemini 3.5 Flash (Low). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>

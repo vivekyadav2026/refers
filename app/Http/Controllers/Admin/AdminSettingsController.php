@@ -17,6 +17,14 @@ class AdminSettingsController extends Controller
             'min_withdrawal' => Setting::get_val('min_withdrawal', 100),
             'clearance_period' => Setting::get_val('clearance_period', 5),
             'require_kyc' => Setting::get_val('require_kyc', 1),
+            
+            // Support & Billing Settings
+            'support_email' => Setting::get_val('support_email', 'support@sksolution.com'),
+            'support_phone' => Setting::get_val('support_phone', '+91 00000 00000'),
+            'enable_gst' => Setting::get_val('enable_gst', 0),
+            'gst_percent' => Setting::get_val('gst_percent', 18),
+            'enable_domain_charge' => Setting::get_val('enable_domain_charge', 0),
+            'domain_charge_amount' => Setting::get_val('domain_charge_amount', 999),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -36,6 +44,13 @@ class AdminSettingsController extends Controller
         Setting::set_val('min_withdrawal', $request->min_withdrawal);
         Setting::set_val('clearance_period', $request->clearance_period);
         Setting::set_val('require_kyc', $request->has('require_kyc') ? 1 : 0);
+        
+        Setting::set_val('support_email', $request->support_email);
+        Setting::set_val('support_phone', $request->support_phone);
+        Setting::set_val('enable_gst', $request->has('enable_gst') ? 1 : 0);
+        Setting::set_val('gst_percent', $request->gst_percent ?? 18);
+        Setting::set_val('enable_domain_charge', $request->has('enable_domain_charge') ? 1 : 0);
+        Setting::set_val('domain_charge_amount', $request->domain_charge_amount ?? 999);
 
         return redirect()->back()->with('success', 'Global settings updated successfully.');
     }

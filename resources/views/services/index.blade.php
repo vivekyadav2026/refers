@@ -209,7 +209,7 @@ body {
 
         <!-- Search Bar (Desktop & Mobile) -->
         <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-gray-50 hover:bg-gray-100/80 focus:bg-white text-[11px] sm:text-xs font-bold text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" style="margin-left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -328,20 +328,17 @@ body {
     </div>
 </section>
 
-@php
-    $allSvcs = $servicesByCategory->flatten(1);
-@endphp
 
 <!-- Category Selector Tabs -->
 <div class="mt-6 mb-8 max-w-5xl mx-auto px-4">
     <!-- Centered modern floating bar -->
     <div class="filter-container flex items-center gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-2 scroll-smooth">
         <!-- "All Services" Tab -->
-        <a href="{{ route('services.index') }}" 
-           class="filter-chip shrink-0 {{ !$selectedCategory ? 'active' : '' }}">
+        <button type="button" 
+           class="filter-chip shrink-0 {{ !$selectedCategory ? 'active' : '' }}" onclick="filterServices('all', this)">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
             <span>All Services</span>
-        </a>
+        </button>
         
         <!-- Loop categories -->
         @foreach($allCategories as $cat)
@@ -363,11 +360,11 @@ body {
                 $tabSvg = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
             }
         @endphp
-        <a href="{{ route('services.index', ['category' => $cat]) }}" 
-           class="filter-chip shrink-0 {{ $isActive ? 'active' : '' }}">
+        <button type="button"
+           class="filter-chip shrink-0 {{ $isActive ? 'active' : '' }}" onclick="filterServices('{{ addslashes($cat) }}', this)">
             {!! $tabSvg !!}
             <span>{{ $cat }}</span>
-        </a>
+        </button>
         @endforeach
     </div>
 </div>
@@ -377,7 +374,7 @@ body {
     <div class="services-grid">
         
         @foreach($allSvcs as $svc)
-        <a href="{{ route('services.show', $svc->slug) }}" class="svc-card">
+        <a href="{{ route('services.show', $svc->slug) }}" class="svc-card" data-category="{{ htmlspecialchars($svc->category) }}">
             <div class="svc-icon-wrap {{ $svc->banner_image ? 'overflow-hidden' : '' }}" style="{{ $svc->banner_image ? 'background: transparent;' : '' }}">
                 @if($svc->banner_image)
                     <img src="{{ asset('storage/' . $svc->banner_image) }}" alt="{{ $svc->name }}" class="w-full h-full object-cover">
@@ -394,10 +391,16 @@ body {
         @endforeach
 
         @if($allSvcs->isEmpty())
-            <div class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-violet-50/40 rounded-2xl border border-violet-100 border-dashed">
+            <div class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-violet-50/40 rounded-2xl border border-violet-100 border-dashed empty-state">
                 <svg class="w-10 h-10 text-violet-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2zm0 0h18M5 17h14M9 12h6"/></svg>
                 <p class="text-gray-800 font-bold text-sm">No services found</p>
                 <p class="text-gray-500 text-xs mt-1">Try selecting a different category or check back later.</p>
+            </div>
+        @else
+            <div class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-violet-50/40 rounded-2xl border border-violet-100 border-dashed empty-state" style="display:none;" id="no-services-msg">
+                <svg class="w-10 h-10 text-violet-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2zm0 0h18M5 17h14M9 12h6"/></svg>
+                <p class="text-gray-800 font-bold text-sm">No services found in this category</p>
+                <p class="text-gray-500 text-xs mt-1">Try selecting a different category.</p>
             </div>
         @endif
 
@@ -460,5 +463,38 @@ body {
     </a>
 
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        if (category) {
+            const btn = Array.from(document.querySelectorAll('.filter-chip')).find(el => el.getAttribute('data-filter') === category || el.textContent.trim() === category);
+            if (btn) filterServices(category, btn);
+        }
+    });
+
+    function filterServices(category, btn) {
+        document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+
+        const cards = document.querySelectorAll('.svc-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const emptyState = document.getElementById('no-services-msg');
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+        }
+    }
+</script>
 
 @endsection

@@ -66,7 +66,7 @@
                         </div>
                         <span class="text-xs font-bold text-slate-600">Member Since</span>
                     </div>
-                    <span class="font-black text-slate-900">{{ auth()->user()->created_at->format('M Y') }}</span>
+                    <span class="font-black text-slate-900">{{ auth()->user()->created_at->format('d-M-Y') }}</span>
                 </div>
             </div>
         </div>
@@ -130,8 +130,8 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Profile Photo <span class="text-slate-400 font-normal normal-case">(Optional)</span></label>
-                            <input type="file" name="avatar" accept="image/*"
+                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Profile Photo <span class="text-red-500">*</span></label>
+                            <input type="file" name="avatar" accept="image/*" {{ !auth()->user()->avatar ? 'required' : '' }}
                                 class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all font-medium">
                             @error('avatar') <span class="text-red-500 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
                         </div>
@@ -161,15 +161,15 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Phone Number</label>
+                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Phone Number <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <i data-lucide="phone" class="w-4 h-4 text-slate-400"></i>
                                 </div>
-                                <input type="text" value="{{ auth()->user()->phone }}" disabled
-                                    class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-slate-400 bg-slate-100 text-sm font-medium cursor-not-allowed">
+                                <input type="tel" name="phone" value="{{ old('phone', auth()->user()->phone) }}" required
+                                    class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all font-medium">
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1.5 font-medium">Phone number is used for login and cannot be changed.</p>
+                            @error('phone') <span class="text-red-500 text-xs mt-1 block font-medium">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
@@ -184,20 +184,26 @@
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Business Type <span class="text-slate-400 font-normal normal-case">(Optional)</span></label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i>
+                            <div class="relative group/field">
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Business Type</label>
+                                <div class="absolute inset-y-0 left-0 pt-6 pl-4 flex items-center pointer-events-none">
+                                    <i data-lucide="briefcase" class="w-5 h-5 text-slate-400 group-focus-within/field:text-blue-500 transition-colors"></i>
                                 </div>
                                 <select name="business_type" class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all font-medium appearance-none">
-                                    <option value="" disabled {{ !auth()->user()->business_type ? 'selected' : '' }}>Select Business Type</option>
-                                    @foreach(['E-commerce', 'Agency / B2B', 'Retail / Shop', 'Education', 'Healthcare', 'Real Estate', 'Other'] as $type)
-                                        <option value="{{ $type }}" {{ old('business_type', auth()->user()->business_type) == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                    <option value="">-- Select Business Type --</option>
+                                    @foreach($categories as $category)
+                                        <optgroup label="{{ $category->name }}">
+                                            @if($category->subcategories->count() > 0)
+                                                @foreach($category->subcategories as $sub)
+                                                    <option value="{{ $sub->name }}" {{ auth()->user()->business_type == $sub->name ? 'selected' : '' }}>{{ $sub->name }}</option>
+                                                @endforeach
+                                            @else
+                                                <option value="{{ $category->name }}" {{ auth()->user()->business_type == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            @endif
+                                        </optgroup>
                                     @endforeach
                                 </select>
-                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
-                                </div>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 top-10 pointer-events-none"></i>
                             </div>
                         </div>
                     </div>
@@ -206,9 +212,6 @@
                         <button type="submit" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto justify-center">
                             <i data-lucide="save" class="w-4 h-4"></i> Save Changes
                         </button>
-                        <p class="text-xs text-slate-400 font-medium flex items-center gap-1">
-                            <i data-lucide="lock" class="w-3 h-3"></i> Your data is encrypted and secure.
-                        </p>
                     </div>
                 </form>
             </div>

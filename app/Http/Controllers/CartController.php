@@ -74,8 +74,8 @@ class CartController extends Controller
      */
     public function checkout()
     {
-        $cartItems = auth()->user()->cartItems()->with('service')->get();
-
+        $user = auth()->user();
+        $cartItems = $user->cartItems()->with('service')->get();
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
@@ -84,7 +84,14 @@ class CartController extends Controller
             return $item->service->min_price * $item->quantity;
         });
 
-        return view('cart.checkout', compact('cartItems', 'total'));
+        $categories = \App\Models\BusinessCategory::whereNull('parent_id')
+                        ->with(['subcategories' => function($q) {
+                            $q->where('is_active', true);
+                        }])
+                        ->where('is_active', true)
+                        ->get();
+
+        return view('cart.checkout', compact('cartItems', 'total', 'categories'));
     }
 
     /**

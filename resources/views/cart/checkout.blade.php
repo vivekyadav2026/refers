@@ -69,13 +69,17 @@
                         <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Business Type</label>
                         <select name="business_type" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
                             <option value="">Select business type</option>
-                            <option value="startup" {{ old('business_type') === 'startup' ? 'selected' : '' }}>Startup</option>
-                            <option value="small_business" {{ old('business_type') === 'small_business' ? 'selected' : '' }}>Small Business</option>
-                            <option value="medium_enterprise" {{ old('business_type') === 'medium_enterprise' ? 'selected' : '' }}>Medium Enterprise</option>
-                            <option value="large_enterprise" {{ old('business_type') === 'large_enterprise' ? 'selected' : '' }}>Large Enterprise</option>
-                            <option value="freelancer" {{ old('business_type') === 'freelancer' ? 'selected' : '' }}>Freelancer</option>
-                            <option value="agency" {{ old('business_type') === 'agency' ? 'selected' : '' }}>Agency</option>
-                            <option value="other" {{ old('business_type') === 'other' ? 'selected' : '' }}>Other</option>
+                            @foreach($categories as $category)
+                                <optgroup label="{{ $category->name }}">
+                                    @if($category->subcategories->count() > 0)
+                                        @foreach($category->subcategories as $sub)
+                                            <option value="{{ $sub->name }}" {{ old('business_type') === $sub->name ? 'selected' : '' }}>{{ $sub->name }}</option>
+                                        @endforeach
+                                    @else
+                                        <option value="{{ $category->name }}" {{ old('business_type') === $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    @endif
+                                </optgroup>
+                            @endforeach
                         </select>
                     </div>
 

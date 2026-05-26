@@ -68,4 +68,9 @@ class Order extends Model
     {
         return $this->hasOne(BusinessDetail::class);
     }
+
+    public function postPaymentDetail()
+    {
+        return $this->hasOne(PostPaymentDetail::class);
+    }
 }

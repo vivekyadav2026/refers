@@ -26,6 +26,22 @@ class AuthController extends Controller
         return view('auth.customer-login');
     }
 
+    public function showCustomerRegister()
+    {
+        return view('auth.customer-register');
+    }
+
+    public function showPartnerRegister()
+    {
+        $categories = \App\Models\BusinessCategory::whereNull('parent_id')
+                        ->with(['subcategories' => function($q) {
+                            $q->where('is_active', true);
+                        }])
+                        ->where('is_active', true)
+                        ->get();
+        return view('auth.partner-register', compact('categories'));
+    }
+
     public function showPartnerLogin()
     {
         return view('auth.partner-login');
@@ -50,11 +66,11 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $user = Auth::guard('admin')->user();
 
-            if ($user->role !== 'admin') {
-                Auth::logout();
+            if (!in_array($user->role, ['admin', 'superadmin', 'sub_admin'])) {
+                Auth::guard('admin')->logout();
                 return back()->withErrors([
                     'email' => 'These credentials are not authorized for admin access.',
                 ])->withInput($request->only('email'));
@@ -227,7 +243,8 @@ class AuthController extends Controller
         // Capture referral data BEFORE login (session may regenerate during Auth::login)
         $refPartnerId = session('ref_partner_id') ?? request()->cookie('ref_partner_id') ?? null;
 
-        Auth::login($user);
+        $guard = $user->role === 'partner' ? 'partner' : 'customer';
+        Auth::guard($guard)->login($user);
 
         // Re-save referral session data so it survives until checkout
         if ($refPartnerId) {
@@ -274,11 +291,11 @@ class AuthController extends Controller
         return strtolower($code);
     }
 
-    // ─────────────────────────────────────────
-    // Logout
-    // ─────────────────────────────────────────
     public function logout(Request $request)
     {
+        Auth::guard('admin')->logout();
+        Auth::guard('partner')->logout();
+        Auth::guard('customer')->logout();
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -325,7 +342,8 @@ class AuthController extends Controller
         // Clean session
         session()->forget(['login_phone', 'login_as']);
 
-        Auth::login($user);
+        $guard = $user->role === 'partner' ? 'partner' : 'customer';
+        Auth::guard($guard)->login($user);
 
         // Redirect based on role
         if ($user->role === 'admin') {

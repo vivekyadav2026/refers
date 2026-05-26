@@ -78,7 +78,7 @@ select.input-field {
 
         <!-- Search Bar (Desktop & Mobile) -->
         <!-- <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-gray-50 hover:bg-gray-100/80 focus:bg-white text-[11px] sm:text-xs font-bold text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
             <svg xmlns="http://www.w3.org/2000/svg"  class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -212,7 +212,7 @@ select.input-field {
 <div class="bg-[#FAFAFA] min-h-screen">
 
   {{-- ══════ HERO ══════ --}}
-  <div class="relative pt-20 pb-16 sm:pt-24 sm:pb-20 overflow-hidden bg-white border-b border-slate-100">
+  <div class="relative pt-6 pb-10 sm:pt-10 sm:pb-12 overflow-hidden bg-white border-b border-slate-100">
     {{-- Precision Grid Overlay --}}
     <div class="absolute inset-0 bg-[radial-gradient(#e2d9f3_1.2px,transparent_1.2px)] bg-[size:32px_32px] opacity-75 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0"></div>
 
@@ -243,12 +243,18 @@ select.input-field {
   </div>
 
   {{-- ══════ MAIN CONTENT ══════ --}}
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-28 lg:pb-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-20 lg:pb-12">
 
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
       {{-- ─── LEFT: Info Panel ─── --}}
       <div class="lg:col-span-2 space-y-6">
+
+        @php
+            $supportEmail = \App\Models\Setting::get_val('support_email', 'support@sksolution.com');
+            $supportPhone = \App\Models\Setting::get_val('support_phone', '+91 8287121769');
+            $cleanPhone = preg_replace('/[^0-9]/', '', $supportPhone);
+        @endphp
 
         {{-- Direct Contact Cards --}}
         <div>
@@ -257,7 +263,7 @@ select.input-field {
           </h2>
 
           {{-- WhatsApp Card --}}
-          <a href="https://wa.me/918287121769?text=Hi SKSolutions, I need help with a project."
+          <a href="https://wa.me/{{ $cleanPhone }}?text=Hi Sir SK Solutions team, I need help"
              target="_blank"
              class="flex items-center gap-4 sm:gap-5 p-5 sm:p-6 rounded-[24px] bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-750 to-teal-700 text-white hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 mb-5 group relative overflow-hidden shadow-xl shadow-emerald-500/10">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(255,255,255,0.2),transparent_60%)] pointer-events-none"></div>
@@ -281,8 +287,8 @@ select.input-field {
           {{-- Info Cards --}}
           @php
             $infoCards = [
-              ['icon'=>'mail',  'label'=>'Email',         'val'=>'support@sksolutions.in',          'href'=>'mailto:hello@sksolution.in', 'bg'=>'bg-purple-50',  'text'=>'text-purple-655 text-purple-600', 'border'=>'border-purple-100'],
-              ['icon'=>'phone', 'label'=>'Phone',         'val'=>'+91 82871 21769',             'href'=>'tel:+919999999999',         'bg'=>'bg-blue-50',    'text'=>'text-blue-655 text-blue-600',   'border'=>'border-blue-100'],
+              ['icon'=>'mail',  'label'=>'Email',         'val'=>$supportEmail,          'href'=>'mailto:'.$supportEmail, 'bg'=>'bg-purple-50',  'text'=>'text-purple-655 text-purple-600', 'border'=>'border-purple-100'],
+              ['icon'=>'phone', 'label'=>'Phone',         'val'=>$supportPhone,             'href'=>'tel:+'.$cleanPhone,         'bg'=>'bg-blue-50',    'text'=>'text-blue-655 text-blue-600',   'border'=>'border-blue-100'],
               ['icon'=>'clock', 'label'=>'Working Hours', 'val'=>'Mon–Sat: 10 AM – 6 PM IST',    'href'=>null,                        'bg'=>'bg-amber-50',   'text'=>'text-amber-655 text-amber-600',  'border'=>'border-amber-100'],
             ];
           @endphp
@@ -348,13 +354,13 @@ select.input-field {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Full Name <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">Full Name <span class="text-rose-500">*</span></label>
                 <div class="relative">
                   <input type="text" name="name" required class="input-field" placeholder="e.g. Rahul Sharma" value="{{ old('name') }}">
                 </div>
               </div>
               <div>
-                <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Phone Number <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">Phone Number <span class="text-rose-500">*</span></label>
                 <div class="relative">
                   <input type="tel" name="phone" required class="input-field" placeholder="+91 98765 43210" value="{{ old('phone') }}">
                 </div>
@@ -362,14 +368,14 @@ select.input-field {
             </div>
 
             <div>
-              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Email Address</label>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">Email Address</label>
               <div class="relative">
                 <input type="email" name="email" class="input-field" placeholder="you@company.com" value="{{ old('email') }}">
               </div>
             </div>
 
             <div>
-              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Service Needed</label>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">Service Needed</label>
               <div class="relative">
                 <select name="service" class="input-field cursor-pointer" style="background-image:url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236366f1%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat:no-repeat; background-position:right 1.2rem center; background-size:0.65rem; appearance:none;">
                   <option value="">Select a service...</option>
@@ -382,7 +388,7 @@ select.input-field {
             </div>
 
             <div>
-              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Project Details <span class="text-rose-500">*</span></label>
+              <label class="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest">Project Details <span class="text-rose-500">*</span></label>
               <div class="relative">
                 <textarea name="message" rows="5" required class="input-field resize-none" placeholder="Tell us about your project goals, timeline, and budget...">{{ old('message') }}</textarea>
               </div>
@@ -473,9 +479,9 @@ select.input-field {
         <i data-lucide="headphones" class="w-5 h-5" fill="currentColor" stroke="currentColor"></i>
         <span class="text-[10px] font-bold">Support</span>
     </a>
-    <a href="{{ auth()->check() ? url('/dashboard') : route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="user" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">{{ auth()->check() ? 'Dashboard' : 'Profile' }}</span>
+    <a href="{{ url('/portfolio') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span class="text-[10px] font-bold">Portfolio</span>
     </a>
 </nav>
 

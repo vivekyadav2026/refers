@@ -14,7 +14,7 @@ class CustomerOnlyMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
+        $user = auth('customer')->user();
 
         if ($user && !$user->isCustomer()) {
             if ($user->isAdmin()) {

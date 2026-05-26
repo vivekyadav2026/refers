@@ -61,20 +61,27 @@ class CustomerDashboardController extends Controller
 
     public function profile()
     {
-        return view('customer.profile');
+        $categories = \App\Models\BusinessCategory::whereNull('parent_id')
+                        ->with(['subcategories' => function($q) {
+                            $q->where('is_active', true);
+                        }])
+                        ->where('is_active', true)
+                        ->get();
+        return view('customer.profile', compact('categories'));
     }
 
     public function updateProfile(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'phone' => 'required|string|max:20|unique:users,phone,' . auth()->id(),
+            'email' => 'nullable|email|max:255|unique:users,email,' . auth()->id(),
             'company_name' => 'nullable|string|max:255',
             'business_type' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->only('name', 'email', 'company_name', 'business_type');
+        $data = $request->only('name', 'phone', 'email', 'company_name', 'business_type');
 
         if ($request->hasFile('avatar')) {
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');

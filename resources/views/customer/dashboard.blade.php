@@ -26,13 +26,12 @@
 </div>
 
 {{-- Stats Grid --}}
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 mb-8">
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 mb-8">
     @foreach([
         ['label' => 'Total Orders',  'value' => $totalOrders,                     'icon' => 'shopping-bag',  'color' => 'blue',    'badge' => 'All Time',     'from' => 'from-blue-50',   'to' => 'to-indigo-100',  'border' => 'border-blue-200',   'text' => 'text-blue-600',   'hborder' => 'hover:border-blue-300'],
         ['label' => 'Pending',       'value' => $pendingOrders,                   'icon' => 'clock',         'color' => 'amber',   'badge' => 'Awaiting',     'from' => 'from-amber-50',  'to' => 'to-orange-100',  'border' => 'border-amber-200',  'text' => 'text-amber-600',  'hborder' => 'hover:border-amber-300'],
         ['label' => 'In Progress',   'value' => $inProgressOrders,                'icon' => 'loader',        'color' => 'indigo',  'badge' => 'Active',       'from' => 'from-indigo-50', 'to' => 'to-violet-100',  'border' => 'border-indigo-200', 'text' => 'text-indigo-600', 'hborder' => 'hover:border-indigo-300'],
         ['label' => 'Completed',     'value' => $completedOrders,                 'icon' => 'check-circle',  'color' => 'emerald', 'badge' => 'Delivered',    'from' => 'from-emerald-50','to' => 'to-teal-100',    'border' => 'border-emerald-200','text' => 'text-emerald-600','hborder' => 'hover:border-emerald-300'],
-        ['label' => 'Total Spent',   'value' => '₹'.number_format($totalSpent),   'icon' => 'wallet',        'color' => 'purple',  'badge' => 'Lifetime',     'from' => 'from-purple-50', 'to' => 'to-fuchsia-100', 'border' => 'border-purple-200', 'text' => 'text-purple-600', 'hborder' => 'hover:border-purple-300'],
     ] as $stat)
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm {{ $stat['hborder'] }} transition-all duration-300 group hover:-translate-y-1 relative overflow-hidden">
         <div class="absolute -top-5 -right-5 w-20 h-20 bg-gradient-to-br {{ $stat['from'] }} {{ $stat['to'] }} rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
@@ -50,64 +49,6 @@
     @endforeach
 </div>
 
-{{-- Charts + Quick Actions Row --}}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-
-    {{-- Order Status Chart --}}
-    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6">
-        <div class="flex items-center justify-between mb-5">
-            <div>
-                <h2 class="text-lg font-black text-slate-900 tracking-tight">Order Activity</h2>
-                <p class="text-xs text-slate-500 font-medium mt-0.5">Your orders over the last 6 months</p>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
-                <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
-            </div>
-        </div>
-        <div class="h-44 sm:h-56 w-full">
-            <canvas id="orderActivityChart"></canvas>
-        </div>
-    </div>
-
-    {{-- Quick Actions --}}
-    <div class="flex flex-col gap-4">
-        {{-- Cart Card --}}
-        <!-- <a href="{{ route('cart.index') }}" class="flex-1 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-5 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
-            <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors shrink-0">
-                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h3 class="font-black text-base mb-0.5">View Cart</h3>
-                <p class="text-emerald-100 text-xs font-medium">{{ auth()->user()->cartItems->count() }} item(s) waiting</p>
-            </div>
-        </a> -->
-
-        {{-- Profile Card --}}
-        <!-- <a href="{{ route('customer.profile') }}" class="flex-1 bg-white border border-slate-200 rounded-3xl p-5 text-slate-900 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xl font-black shadow-md shrink-0">
-                {{ substr(auth()->user()->name, 0, 1) }}
-            </div>
-            <div>
-                <h3 class="font-black text-base mb-0.5">My Profile</h3>
-                <p class="text-slate-500 text-xs font-medium">Edit account details</p>
-            </div>
-        </a> -->
-
-        {{-- Browse Services --}}
-        <!-- <a href="{{ route('customer.services') }}" class="flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-5 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden flex items-center gap-4">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full blur-xl transition-transform duration-500 group-hover:scale-125"></div>
-            <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-colors shrink-0">
-                <i data-lucide="grid-3x3" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h3 class="font-black text-base mb-0.5">Browse Services</h3>
-                <p class="text-blue-100 text-xs font-medium">Explore premium services</p>
-            </div>
-        </a> -->
-    </div>
-</div>
 
 {{-- Recent Orders --}}
 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-8">
@@ -152,6 +93,13 @@
                 <span class="font-medium">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }} · {{ $order->created_at->diffForHumans() }}</span>
                 <span class="font-black text-slate-900">₹{{ number_format($order->amount) }}</span>
             </div>
+            @if($order->status !== 'pending' && $order->status !== 'cancelled' && !$order->postPaymentDetail)
+            <div class="mt-3">
+                <a href="{{ route('post-payment.create', $order) }}" class="block text-center w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-black uppercase tracking-wider rounded-lg border border-indigo-200 transition-colors">
+                    Submit Project Details <i data-lucide="arrow-right" class="w-3 h-3 inline"></i>
+                </a>
+            </div>
+            @endif
         </a>
         @endforeach
     </div>
@@ -178,11 +126,18 @@
                     <div class="text-xs text-slate-400 font-medium mt-0.5">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }} · {{ $order->created_at->diffForHumans() }}</div>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
-                    {{ str_replace('_', ' ', $order->status) }}
-                </span>
-                <div class="font-black text-slate-900 text-sm min-w-[5rem] text-right">₹{{ number_format($order->amount) }}</div>
+            <div class="flex flex-col items-end gap-2">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $statusColors[$order->status] ?? 'bg-slate-100 text-slate-700 border-slate-200' }}">
+                        {{ str_replace('_', ' ', $order->status) }}
+                    </span>
+                    <div class="font-black text-slate-900 text-sm min-w-[5rem] text-right">₹{{ number_format($order->amount) }}</div>
+                </div>
+                @if($order->status !== 'pending' && $order->status !== 'cancelled' && !$order->postPaymentDetail)
+                <a href="{{ route('post-payment.create', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-black uppercase tracking-wider rounded-lg border border-indigo-200 transition-colors z-10">
+                    <i data-lucide="file-text" class="w-3 h-3"></i> Submit Details
+                </a>
+                @endif
             </div>
         </a>
         @endforeach
@@ -201,93 +156,23 @@
     @endif
 </div>
 
-{{-- Recommended Services --}}
-@if(isset($recommendedServices) && $recommendedServices->count())
-@php
-    $findPremiumMatch = function($name) {
-        $nameLower = strtolower($name);
-        $mapping = [
-            'web' => [
-                'bg' => 'from-indigo-50 to-purple-100/40',
-                'img' => asset('storage/banners/srv_web.png'),
-                'icon' => 'globe',
-                'icon_color' => 'text-indigo-600'
-            ],
-            'app' => [
-                'bg' => 'from-rose-50 to-pink-100/40',
-                'img' => asset('storage/banners/srv_app.png'),
-                'icon' => 'smartphone',
-                'icon_color' => 'text-rose-600'
-            ],
-            'video' => [
-                'bg' => 'from-amber-50 to-orange-100/40',
-                'img' => asset('storage/banners/srv_video.png'),
-                'icon' => 'video',
-                'icon_color' => 'text-amber-600'
-            ],
-            'graphics' => [
-                'bg' => 'from-emerald-50 to-teal-100/40',
-                'img' => asset('storage/banners/srv_graphics.png'),
-                'icon' => 'palette',
-                'icon_color' => 'text-emerald-600'
-            ],
-            'seo' => [
-                'bg' => 'from-sky-50 to-blue-100/40',
-                'img' => asset('storage/banners/srv_seo.png'),
-                'icon' => 'search',
-                'icon_color' => 'text-sky-600'
-            ],
-            'marketing' => [
-                'bg' => 'from-violet-50 to-purple-100/40',
-                'img' => asset('storage/banners/srv_marketing.png'),
-                'icon' => 'megaphones',
-                'icon_color' => 'text-violet-600'
-            ]
-        ];
-        
-        foreach ($mapping as $key => $data) {
-            if (str_contains($nameLower, $key)) {
-                return $data;
-            }
-        }
-        return null;
-    };
-@endphp
-<div class="mb-6">
+{{-- Order Status Chart (Moved Below Recent Orders) --}}
+<div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6 mb-8">
     <div class="flex items-center justify-between mb-5">
         <div>
-            <h2 class="text-lg font-black text-slate-900 tracking-tight">Explore Services</h2>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Handpicked digital solutions for your business</p>
+            <h2 class="text-lg font-black text-slate-900 tracking-tight">Order Activity</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Your orders over the last 6 months</p>
         </div>
-        <a href="{{ route('customer.services') }}" class="text-xs font-black text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors bg-blue-50 hover:bg-blue-100 border border-blue-100 px-3 py-1.5 rounded-xl">
-            View All <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-        </a>
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+            <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+        </div>
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-        @foreach($recommendedServices as $svc)
-        @php
-            $match = $findPremiumMatch($svc->name);
-            $icon = $svc->icon ?: ($match ? $match['icon'] : 'layout-grid');
-            $icon_color = $match ? $match['icon_color'] : 'text-slate-500';
-            $bg = $match ? $match['bg'] : 'from-slate-50 to-slate-100';
-        @endphp
-        <a href="{{ route('services.show', $svc->slug) }}" class="service-card bg-white flex flex-col items-center justify-center group hover:bg-indigo-50/30 transition-all duration-300 min-h-[180px] sm:min-h-[220px] p-4 sm:p-6 text-center rounded-2xl shadow-md hover:shadow-xl hover:shadow-indigo-500/10 border border-slate-100/50 hover:-translate-y-1">
-            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br {{ $bg }} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50">
-                <i data-lucide="{{ $icon }}" class="w-6 h-6 sm:w-8 sm:h-8 {{ $icon_color }}"></i>
-            </div>
-            <span class="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">{{ $svc->category }}</span>
-            <span class="text-xs sm:text-sm font-bold text-slate-800 leading-tight line-clamp-2">{{ $svc->name }}</span>
-            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-2 line-clamp-2 leading-relaxed hidden sm:block">{{ $svc->short_description }}</p>
-            @auth
-                <span class="text-[10px] sm:text-xs font-bold text-indigo-600 mt-2">₹{{ number_format($svc->min_price ?? 0, 0) }}</span>
-            @else
-                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 mt-2 flex items-center gap-1"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Login for Pricing</span>
-            @endauth
-        </a>
-        @endforeach
+    <div class="h-44 sm:h-56 w-full">
+        <canvas id="orderActivityChart"></canvas>
     </div>
 </div>
-@endif
+
+
 
 </div>
 

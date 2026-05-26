@@ -184,20 +184,26 @@
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-2">Business Type <span class="text-slate-400 font-normal normal-case">(Optional)</span></label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i data-lucide="briefcase" class="w-4 h-4 text-slate-400"></i>
+                            <div class="relative group/field">
+                                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Business Type</label>
+                                <div class="absolute inset-y-0 left-0 pt-6 pl-4 flex items-center pointer-events-none">
+                                    <i data-lucide="briefcase" class="w-5 h-5 text-slate-400 group-focus-within/field:text-blue-500 transition-colors"></i>
                                 </div>
                                 <select name="business_type" class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all font-medium appearance-none">
-                                    <option value="" disabled {{ !auth()->user()->business_type ? 'selected' : '' }}>Select Business Type</option>
-                                    @foreach(['E-commerce', 'Agency / B2B', 'Retail / Shop', 'Education', 'Healthcare', 'Real Estate', 'Other'] as $type)
-                                        <option value="{{ $type }}" {{ old('business_type', auth()->user()->business_type) == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                    <option value="">-- Select Business Type --</option>
+                                    @foreach($categories as $category)
+                                        <optgroup label="{{ $category->name }}">
+                                            @if($category->subcategories->count() > 0)
+                                                @foreach($category->subcategories as $sub)
+                                                    <option value="{{ $sub->name }}" {{ auth()->user()->business_type == $sub->name ? 'selected' : '' }}>{{ $sub->name }}</option>
+                                                @endforeach
+                                            @else
+                                                <option value="{{ $category->name }}" {{ auth()->user()->business_type == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            @endif
+                                        </optgroup>
                                     @endforeach
                                 </select>
-                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
-                                </div>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 top-10 pointer-events-none"></i>
                             </div>
                         </div>
                     </div>

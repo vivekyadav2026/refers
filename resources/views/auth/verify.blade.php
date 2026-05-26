@@ -51,9 +51,8 @@
 <header class="sk-header">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <!-- Logo -->
-        <a href="{{ url('/') }}" class="flex flex-col leading-none select-none shrink-0">
-            <span style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:#6d28d9;line-height:1;">SK</span>
-            <span style="font-size:0.6rem;font-weight:700;color:#374151;letter-spacing:0.06em;line-height:1.2;">Solutions</span>
+        <a href="{{ url('/') }}" class="flex shrink-0 items-center">
+            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-10 sm:h-12 w-auto object-contain">
         </a>
 
       
@@ -128,13 +127,13 @@
 
             <div class="border-t border-white/10 pt-6 space-y-4">
                 <div class="text-left">
-                    <h3 class="text-sm font-bold text-slate-300">Set Security PIN</h3>
-                    <p class="text-xs text-slate-500">Create a 4-digit PIN to log in instantly next time without SMS OTP.</p>
+                    <h3 class="text-sm font-bold text-slate-300">Set MPIN</h3>
+                    <p class="text-xs text-slate-500">Create a 4-digit MPIN to log in instantly next time without SMS OTP.</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="pin" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">New PIN</label>
+                        <label for="pin" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">New MPIN</label>
                         <input id="pin" name="pin" type="password" inputmode="numeric" maxlength="4" required 
                                class="w-full bg-black/40 border border-white/15 rounded-xl py-3 px-4 text-center text-xl font-mono text-white tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
                                placeholder="••••">
@@ -145,7 +144,7 @@
                         @enderror
                     </div>
                     <div>
-                        <label for="pin_confirmation" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Confirm PIN</label>
+                        <label for="pin_confirmation" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Confirm MPIN</label>
                         <input id="pin_confirmation" name="pin_confirmation" type="password" inputmode="numeric" maxlength="4" required 
                                class="w-full bg-black/40 border border-white/15 rounded-xl py-3 px-4 text-center text-xl font-mono text-white tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
                                placeholder="••••">
@@ -212,11 +211,11 @@
         </svg>
         Support
     </a>
-    <a href="{{ route('login') }}" class="nav-item" id="nav-profile">
+    <a href="{{ url('/portfolio') }}" class="nav-item" id="nav-portfolio">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
         </svg>
-        Profile
+        Portfolio
     </a>
 </nav>
 @endsection
