@@ -25,11 +25,13 @@ class Service extends Model
         'requirements_text',
         'commission_rate',
         'commission_type',
+        'requires_domain',
     ];
 
     protected $casts = [
         'is_popular' => 'boolean',
         'is_active'  => 'boolean',
+        'requires_domain' => 'boolean',
         'features'   => 'array',
         'plans'      => 'array',
         'faqs'       => 'array',

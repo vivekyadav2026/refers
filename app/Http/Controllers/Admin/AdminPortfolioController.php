@@ -10,7 +10,8 @@ class AdminPortfolioController extends Controller
     public function index()
     {
         $portfolios = \App\Models\Portfolio::latest()->get();
-        return view('admin.portfolios.index', compact('portfolios'));
+        $categories = \App\Models\BusinessCategory::with('subcategories')->whereNull('parent_id')->get();
+        return view('admin.portfolios.index', compact('portfolios', 'categories'));
     }
 
     public function store(Request $request)
@@ -19,10 +20,10 @@ class AdminPortfolioController extends Controller
             'section' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'link' => 'nullable|string',
-            'image' => 'required|image|max:5120',
+            'image' => 'nullable|image|max:5120',
         ]);
 
-        $path = $request->file('image')->store('portfolios', 'public');
+        $path = $request->hasFile('image') ? $request->file('image')->store('portfolios', 'public') : null;
 
         \App\Models\Portfolio::create([
             'section' => $request->section,

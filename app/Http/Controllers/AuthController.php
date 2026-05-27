@@ -251,27 +251,7 @@ class AuthController extends Controller
             session(['ref_partner_id' => $refPartnerId]);
         }
 
-        // Redirect based on role
-        if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard'))
-                             ->with('success', 'Logged in as Admin.');
-        }
-
-        if ($user->role === 'partner') {
-            return redirect()->intended(route('partner.dashboard'))
-                             ->with('success', 'Logged in successfully!');
-        }
-
-        // Customer
-        $refServiceSlug = session('ref_service_slug');
-        if ($refServiceSlug) {
-            session()->forget('ref_service_slug');
-            return redirect()->intended(route('services.show', $refServiceSlug))
-                             ->with('success', 'Logged in successfully! You can now purchase your referred service.');
-        }
-
-        return redirect()->intended(route('customer.dashboard'))
-                         ->with('success', 'Logged in successfully!');
+        return $this->redirectUserByRole($user);
     }
 
     /**
@@ -293,12 +273,37 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
-        Auth::guard('partner')->logout();
-        Auth::guard('customer')->logout();
-        Auth::logout();
-        $request->session()->invalidate();
+        $referer = $request->headers->get('referer', '');
+        $loggedOut = false;
+
+        if (str_contains($referer, '/admin')) {
+            Auth::guard('admin')->logout();
+            $loggedOut = true;
+        } elseif (str_contains($referer, '/partner')) {
+            Auth::guard('partner')->logout();
+            $loggedOut = true;
+        } elseif (str_contains($referer, '/customer')) {
+            Auth::guard('customer')->logout();
+            $loggedOut = true;
+        }
+
+        // Fallback: If no referrer matched, identify who is logged in and log them out
+        if (!$loggedOut) {
+            if (Auth::guard('admin')->check()) {
+                Auth::guard('admin')->logout();
+            } elseif (Auth::guard('partner')->check()) {
+                Auth::guard('partner')->logout();
+            } elseif (Auth::guard('customer')->check()) {
+                Auth::guard('customer')->logout();
+            } else {
+                Auth::logout();
+            }
+        }
+
+        // Regenerate session ID (security best practice) without clearing session data
+        $request->session()->regenerate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 
@@ -345,26 +350,46 @@ class AuthController extends Controller
         $guard = $user->role === 'partner' ? 'partner' : 'customer';
         Auth::guard($guard)->login($user);
 
-        // Redirect based on role
+        return $this->redirectUserByRole($user);
+    }
+
+    /**
+     * Redirect the user to their dashboard or intended destination,
+     * ensuring role-isolated redirects to prevent cross-role intended URL redirection.
+     */
+    private function redirectUserByRole($user)
+    {
+        $intended = session()->get('url.intended', '');
+
         if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard'))
-                             ->with('success', 'Logged in as Admin.');
+            if (str_contains($intended, '/admin')) {
+                return redirect()->intended(route('admin.dashboard'))->with('success', 'Logged in as Admin.');
+            }
+            session()->forget('url.intended');
+            return redirect()->route('admin.dashboard')->with('success', 'Logged in as Admin.');
         }
 
         if ($user->role === 'partner') {
-            return redirect()->intended(route('partner.dashboard'))
-                             ->with('success', 'Logged in successfully!');
+            if (str_contains($intended, '/partner')) {
+                return redirect()->intended(route('partner.dashboard'))->with('success', 'Logged in successfully!');
+            }
+            session()->forget('url.intended');
+            return redirect()->route('partner.dashboard')->with('success', 'Logged in successfully!');
         }
 
         // Customer
         $refServiceSlug = session('ref_service_slug');
         if ($refServiceSlug) {
             session()->forget('ref_service_slug');
-            return redirect()->intended(route('services.show', $refServiceSlug))
+            return redirect()->route('services.show', $refServiceSlug)
                              ->with('success', 'Logged in successfully! You can now purchase your referred service.');
         }
 
-        return redirect()->intended(route('customer.dashboard'))
-                         ->with('success', 'Logged in successfully!');
+        if (str_contains($intended, '/customer') || str_contains($intended, '/cart') || str_contains($intended, '/checkout')) {
+            return redirect()->intended(route('customer.dashboard'))->with('success', 'Logged in successfully!');
+        }
+
+        session()->forget('url.intended');
+        return redirect()->route('customer.dashboard')->with('success', 'Logged in successfully!');
     }
 }

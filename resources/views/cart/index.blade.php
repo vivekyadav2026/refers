@@ -92,9 +92,9 @@
     </div>
     <h3 class="text-xl font-bold text-slate-900 mb-2">Your cart is empty</h3>
     <p class="text-slate-500 mb-6">Browse our services and add them to your cart to get started.</p>
-    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-colors">
+    <!-- <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-colors">
         <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
-    </a>
+    </a> -->
 </div>
 @endif
 

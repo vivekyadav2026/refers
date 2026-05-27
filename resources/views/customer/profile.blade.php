@@ -37,10 +37,10 @@
 
             <h2 class="text-lg font-black text-slate-900">{{ auth()->user()->name }}</h2>
             <p class="text-xs font-medium text-slate-500 mb-4">{{ auth()->user()->email ?? auth()->user()->phone }}</p>
-
+<!-- 
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-black text-xs border border-blue-100 uppercase tracking-wider">
                 <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified Customer
-            </div>
+            </div> -->
         </div>
 
         {{-- Account Stats --}}
@@ -72,7 +72,7 @@
         </div>
 
         {{-- Quick Links --}}
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5">
+        <!-- <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5">
             <h3 class="font-black text-slate-900 mb-4 text-xs uppercase tracking-wider flex items-center gap-2">
                 <i data-lucide="link" class="w-4 h-4 text-blue-500"></i> Quick Links
             </h3>
@@ -99,7 +99,7 @@
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-auto opacity-40 group-hover:opacity-100 transition-opacity"></i>
                 </a>
             </div>
-        </div>
+        </div> -->
     </div>
 
     {{-- Main Profile Form --}}

@@ -29,11 +29,11 @@
             ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'],
             ['route'=>'admin.portfolios.index','icon'=>'briefcase','label'=>'Portfolio Manager'],
             ['route'=>'admin.business-categories.index','icon'=>'layers','label'=>'Business Categories'],
+            ['route'=>'admin.cms.index','icon'=>'file-text','label'=>'CMS Content'],
+            ['route'=>'admin.settings','icon'=>'settings','label'=>'Global Settings'],
+            ['route'=>'admin.coupons.index','icon'=>'tag','label'=>'Coupons Manager'],
+            ['route'=>'admin.marketing.index','icon'=>'image','label'=>'Marketing Assets'],
             ] as $item)
-            <!-- ['route'=>'admin.cms.index','icon'=>'file-text','label'=>'CMS Content'], -->
-            <!-- ['route'=>'admin.settings','icon'=>'settings','label'=>'Global Settings'], -->
-            <!-- ['route'=>'admin.coupons.index','icon'=>'tag','label'=>'Coupons Manager'], -->
-            <!-- ['route'=>'admin.marketing.index','icon'=>'image','label'=>'Marketing Assets'], -->
         <li>
             <a href="{{ route($item['route']) }}" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 {{ request()->routeIs($item['route']) ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 -translate-y-0.5' : 'text-slate-600 hover:bg-blue-50/60 hover:text-blue-700' }}">
                 <i data-lucide="{{ $item['icon'] }}" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 {{ request()->routeIs($item['route']) ? 'text-white' : 'text-slate-400 group-hover:text-blue-600' }}"></i>

@@ -375,7 +375,7 @@ body {
 
         <!-- Search Bar (Desktop & Mobile) -->
         <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." style="background-color: #ffffff !important;" class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 placeholder:font-normal pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" style="margin-left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -472,7 +472,7 @@ body {
                 <!-- Desktop login / explore -->
                 <div class="hidden lg:flex items-center gap-3">
                     <a href="{{ route('login') }}" class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Log in</a>
-                    <a href="{{ route('services.index') }}" class="btn-cta">Explore Services <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                    <!-- <a href="{{ route('services.index') }}" class="btn-cta">Explore Services <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a> -->
                 </div>
             @endif
         </div>

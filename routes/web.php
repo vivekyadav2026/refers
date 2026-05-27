@@ -32,6 +32,7 @@ Route::get('/ref/{code}', [ReferralController::class, 'handleReferral'])->name('
 Route::get('/login', [AuthController::class, 'showCustomerLogin'])->name('login');
 Route::get('/register', [AuthController::class, 'showCustomerRegister'])->name('register');
 Route::get('/partner-login', [AuthController::class, 'showPartnerLogin'])->name('partner.login');
+Route::get('/partner-register', [AuthController::class, 'showPartnerRegister'])->name('partner.register');
 
 // Phone OTP login (for customers + partners)
 Route::post('/login/send-otp', [AuthController::class, 'sendOtp'])->name('login.send_otp');

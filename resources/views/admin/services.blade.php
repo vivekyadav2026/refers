@@ -102,17 +102,17 @@
                         @if($plans && isset($plans['basic']))
                             <div class="flex items-center justify-center gap-1.5 flex-wrap">
                                 <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
-                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Basic</span>
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">{{ $plans['basic']['name'] ?? 'Basic' }}</span>
                                     ₹{{ number_format($plans['basic']['price'], 0) }}
                                 </span>
                                 <span class="text-slate-300">→</span>
                                 <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
-                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Standard</span>
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">{{ $plans['standard']['name'] ?? 'Standard' }}</span>
                                     ₹{{ number_format($plans['standard']['price'] ?? 0, 0) }}
                                 </span>
                                 <span class="text-slate-300">→</span>
                                 <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
-                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Premium</span>
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">{{ $plans['premium']['name'] ?? 'Premium' }}</span>
                                     ₹{{ number_format($plans['premium']['price'] ?? 0, 0) }}
                                 </span>
                             </div>
@@ -161,25 +161,32 @@
                                 'banner_image'     => $service->banner_image,
                                 'is_popular'       => $service->is_popular,
                                 'is_active'        => $service->is_active,
+                                'requires_domain'  => $service->requires_domain,
                                 'delivery_timeline'=> $service->delivery_timeline,
                                 'requirements_text'=> $service->requirements_text,
                                 'commission_rate'  => $service->commission_rate,
                                 'commission_type'  => $service->commission_type,
+                                'basic_name'          => $basicPlan['name']        ?? 'Basic',
                                 'basic_price'         => $basicPlan['price']       ?? $service->min_price,
                                 'basic_description'   => $basicPlan['description'] ?? '',
                                 'basic_delivery'      => $basicPlan['delivery']    ?? '',
                                 'basic_revisions'     => $basicPlan['revisions']   ?? '',
-                                'basic_features'      => isset($basicPlan['features']) ? implode("\n", $basicPlan['features']) : (is_array($service->features) ? implode("\n", $service->features) : ''),
+                                'basic_features'      => (isset($basicPlan['features']) && is_array($basicPlan['features'])) ? implode("\n", $basicPlan['features']) : (is_string($basicPlan['features'] ?? null) ? $basicPlan['features'] : (is_array($service->features) ? implode("\n", $service->features) : '')),
+                                'basic_active'        => $basicPlan['active']      ?? true,
+                                'standard_name'       => $stdPlan['name']          ?? 'Standard',
                                 'standard_price'         => $stdPlan['price']       ?? '',
                                 'standard_description'   => $stdPlan['description'] ?? '',
                                 'standard_delivery'      => $stdPlan['delivery']    ?? '',
                                 'standard_revisions'     => $stdPlan['revisions']   ?? '',
-                                'standard_features'      => isset($stdPlan['features']) ? implode("\n", $stdPlan['features']) : '',
+                                'standard_features'      => (isset($stdPlan['features']) && is_array($stdPlan['features'])) ? implode("\n", $stdPlan['features']) : (is_string($stdPlan['features'] ?? null) ? $stdPlan['features'] : ''),
+                                'standard_active'        => $stdPlan['active']      ?? true,
+                                'premium_name'        => $premiumPlan['name']         ?? 'Premium',
                                 'premium_price'          => $premiumPlan['price']       ?? '',
                                 'premium_description'    => $premiumPlan['description'] ?? '',
                                 'premium_delivery'       => $premiumPlan['delivery']    ?? '',
                                 'premium_revisions'      => $premiumPlan['revisions']   ?? '',
-                                'premium_features'       => isset($premiumPlan['features']) ? implode("\n", $premiumPlan['features']) : '',
+                                'premium_features'       => (isset($premiumPlan['features']) && is_array($premiumPlan['features'])) ? implode("\n", $premiumPlan['features']) : (is_string($premiumPlan['features'] ?? null) ? $premiumPlan['features'] : ''),
+                                'premium_active'         => $premiumPlan['active']     ?? true,
                             ]) }})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
                                 <i data-lucide="edit-2" class="w-4 h-4"></i>
                             </button>
@@ -273,10 +280,19 @@
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category <span class="text-red-500">*</span></label>
-                        <input type="text" name="category" id="serviceCategory" required
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                            placeholder="e.g. Development, Marketing">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category</label>
+                        <select name="category" id="serviceCategory"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="">Select a Category...</option>
+                            @foreach($categories as $parent)
+                                <optgroup label="{{ $parent->name }}">
+                                    <option value="{{ $parent->name }}">{{ $parent->name }} (Parent)</option>
+                                    @foreach($parent->subcategories as $sub)
+                                        <option value="{{ $sub->name }}">{{ $sub->name }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image (For Details Page)</label>
@@ -313,8 +329,8 @@
                 </div>
 
                 <div class="mb-5">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Short Description <span class="text-red-500">*</span></label>
-                    <textarea name="short_description" id="serviceDesc" rows="2" required
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Short Description</label>
+                    <textarea name="short_description" id="serviceDesc" rows="2"
                         class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"></textarea>
                 </div>
 
@@ -335,53 +351,51 @@
                 {{-- ── PRICING PLANS ─────────────────────────────────────── --}}
                 <div class="mb-5 border border-indigo-100 rounded-2xl overflow-hidden">
                     <!-- Plan Tab Header -->
-                    <div class="flex bg-slate-50 border-b border-slate-200">
-                        <button type="button" onclick="switchPlanTab('basic')" id="tab-basic"
-                            class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-indigo-700 bg-white border-b-2 border-indigo-500">
-                            🌱 Basic
-                        </button>
-                        <button type="button" onclick="switchPlanTab('standard')" id="tab-standard"
-                            class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">
-                            ⭐ Standard
-                        </button>
-                        <button type="button" onclick="switchPlanTab('premium')" id="tab-premium"
-                            class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">
-                            👑 Premium
-                        </button>
+                    <div class="flex border-b border-slate-100 bg-slate-50/60 overflow-x-auto rounded-t-xl">
+                        <button type="button" onclick="switchPlanTab('basic')" id="tab-basic" class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-indigo-700 bg-white border-b-2 border-indigo-500">🌱 <span id="tabLabel-basic">Basic</span></button>
+                        <button type="button" onclick="switchPlanTab('standard')" id="tab-standard" class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">⭐ <span id="tabLabel-standard">Standard</span></button>
+                        <button type="button" onclick="switchPlanTab('premium')" id="tab-premium" class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">👑 <span id="tabLabel-premium">Premium</span></button>
                     </div>
 
                     <!-- Basic Plan -->
                     <div id="panel-basic" class="plan-panel p-5 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="basic_active" id="basicActive" value="1" checked
+                                    class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4">
+                                <label for="basicActive" class="text-xs font-bold text-slate-700">Enable Basic Plan</label>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Plan Name:</label>
+                                <input type="text" name="basic_name" id="basicName" value="Basic"
+                                    class="border border-slate-200 bg-slate-50 text-slate-900 text-xs rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-indigo-500 outline-none w-36"
+                                    placeholder="e.g. Startup / Basic">
+                            </div>
+                        </div>
                         <p class="text-[11px] text-slate-500 font-medium">Essential features at an entry-level price.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-red-500">*</span></label>
-                                <input type="number" name="basic_price" id="basicPrice" required min="0" step="0.01"
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹)</label>
+                                <input type="number" name="basic_price" id="basicPrice" min="0" step="0.01"
                                     class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                     placeholder="e.g. 4999">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery <span class="text-red-500">*</span></label>
-                                <input type="text" name="basic_delivery" id="basicDelivery" required
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery</label>
+                                <input type="text" name="basic_delivery" id="basicDelivery"
                                     class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                     placeholder="e.g. 5 Days">
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Revisions <span class="text-red-500">*</span></label>
-                                <input type="text" name="basic_revisions" id="basicRevisions" required
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 2">
-                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description <span class="text-red-500">*</span></label>
-                            <input type="text" name="basic_description" id="basicDescription" required
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description</label>
+                            <input type="text" name="basic_description" id="basicDescription"
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                 placeholder="e.g. Perfect for small businesses getting started">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line) <span class="text-red-500">*</span></label>
-                            <textarea name="basic_features" id="basicFeatures" rows="4" required
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line)</label>
+                            <textarea name="basic_features" id="basicFeatures" rows="4"
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
                                 placeholder="e.g.&#10;5 Page Website&#10;Mobile Responsive&#10;Contact Form"></textarea>
                         </div>
@@ -389,36 +403,43 @@
 
                     <!-- Standard Plan -->
                     <div id="panel-standard" class="plan-panel p-5 space-y-4 hidden">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="standard_active" id="standardActive" value="1" checked
+                                    class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4">
+                                <label for="standardActive" class="text-xs font-bold text-slate-700">Enable Standard Plan</label>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Plan Name:</label>
+                                <input type="text" name="standard_name" id="standardName" value="Standard"
+                                    class="border border-slate-200 bg-slate-50 text-slate-900 text-xs rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-indigo-500 outline-none w-36"
+                                    placeholder="e.g. Professional / Standard">
+                            </div>
+                        </div>
                         <p class="text-[11px] text-slate-500 font-medium">Great value with more features and faster delivery.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-red-500">*</span></label>
-                                <input type="number" name="standard_price" id="standardPrice" required min="0" step="0.01"
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹)</label>
+                                <input type="number" name="standard_price" id="standardPrice" min="0" step="0.01"
                                     class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                     placeholder="e.g. 9999">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery <span class="text-red-500">*</span></label>
-                                <input type="text" name="standard_delivery" id="standardDelivery" required
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery</label>
+                                <input type="text" name="standard_delivery" id="standardDelivery"
                                     class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                     placeholder="e.g. 7 Days">
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Revisions <span class="text-red-500">*</span></label>
-                                <input type="text" name="standard_revisions" id="standardRevisions" required
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 5">
-                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description <span class="text-red-500">*</span></label>
-                            <input type="text" name="standard_description" id="standardDescription" required
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description</label>
+                            <input type="text" name="standard_description" id="standardDescription"
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                 placeholder="e.g. Ideal for growing businesses needing more">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line) <span class="text-red-500">*</span></label>
-                            <textarea name="standard_features" id="standardFeatures" rows="4" required
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line)</label>
+                            <textarea name="standard_features" id="standardFeatures" rows="4"
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
                                 placeholder="e.g.&#10;10 Page Website&#10;Mobile Responsive&#10;SEO Optimization&#10;Live Chat Integration"></textarea>
                         </div>
@@ -426,36 +447,43 @@
 
                     <!-- Premium Plan -->
                     <div id="panel-premium" class="plan-panel p-5 space-y-4 hidden">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="premium_active" id="premiumActive" value="1" checked
+                                    class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4">
+                                <label for="premiumActive" class="text-xs font-bold text-slate-700">Enable Premium Plan</label>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Plan Name:</label>
+                                <input type="text" name="premium_name" id="premiumName" value="Premium"
+                                    class="border border-slate-200 bg-slate-50 text-slate-900 text-xs rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-indigo-500 outline-none w-36"
+                                    placeholder="e.g. Enterprise / Premium">
+                            </div>
+                        </div>
                         <p class="text-[11px] text-slate-500 font-medium">Full-featured solution for maximum results.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-red-500">*</span></label>
-                                <input type="number" name="premium_price" id="premiumPrice" required min="0" step="0.01"
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹)</label>
+                                <input type="number" name="premium_price" id="premiumPrice" min="0" step="0.01"
                                     class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                     placeholder="e.g. 19999">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery <span class="text-red-500">*</span></label>
-                                <input type="text" name="premium_delivery" id="premiumDelivery" required
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery</label>
+                                <input type="text" name="premium_delivery" id="premiumDelivery"
                                     class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                     placeholder="e.g. 14 Days">
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Revisions <span class="text-red-500">*</span></label>
-                                <input type="text" name="premium_revisions" id="premiumRevisions" required
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. Unlimited">
-                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description <span class="text-red-500">*</span></label>
-                            <input type="text" name="premium_description" id="premiumDescription" required
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description</label>
+                            <input type="text" name="premium_description" id="premiumDescription"
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
                                 placeholder="e.g. Complete solution for enterprise-level needs">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line) <span class="text-red-500">*</span></label>
-                            <textarea name="premium_features" id="premiumFeatures" rows="4" required
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line)</label>
+                            <textarea name="premium_features" id="premiumFeatures" rows="4"
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
                                 placeholder="e.g.&#10;Unlimited Pages&#10;Custom UI/UX Design&#10;E-Commerce Integration&#10;Priority Support&#10;1 Year Maintenance"></textarea>
                         </div>
@@ -463,51 +491,74 @@
                 </div>
 
                 {{-- ── COMMISSION & SETTINGS ────────────────────────────── --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5 border-t border-slate-100 pt-5">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Delivery Timeline (General)</label>
-                        <input type="text" name="delivery_timeline" id="serviceTimeline"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                            placeholder="e.g. 3-4 Weeks">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Rate</label>
-                        <input type="number" name="commission_rate" id="serviceCommissionRate" min="0" step="0.01"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                            placeholder="e.g. 10 or 500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Type</label>
-                        <select name="commission_type" id="serviceCommissionType"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
-                            <option value="percentage">Percentage (%)</option>
-                            <option value="fixed">Fixed (₹)</option>
-                        </select>
+                <div class="mt-8 mb-4">
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="settings-2" class="w-4 h-4 text-indigo-500"></i> Settings & Commission
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Delivery Timeline</label>
+                            <input type="text" name="delivery_timeline" id="serviceTimeline"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                placeholder="e.g. 3-4 Weeks">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Rate</label>
+                            <input type="number" name="commission_rate" id="serviceCommissionRate" min="0" step="0.01"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                placeholder="e.g. 10 or 500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Type</label>
+                            <select name="commission_type" id="serviceCommissionType"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm">
+                                <option value="percentage">Percentage (%)</option>
+                                <option value="fixed">Fixed (₹)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-6 border-t border-slate-100 pt-5">
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                        <label for="servicePopular" class="text-sm font-semibold text-slate-700">Mark as Popular Service</label>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" name="is_active" id="serviceActive" value="1" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                        <label for="serviceActive" class="text-sm font-semibold text-slate-700">Published / Active</label>
+                <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 mb-2">
+                    <div class="flex items-center gap-6">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">🔥 Popular Service</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" name="is_active" id="serviceActive" value="1" class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all"></div>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-emerald-700 transition-colors">✅ Published</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" name="requires_domain" id="serviceRequiresDomain" value="1" class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">🌐 Requires Domain</span>
+                        </label>
                     </div>
                 </div>
             </form>
         </div>
 
         <!-- Modal Footer -->
-        <div class="p-5 sm:p-6 border-t border-slate-100 shrink-0 bg-slate-50 rounded-b-2xl flex flex-col sm:flex-row gap-3 justify-end">
+        <div class="p-5 sm:p-6 border-t border-slate-100 shrink-0 bg-white rounded-b-2xl flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
             <button type="button" onclick="closeModal()"
-                class="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-xl transition-colors">
-                Cancel
+                class="px-6 py-2.5 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center gap-2">
+                <i data-lucide="x" class="w-4 h-4"></i> Cancel
             </button>
             <button type="submit" form="serviceForm" id="submitBtn"
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
-                Save Service
+                class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-200 flex items-center gap-2 transform hover:-translate-y-0.5">
+                <i data-lucide="save" class="w-4 h-4"></i> Save Service
             </button>
         </div>
 
@@ -518,7 +569,6 @@
 // ── Plan Tab Switcher ──────────────────────────────────────────────────────────
 function switchPlanTab(plan) {
     const tabs   = ['basic', 'standard', 'premium'];
-    const emojis = { basic: '🌱 Basic', standard: '⭐ Standard', premium: '👑 Premium' };
     tabs.forEach(t => {
         const tab   = document.getElementById('tab-' + t);
         const panel = document.getElementById('panel-' + t);
@@ -607,27 +657,36 @@ function openModal(service = null) {
         document.getElementById('serviceCommissionType').value = service.commission_type || 'percentage';
         document.getElementById('servicePopular').checked  = service.is_popular ? true : false;
         document.getElementById('serviceActive').checked   = service.is_active ? true : false;
+        document.getElementById('serviceRequiresDomain').checked = service.requires_domain ? true : false;
 
         // Basic Plan
+        document.getElementById('basicActive').checked    = service.basic_active !== false;
+        document.getElementById('basicName').value        = service.basic_name || 'Basic';
         document.getElementById('basicPrice').value       = service.basic_price || '';
         document.getElementById('basicDelivery').value    = service.basic_delivery || '';
-        document.getElementById('basicRevisions').value   = service.basic_revisions || '';
         document.getElementById('basicDescription').value = service.basic_description || '';
         document.getElementById('basicFeatures').value    = (service.basic_features || '').replace(/\\n/g, '\n');
 
         // Standard Plan
+        document.getElementById('standardActive').checked = service.standard_active !== false;
+        document.getElementById('standardName').value     = service.standard_name || 'Standard';
         document.getElementById('standardPrice').value       = service.standard_price || '';
         document.getElementById('standardDelivery').value    = service.standard_delivery || '';
-        document.getElementById('standardRevisions').value   = service.standard_revisions || '';
         document.getElementById('standardDescription').value = service.standard_description || '';
         document.getElementById('standardFeatures').value    = (service.standard_features || '').replace(/\\n/g, '\n');
 
         // Premium Plan
+        document.getElementById('premiumActive').checked  = service.premium_active !== false;
+        document.getElementById('premiumName').value      = service.premium_name || 'Premium';
         document.getElementById('premiumPrice').value       = service.premium_price || '';
         document.getElementById('premiumDelivery').value    = service.premium_delivery || '';
-        document.getElementById('premiumRevisions').value   = service.premium_revisions || '';
         document.getElementById('premiumDescription').value = service.premium_description || '';
         document.getElementById('premiumFeatures').value    = (service.premium_features || '').replace(/\\n/g, '\n');
+
+        // Update Tab Labels
+        document.getElementById('tabLabel-basic').innerText = service.basic_name || 'Basic';
+        document.getElementById('tabLabel-standard').innerText = service.standard_name || 'Standard';
+        document.getElementById('tabLabel-premium').innerText = service.premium_name || 'Premium';
 
         if (service.banner_image) {
             analyzeImage('/storage/' + service.banner_image, false);
@@ -640,6 +699,13 @@ function openModal(service = null) {
         form.reset();
         document.getElementById('serviceIcon').value = 'box';
         document.getElementById('serviceActive').checked = true;
+        document.getElementById('serviceRequiresDomain').checked = false;
+        document.getElementById('basicActive').checked = true;
+        document.getElementById('basicName').value = 'Basic';
+        document.getElementById('standardActive').checked = true;
+        document.getElementById('standardName').value = 'Standard';
+        document.getElementById('premiumActive').checked = true;
+        document.getElementById('premiumName').value = 'Premium';
     }
 
     const modal = document.getElementById('serviceModal');
@@ -666,6 +732,16 @@ document.getElementById('serviceBanner').addEventListener('change', function(e) 
 // Close modal on backdrop click
 document.getElementById('serviceModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
+});
+// ── Live Tab Label Updates ───────────────────────────────────────────────────
+document.getElementById('basicName').addEventListener('input', function(e) {
+    document.getElementById('tabLabel-basic').innerText = e.target.value || 'Basic';
+});
+document.getElementById('standardName').addEventListener('input', function(e) {
+    document.getElementById('tabLabel-standard').innerText = e.target.value || 'Standard';
+});
+document.getElementById('premiumName').addEventListener('input', function(e) {
+    document.getElementById('tabLabel-premium').innerText = e.target.value || 'Premium';
 });
 </script>
 @endsection

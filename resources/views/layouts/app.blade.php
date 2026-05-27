@@ -213,6 +213,11 @@
 
         /* ── FORCE TEXT WRAP IN TIGHT CELLS ─────────────────────── */
         .allow-wrap { white-space: normal !important; }
+
+        /* Ensure all inputs placeholders are not bold */
+        ::placeholder {
+            font-weight: 400 !important;
+        }
     </style>
 </head>
 <body class="h-full text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white" x-data="{ sidebarOpen: false }">
@@ -263,9 +268,28 @@
             @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
             <nav class="mobile-bottom-nav lg:hidden">
                 @php
-                    $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
-                    $isAdmin = in_array($u->role, ['admin', 'superadmin']);
-                    $isPartner = $u->role === 'partner';
+                    $isAdmin = request()->is('admin*') && auth('admin')->check();
+                    $isPartner = request()->is('partner*') && auth('partner')->check();
+                    $isCustomer = request()->is('customer*', 'cart*', 'checkout*') && auth('customer')->check();
+
+                    if (!$isAdmin && !$isPartner && !$isCustomer) {
+                        if (auth('admin')->check()) {
+                            $isAdmin = true;
+                        } elseif (auth('partner')->check()) {
+                            $isPartner = true;
+                        } elseif (auth('customer')->check()) {
+                            $isCustomer = true;
+                        }
+                    }
+
+                    $u = null;
+                    if ($isAdmin) {
+                        $u = auth('admin')->user();
+                    } elseif ($isPartner) {
+                        $u = auth('partner')->user();
+                    } elseif ($isCustomer) {
+                        $u = auth('customer')->user();
+                    }
                 @endphp
                 @if($isAdmin)
                     <a href="{{ route('admin.dashboard') }}" class="flex-1 flex flex-col items-center py-2 gap-0.5 text-[10px] font-bold {{ request()->routeIs('admin.dashboard') ? 'text-indigo-600' : 'text-slate-500' }}">

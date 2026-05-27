@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Customer Registration — SKSolutions')
+@section('title', 'Partner Registration — SKSolutions')
 @section('hide_nav_footer', true)
 
 @push('styles')
@@ -209,28 +209,39 @@
     }
     .btn-primary:active { transform: translateY(0); opacity: 0.9; }
 
-    /* ── Role Toggle ── */
-    .role-tab {
-        flex: 1;
-        padding: 0.65rem 1rem;
-        border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(255,255,255,0.04);
-        border-radius: 0.6rem;
+    /* ── Categories Showcase ── */
+    .categories-box {
+        margin-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        padding-top: 1rem;
+    }
+    .categories-title {
+        font-size: 0.75rem;
+        font-weight: 700;
         color: #94a3b8;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    .category-badge {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 0.5rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        color: #e2e8f0;
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 0.4rem;
+        gap: 0.35rem;
     }
-    .role-tab:hover { background: rgba(255,255,255,0.08); }
-    .role-tab.active {
-        background: rgba(99,102,241,0.15);
-        border-color: rgba(99,102,241,0.4);
-        color: #a5b4fc;
+    .category-badge svg {
+        color: #8b5cf6;
     }
 
 </style>
@@ -245,14 +256,6 @@
             <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-10 sm:h-12 w-auto object-contain">
         </a>
 
-        <!-- Search Bar (Desktop & Mobile) -->
-        <!-- <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none"  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-        </form> -->
-
         <!-- Desktop nav links -->
         <nav class="hidden lg:flex items-center gap-8">
             <a href="{{ url('/') }}"           class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Home</a>
@@ -266,7 +269,6 @@
             @auth
                 @php
                     $u = auth()->user();
-                    $ini = strtoupper(implode('', array_map(fn($w)=>mb_substr($w,0,1), array_slice(array_filter(explode(' ',trim($u->name))),0,2))));
                     $dashUrl = match($u->role){ 'admin'=>route('admin.dashboard'),'partner'=>route('partner.dashboard'),default=>route('customer.dashboard')};
                 @endphp
                 <a href="{{ $dashUrl }}" class="hidden sm:inline-flex px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-full text-xs font-black shadow-lg shadow-violet-600/20 hover:shadow-violet-600/30 transition-all hover:-translate-y-0.5">Dashboard</a>
@@ -296,11 +298,11 @@
         <div class="login-logo">
             <div class="brand-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
                 </svg>
             </div>
-            <h1>Customer Registration</h1>
-            <p>Create an account with your mobile number</p>
+            <h1>Partner Registration</h1>
+            <p>Create a partner account with your mobile number</p>
         </div>
 
         {{-- Alerts --}}
@@ -333,7 +335,7 @@
                 <input type="hidden" name="ref_id" value="{{ request()->query('ref') }}">
             @endif
 
-            <input type="hidden" name="login_as" value="customer">
+            <input type="hidden" name="login_as" value="partner">
 
             <div class="form-group">
                 <label class="form-label" for="name">Full Name</label>
@@ -345,7 +347,7 @@
                     </span>
                     <input id="name" name="name" type="text"
                            class="form-input"
-                           placeholder="Rahul"
+                           placeholder="Enter your name"
                            value="{{ old('name') }}">
                 </div>
             </div>
@@ -399,6 +401,22 @@
             </button>
         </form>
 
+        @if(isset($categories) && count($categories) > 0)
+            <div class="categories-box">
+                <div class="categories-title">Opportunity Categories</div>
+                <div class="categories-grid">
+                    @foreach($categories->take(6) as $category)
+                        <div class="category-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {{ $category->name }}
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <p style="margin-top:1.5rem;color:#64748b;font-size:0.8rem;text-align:center;">
             By continuing, you agree to our policies.
         </p>
@@ -411,7 +429,7 @@
         </div>
         
         <p style="margin-top:1.5rem;color:#64748b;font-size:0.9rem;text-align:center;">
-            Already have an account? <a href="{{ route('login') }}" style="color:#6366f1;font-weight:600;text-decoration:none;">Login here</a>
+            Already have an account? <a href="{{ route('partner.login') }}" style="color:#6366f1;font-weight:600;text-decoration:none;">Login here</a>
         </p>
 
     </div><!-- /.login-card -->
@@ -422,39 +440,4 @@
 <div class="hidden lg:block">
     @include('components.footer')
 </div>
-
-<!-- Fixed Bottom Navigation (Public Mobile Only) -->
-<nav class="bottom-nav-bar lg:hidden">
-    <a href="{{ url('/') }}" class="nav-item" id="nav-home">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-        </svg>
-        Home
-    </a>
-    <a href="{{ route('services.index') }}" class="nav-item" id="nav-services">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
-        Services
-    </a>
-    <a href="{{ route('login') }}" class="nav-item active" id="nav-orders">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-        </svg>
-        Orders
-    </a>
-    <a href="{{ route('contact') }}" class="nav-item" id="nav-support">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        Support
-    </a>
-    <a href="{{ url('/portfolio') }}" class="nav-item" id="nav-portfolio">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-        </svg>
-        Portfolio
-    </a>
-</nav>
 @endsection

@@ -24,7 +24,8 @@ class AdminSettingsController extends Controller
             'enable_gst' => Setting::get_val('enable_gst', 0),
             'gst_percent' => Setting::get_val('gst_percent', 18),
             'enable_domain_charge' => Setting::get_val('enable_domain_charge', 0),
-            'domain_charge_amount' => Setting::get_val('domain_charge_amount', 999),
+            'domain_in_charge_amount' => Setting::get_val('domain_in_charge_amount', 599),
+            'domain_com_charge_amount' => Setting::get_val('domain_com_charge_amount', 999),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -37,6 +38,8 @@ class AdminSettingsController extends Controller
             'referral_override' => 'required|numeric|min:0|max:100',
             'min_withdrawal' => 'required|numeric|min:0',
             'clearance_period' => 'required|numeric|min:0',
+            'support_email' => 'required|email|max:255',
+            'support_phone' => 'required|string|max:255',
         ]);
 
         Setting::set_val('default_commission', $request->default_commission);
@@ -50,7 +53,8 @@ class AdminSettingsController extends Controller
         Setting::set_val('enable_gst', $request->has('enable_gst') ? 1 : 0);
         Setting::set_val('gst_percent', $request->gst_percent ?? 18);
         Setting::set_val('enable_domain_charge', $request->has('enable_domain_charge') ? 1 : 0);
-        Setting::set_val('domain_charge_amount', $request->domain_charge_amount ?? 999);
+        Setting::set_val('domain_in_charge_amount', $request->domain_in_charge_amount ?? 599);
+        Setting::set_val('domain_com_charge_amount', $request->domain_com_charge_amount ?? 999);
 
         return redirect()->back()->with('success', 'Global settings updated successfully.');
     }

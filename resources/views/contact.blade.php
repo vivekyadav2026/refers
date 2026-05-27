@@ -14,9 +14,45 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-.bottom-nav {
-    padding-bottom: env(safe-area-inset-bottom);
+/* ── Header ─────────────────────────────────────────────── */
+.sk-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f3f0ff;
+    box-shadow: 0 1px 8px rgba(109,40,217,0.06);
 }
+
+/* ── Bottom nav ─────────────────────────────────────────── */
+.bottom-nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid #ede9fe;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    z-index: 60;
+    box-shadow: 0 -4px 20px rgba(109,40,217,0.07);
+}
+@media (min-width: 1024px) { .bottom-nav-bar { display: none !important; } }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+    text-decoration: none;
+    color: #9ca3af;
+    transition: color 0.2s;
+    font-size: 0.58rem;
+    font-weight: 700;
+}
+.nav-item.active, .nav-item:hover { color: #6d28d9; }
 
 .glass-form {
   background: rgba(255, 255, 255, 0.82);
@@ -68,151 +104,122 @@ select.input-field {
 .float-anim2 { animation: float-slow2 8s ease-in-out infinite; }
 </style>
 
-<!-- Responsive Sticky Top Header -->
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100/80 shadow-sm transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+<!-- Standard Header Navbar -->
+<header class="sk-header">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center gap-2 select-none shrink-0">
-            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+            <img src="{{ asset('sksolutions_logo.jpg') }}" alt="SK Solutions Logo" class="h-12 sm:h-12 w-auto object-contain">
         </a>
 
-        <!-- Search Bar (Desktop & Mobile) -->
-        <!-- <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg"  class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <!-- Search Bar -->
+        <form action="{{ route('services.index') }}" method="GET" class="flex items-center flex-1 max-w-[220px] sm:max-w-xs relative">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." style="background-color: #ffffff !important;" class="w-full bg-white text-[11px] sm:text-xs font-normal text-gray-800 placeholder-gray-400 placeholder:font-normal pl-10 sm:pl-11 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-full border border-gray-200/80 focus:border-violet-500 outline-none transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-3.5 sm:left-4 pointer-events-none" style="margin-left: 10px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-        </form> -->
+        </form>
 
-        <!-- Desktop Navigation Menu -->
+        <!-- Desktop Navigation links -->
         <nav class="hidden lg:flex items-center gap-8">
-            <a href="{{ route('landing') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('landing') ? 'text-indigo-800' : 'text-slate-600 hover:text-indigo-800' }}">Home</a>
-            <a href="{{ route('services.index') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('services.*') ? 'text-indigo-800' : 'text-slate-600 hover:text-indigo-800' }}">Services</a>
-            <a href="{{ route('landing') }}#why-choose-us" class="text-sm font-bold text-slate-600 hover:text-indigo-800 transition-colors">Why Choose Us</a>
-            <a href="{{ route('contact') }}" class="text-sm font-bold transition-colors {{ request()->routeIs('contact') ? 'text-indigo-850' : 'text-slate-600 hover:text-indigo-800' }}">Contact</a>
+            <a href="{{ url('/') }}"           class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Home</a>
+            <a href="{{ route('services.index') }}" class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Services</a>
+            <a href="{{ url('/') }}#why-choose-us"           class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Why Us</a>
+            <a href="{{ route('contact') }}"   class="text-sm font-bold text-violet-700">Contact</a>
         </nav>
 
-        <!-- Right Actions -->
-        <div class="flex items-center gap-4">
-            <!-- Notification Bell with Alpine Dropdown -->
-            <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
-                <button type="button" @click="notifOpen = !notifOpen" class="p-2 text-slate-700 hover:text-indigo-800 transition-colors relative focus:outline-none rounded-full hover:bg-slate-100">
-                    <i data-lucide="bell" class="w-6 h-6"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+        <!-- Right actions -->
+        <div class="flex items-center gap-3">
+            <!-- Notification bell -->
+            <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" class="relative p-2 rounded-full hover:bg-violet-50 transition-colors" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
                 </button>
-                
-                <!-- Notification Dropdown Panel -->
-                <div x-show="notifOpen" 
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-                     x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                     x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                     class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 z-50 overflow-hidden" 
-                     style="display:none">
-                     <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/50">
-                         <span class="text-sm font-black text-slate-800">Notifications</span>
-                         <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-black">2 new</span>
-                     </div>
-                     <div class="max-h-[300px] overflow-y-auto divide-y divide-slate-50">
-                         <div class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3">
-                             <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 shrink-0">
-                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                             </div>
-                             <div>
-                                 <div class="text-xs font-bold text-slate-900">Welcome to SK Solutions!</div>
-                                 <div class="text-[10px] text-slate-500 mt-0.5">Explore our premium digital agency services and scale your business today.</div>
-                                 <div class="text-[9px] text-slate-400 mt-1">Just now</div>
-                             </div>
-                         </div>
-                         <div class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3">
-                             <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 shrink-0">
-                                 <i data-lucide="tag" class="w-4 h-4"></i>
-                             </div>
-                             <div>
-                                 <div class="text-xs font-bold text-slate-900">Special Offer!</div>
-                                 <div class="text-[10px] text-slate-500 mt-0.5">Get 15% off on your first mobile app development project. Use code: APPS15.</div>
-                                 <div class="text-[9px] text-slate-400 mt-1">2 hours ago</div>
-                             </div>
-                         </div>
-                     </div>
-                </div>
-            </div>
 
-            @auth
-                <!-- User Profile Dropdown -->
-                @php
-                    $user = auth()->user();
-                    $initials = strtoupper(implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice(array_filter(explode(' ', trim($user->name))), 0, 2))));
-                    $dashUrl = match($user->role) {
-                        'admin' => route('admin.dashboard'),
-                        'partner' => route('partner.dashboard'),
-                        default => route('customer.dashboard'),
-                    };
-                @endphp
-                <div class="relative" x-data="{ profileOpen: false }" @click.away="profileOpen = false">
-                    <button type="button" @click="profileOpen = !profileOpen" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold text-xs sm:text-sm flex items-center justify-center transition-colors focus:outline-none ring-2 ring-indigo-50/50 hover:ring-indigo-100">
-                        {{ $initials }}
-                    </button>
-                    
-                    <!-- Dropdown Menu -->
-                    <div x-show="profileOpen" 
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-                         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                         x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                         x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                         class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden" 
-                         style="display:none">
-                         <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
-                             <div class="text-xs font-bold text-slate-800 truncate">{{ $user->name }}</div>
-                             <div class="text-[10px] text-slate-500 truncate mt-0.5">{{ $user->email ?: $user->phone }}</div>
-                         </div>
-                         <div class="py-1.5">
-                             <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-800 transition-colors">
-                                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-                             </a>
-                             <form method="POST" action="{{ route('logout') }}" class="w-full m-0">
-                                 @csrf
-                                 <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-650 hover:bg-red-50 hover:text-red-700 transition-colors text-left border-none bg-transparent cursor-pointer">
-                                     <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
-                                 </button>
-                             </form>
-                         </div>
+                <!-- Notification Dropdown -->
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-violet-100 z-50 overflow-hidden"
+                     style="display:none">
+                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                        <span class="text-xs font-black text-gray-800">Notifications</span>
+                        <span class="text-[10px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">2 new</span>
+                    </div>
+                    <div class="divide-y divide-gray-50">
+                        <div class="p-3 flex gap-3 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-800">Welcome to SK Solutions!</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Scale your business with premium digital services.</p>
+                                <p class="text-[9px] text-gray-400 mt-1">Just now</p>
+                            </div>
+                        </div>
+                        <div class="p-3 flex gap-3 hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-800">Special Offer!</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">15% off your first mobile app. Use: <b>APPS15</b></p>
+                                <p class="text-[9px] text-gray-400 mt-1">2 hours ago</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            @endauth
-
-            <!-- Desktop CTA Button -->
-            <div class="hidden lg:flex items-center gap-3">
-                @auth
-                    @php
-                        $dashUrl = match(auth()->user()->role) {
-                            'admin' => route('admin.dashboard'),
-                            'partner' => route('partner.dashboard'),
-                            default => route('customer.dashboard'),
-                        };
-                    @endphp
-                    <a href="{{ $dashUrl }}" class="inline-flex items-center gap-2 bg-indigo-800 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-indigo-900 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 hover:text-indigo-800 transition-colors px-3 py-2">Log in</a>
-                    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 bg-indigo-800 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-indigo-900 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                        Explore Services <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                @endauth
             </div>
+
+            @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
+                <!-- User avatar -->
+                @php
+                    $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
+                    $ini = strtoupper(implode('', array_map(fn($w)=>mb_substr($w,0,1), array_slice(array_filter(explode(' ',trim($u->name))),0,2))));
+                    $dashUrl = match($u->role){ 'admin'=>route('admin.dashboard'),'partner'=>route('partner.dashboard'),default=>route('customer.dashboard')};
+                @endphp
+                <div class="relative" x-data="{ pOpen:false }" @click.away="pOpen=false">
+                    <button @click="pOpen=!pOpen" class="w-9 h-9 rounded-full bg-violet-100 text-violet-700 font-black text-xs flex items-center justify-center ring-2 ring-violet-50 hover:ring-violet-200 transition-all">{{ $ini }}</button>
+                    <div x-show="pOpen" x-transition class="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden" style="display:none">
+                        <div class="px-4 py-3 border-b border-gray-50 bg-gray-50/60">
+                            <p class="text-xs font-bold text-gray-800 truncate">{{ $u->name }}</p>
+                            <p class="text-[10px] text-gray-400 truncate mt-0.5">{{ $u->email ?: $u->phone }}</p>
+                        </div>
+                        <div class="py-1">
+                            <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 hover:text-violet-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                                Dashboard
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">@csrf
+                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors text-left bg-transparent border-0 cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    Log Out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <!-- Desktop login / explore -->
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="{{ route('login') }}" class="text-sm font-bold text-gray-500 hover:text-violet-700 transition-colors">Log in</a>
+                </div>
+            @endif
         </div>
     </div>
 </header>
 
-<div class="bg-[#FAFAFA] min-h-screen">
+<div class="bg-[#FAFAFA] min-h-screen pb-16">
 
   {{-- ══════ HERO ══════ --}}
-  <div class="relative pt-6 pb-10 sm:pt-10 sm:pb-12 overflow-hidden bg-white border-b border-slate-100">
+  <div class="relative pt-3 pb-8 sm:pt-5 sm:pb-10 overflow-hidden bg-white border-b border-slate-100">
     {{-- Precision Grid Overlay --}}
     <div class="absolute inset-0 bg-[radial-gradient(#e2d9f3_1.2px,transparent_1.2px)] bg-[size:32px_32px] opacity-75 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0"></div>
 
@@ -221,8 +228,8 @@ select.input-field {
     <div class="absolute bottom-8 left-16 w-14 h-14 rounded-2xl bg-indigo-200/10 border border-indigo-300/20 float-anim2 hidden lg:block backdrop-blur-md"></div>
 
     {{-- Ambient glowing gradients --}}
-    <div class="absolute -top-20 -right-20 w-[450px] h-[450px] bg-purple-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-25 animate-pulse pointer-events-none"></div>
-    <div class="absolute -bottom-20 -left-20 w-[450px] h-[450px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-25 animate-pulse pointer-events-none"></div>
+    <div class="absolute -top-20 -right-20 w-[450px] h-[450px] bg-purple-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-25 pointer-events-none"></div>
+    <div class="absolute -bottom-20 -left-20 w-[450px] h-[450px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-25 pointer-events-none"></div>
 
     <div class="max-w-3xl mx-auto px-4 text-center relative z-10">
       {{-- Elegant Tech Badge --}}
@@ -233,7 +240,7 @@ select.input-field {
       {{-- Slate Title with Signature Gradient --}}
       <h1 class="text-3.5xl sm:text-5xl font-black text-slate-900 mb-5 leading-tight tracking-tight">
         Let's Build Something <br class="hidden sm:inline">
-        <span class="animated-gradient drop-shadow-[0_2px_10px_rgba(124,58,237,0.12)]">Amazing Together</span>
+        <span class="text-indigo-800 drop-shadow-[0_2px_10px_rgba(124,58,237,0.12)]">Amazing Together</span>
       </h1>
       
       <p class="text-slate-500 text-xs sm:text-sm md:text-base max-w-xl mx-auto leading-relaxed font-semibold">
@@ -243,9 +250,9 @@ select.input-field {
   </div>
 
   {{-- ══════ MAIN CONTENT ══════ --}}
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-20 lg:pb-12">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
 
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
       {{-- ─── LEFT: Info Panel ─── --}}
       <div class="lg:col-span-2 space-y-6">
@@ -259,13 +266,13 @@ select.input-field {
         {{-- Direct Contact Cards --}}
         <div>
           <h2 class="text-xl sm:text-2xl font-black text-slate-900 mb-6 tracking-tight flex items-center gap-2">
-            <i data-lucide="message-square" class="w-6 h-6 text-indigo-850 text-indigo-800"></i> Reach Us Directly
+            <i data-lucide="message-square" class="w-6 h-6 text-indigo-800"></i> Reach Us Directly
           </h2>
 
           {{-- WhatsApp Card --}}
           <a href="https://wa.me/{{ $cleanPhone }}?text=Hi Sir SK Solutions team, I need help"
              target="_blank"
-             class="flex items-center gap-4 sm:gap-5 p-5 sm:p-6 rounded-[24px] bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-750 to-teal-700 text-white hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 mb-5 group relative overflow-hidden shadow-xl shadow-emerald-500/10">
+             class="flex items-center gap-4 sm:gap-5 p-5 sm:p-6 rounded-[24px] bg-gradient-to-br from-emerald-550 from-emerald-500 via-emerald-600 to-teal-700 text-white hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 mb-5 group relative overflow-hidden shadow-xl shadow-emerald-500/10">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(255,255,255,0.2),transparent_60%)] pointer-events-none"></div>
             {{-- Glow --}}
             <div class="absolute -top-10 -right-10 w-24 h-24 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
@@ -284,12 +291,12 @@ select.input-field {
             </div>
           </a>
 
-          {{-- Info Cards --}}
+          {{-- Info Cards ──--}}
           @php
             $infoCards = [
-              ['icon'=>'mail',  'label'=>'Email',         'val'=>$supportEmail,          'href'=>'mailto:'.$supportEmail, 'bg'=>'bg-purple-50',  'text'=>'text-purple-655 text-purple-600', 'border'=>'border-purple-100'],
-              ['icon'=>'phone', 'label'=>'Phone',         'val'=>$supportPhone,             'href'=>'tel:+'.$cleanPhone,         'bg'=>'bg-blue-50',    'text'=>'text-blue-655 text-blue-600',   'border'=>'border-blue-100'],
-              ['icon'=>'clock', 'label'=>'Working Hours', 'val'=>'Mon–Sat: 10 AM – 6 PM IST',    'href'=>null,                        'bg'=>'bg-amber-50',   'text'=>'text-amber-655 text-amber-600',  'border'=>'border-amber-100'],
+              ['icon'=>'mail',  'label'=>'Email',         'val'=>$supportEmail,          'href'=>'mailto:'.$supportEmail, 'bg'=>'bg-purple-50',  'text'=>'text-purple-600', 'border'=>'border-purple-100'],
+              ['icon'=>'phone', 'label'=>'Phone',         'val'=>$supportPhone,             'href'=>'tel:+'.$cleanPhone,         'bg'=>'bg-blue-50',    'text'=>'text-blue-600',   'border'=>'border-blue-100'],
+              ['icon'=>'clock', 'label'=>'Working Hours', 'val'=>'Mon–Sat: 10 AM – 6 PM IST',    'href'=>null,                        'bg'=>'bg-amber-50',   'text'=>'text-amber-600',  'border'=>'border-amber-100'],
             ];
           @endphp
 
@@ -302,7 +309,7 @@ select.input-field {
               <div class="flex-1 min-w-0">
                 <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{{ $info['label'] }}</div>
                 @if($info['href'])
-                  <a href="{{ $info['href'] }}" class="font-bold text-slate-800 hover:text-indigo-850 hover:text-indigo-800 transition-colors text-sm sm:text-base truncate block tracking-tight">{{ $info['val'] }}</a>
+                  <a href="{{ $info['href'] }}" class="font-bold text-slate-800 hover:text-indigo-800 transition-colors text-sm sm:text-base truncate block tracking-tight">{{ $info['val'] }}</a>
                 @else
                   <div class="font-bold text-slate-800 text-sm sm:text-base truncate tracking-tight">{{ $info['val'] }}</div>
                 @endif
@@ -311,7 +318,6 @@ select.input-field {
             @endforeach
           </div>
         </div>
-
       </div>
 
       {{-- ─── RIGHT: Contact Form ─── --}}
@@ -339,7 +345,7 @@ select.input-field {
               <i data-lucide="alert-circle" class="w-4 h-4" stroke-width="3"></i>
             </div>
             <div class="flex-1">
-              <h4 class="text-sm font-black text-rose-955 text-rose-950 leading-none mb-1.5">Please correct the errors:</h4>
+              <h4 class="text-sm font-black text-rose-950 leading-none mb-1.5">Please correct the errors:</h4>
               <ul class="list-disc list-inside space-y-1 text-xs text-rose-800 font-semibold leading-relaxed">
                 @foreach($errors->all() as $e)
                   <li>{{ $e }}</li>
@@ -396,12 +402,12 @@ select.input-field {
 
             <div class="pt-2">
               <button type="submit"
-                      class="w-full py-4 bg-indigo-855 bg-indigo-800 hover:bg-indigo-900 active:scale-[0.98] text-white rounded-[18px] font-bold text-base transition-all duration-300 shadow-lg shadow-indigo-800/20 hover:shadow-indigo-800/30 flex items-center justify-center gap-2 group/btn">
+                      class="w-full py-4 bg-indigo-800 hover:bg-indigo-900 active:scale-[0.98] text-white rounded-[18px] font-bold text-base transition-all duration-300 shadow-lg shadow-indigo-800/20 hover:shadow-indigo-800/30 flex items-center justify-center gap-2 group/btn">
                 <span>Send Message</span>
                 <i data-lucide="send" class="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform"></i>
               </button>
               <p class="text-center text-xs text-slate-400 mt-4 font-semibold flex items-center justify-center gap-1">
-                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-455 text-slate-400"></i> Your data is secure. We never share your information.
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i> Your data is secure. We never share your information.
               </p>
             </div>
           </form>
@@ -419,10 +425,10 @@ select.input-field {
 
       @php
         $quickFaqs = [
-          ['icon'=>'clock',       'label'=>'How fast do you reply?',            'val'=>'We respond to all inquiries within 4 business hours. WhatsApp messages are often replied to within minutes.', 'bg'=>'bg-purple-50',  'text'=>'text-purple-655 text-purple-600',  'border'=>'border-purple-100'],
-          ['icon'=>'sparkles',    'label'=>'Do you offer free consultation?',   'val'=>'Yes! Initial consultation calls are completely free. We\'ll understand your needs before quoting anything.', 'bg'=>'bg-blue-50',    'text'=>'text-blue-655 text-blue-600',    'border'=>'border-blue-100'],
-          ['icon'=>'globe',       'label'=>'Do you work with clients remotely?','val'=>'Absolutely. 90% of our clients are serviced remotely via Zoom, WhatsApp, and our project management tools.', 'bg'=>'bg-emerald-50', 'text'=>'text-emerald-655 text-emerald-600', 'border'=>'border-emerald-100'],
-          ['icon'=>'file-text',   'label'=>'What info do I need to share?',     'val'=>'Simply describe your project goals, budget range, and timeline. We\'ll guide you through everything else.', 'bg'=>'bg-amber-50',   'text'=>'text-amber-655 text-amber-600',   'border'=>'border-amber-100'],
+          ['icon'=>'clock',       'label'=>'How fast do you reply?',            'val'=>'We respond to all inquiries within 4 business hours. WhatsApp messages are often replied to within minutes.', 'bg'=>'bg-purple-50',  'text'=>'text-purple-600',  'border'=>'border-purple-100'],
+          ['icon'=>'sparkles',    'label'=>'Do you offer free consultation?',   'val'=>'Yes! Initial consultation calls are completely free. We\'ll understand your needs before quoting anything.', 'bg'=>'bg-blue-50',    'text'=>'text-blue-600',    'border'=>'border-blue-100'],
+          ['icon'=>'globe',       'label'=>'Do you work with clients remotely?','val'=>'Absolutely. 90% of our clients are serviced remotely via Zoom, WhatsApp, and our project management tools.', 'bg'=>'bg-emerald-50', 'text'=>'text-emerald-600', 'border'=>'border-emerald-100'],
+          ['icon'=>'file-text',   'label'=>'What info do I need to share?',     'val'=>'Simply describe your project goals, budget range, and timeline. We\'ll guide you through everything else.', 'bg'=>'bg-amber-50',   'text'=>'text-amber-600',   'border'=>'border-amber-100'],
         ];
       @endphp
 
@@ -448,43 +454,50 @@ select.input-field {
 </div>
 
 <!-- Fixed Bottom Navigation (Public Mobile Only) -->
-<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex items-center justify-around z-50 bottom-nav shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pb-2 pt-1">
-    <a href="{{ url('/') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="home" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Home</span>
+<nav class="bottom-nav-bar lg:hidden">
+    <a href="{{ url('/') }}" class="nav-item" id="nav-home">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Home
     </a>
-    <a href="{{ route('services.index') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="grid-3x3" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Services</span>
+    <a href="{{ route('services.index') }}" class="nav-item" id="nav-services">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Services
     </a>
     @auth
         @php
-            $ordersUrl = match(auth()->user()->role) {
+            $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
+            $ordersUrl = match($u->role){
                 'admin' => route('admin.dashboard'),
                 'partner' => route('partner.orders'),
                 default => route('customer.orders'),
             };
         @endphp
-        <a href="{{ $ordersUrl }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-            <span class="text-[10px] font-bold">Orders</span>
-        </a>
+        <a href="{{ $ordersUrl }}" class="nav-item" id="nav-orders">
     @else
-        <a href="{{ route('login') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-            <span class="text-[10px] font-bold">Orders</span>
-        </a>
-    @endauth
-    <a href="{{ route('contact') }}" class="flex flex-col items-center py-2 gap-1 w-full text-indigo-800">
-        <i data-lucide="headphones" class="w-5 h-5" fill="currentColor" stroke="currentColor"></i>
-        <span class="text-[10px] font-bold">Support</span>
+        <a href="{{ route('login') }}" class="nav-item" id="nav-orders">
+    @endif
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        Orders
     </a>
-    <a href="{{ url('/portfolio') }}" class="flex flex-col items-center py-2 gap-1 w-full text-slate-400 hover:text-indigo-800 transition-colors">
-        <i data-lucide="briefcase" class="w-5 h-5"></i>
-        <span class="text-[10px] font-bold">Portfolio</span>
+    <a href="{{ route('contact') }}" class="nav-item active" id="nav-support">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Support
+    </a>
+    <a href="{{ url('/portfolio') }}" class="nav-item" id="nav-portfolio">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        Portfolio
     </a>
 </nav>
 
 @endsection
-
-

@@ -14,9 +14,9 @@
             <i data-lucide="shield-check" class="w-4 h-4 text-indigo-600"></i> SKSolutions Partner Security & Onboarding
         </div>
         <h1 class="text-3xl md:text-4xl text-slate-900 font-extrabold tracking-tight mb-3">Unlock Your Partner Panel</h1>
-        <p class="text-slate-600 text-base md:text-lg leading-relaxed">
+        <!-- <p class="text-slate-600 text-base md:text-lg leading-relaxed">
             To maintain high standards and secure commission payouts, please complete our 4-step onboarding process. Once manually verified by our admins, your partner panel will unlock instantly.
-        </p>
+        </p> -->
     </div>
 
     <!-- Alert Messages -->
@@ -34,11 +34,10 @@
     @endif
 
     <!-- 4 Step Progress Bar -->
-    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-8 mb-10 relative overflow-hidden">
+    <!-- <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 md:p-8 mb-10 relative overflow-hidden">
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-indigo-100/40 to-purple-100/40 rounded-full blur-2xl -z-10"></div>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
-            <!-- Step 1 -->
             <div class="flex md:flex-col items-center md:items-start gap-4 md:gap-3 p-4 rounded-2xl transition-all {{ $step1Complete ? 'bg-emerald-50/60 border border-emerald-200/80' : 'bg-indigo-50 border-2 border-indigo-500 shadow-md shadow-indigo-500/10' }}">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg {{ $step1Complete ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30' : 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 animate-pulse' }}">
                     @if($step1Complete) <i data-lucide="check" class="w-6 h-6"></i> @else 1 @endif
@@ -52,8 +51,6 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Step 2 -->
             <div class="flex md:flex-col items-center md:items-start gap-4 md:gap-3 p-4 rounded-2xl transition-all {{ $step2Complete ? 'bg-emerald-50/60 border border-emerald-200/80' : ($step1Complete ? 'bg-indigo-50 border-2 border-indigo-500 shadow-md shadow-indigo-500/10' : 'bg-slate-50 border border-slate-200 opacity-60') }}">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg {{ $step2Complete ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30' : ($step1Complete ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 animate-pulse' : 'bg-slate-200 text-slate-600') }}">
                     @if($step2Complete) <i data-lucide="check" class="w-6 h-6"></i> @else 2 @endif
@@ -67,8 +64,6 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Step 3 -->
             <div class="flex md:flex-col items-center md:items-start gap-4 md:gap-3 p-4 rounded-2xl transition-all {{ $step3Complete ? 'bg-emerald-50/60 border border-emerald-200/80' : ($step2Complete ? 'bg-amber-50 border-2 border-amber-500 shadow-md shadow-amber-500/10' : 'bg-slate-50 border border-slate-200 opacity-60') }}">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg {{ $step3Complete ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30' : ($step2Complete ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/30 animate-pulse' : 'bg-slate-200 text-slate-600') }}">
                     @if($step3Complete) <i data-lucide="check" class="w-6 h-6"></i> @else 3 @endif
@@ -82,8 +77,6 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Step 4 -->
             <div class="flex md:flex-col items-center md:items-start gap-4 md:gap-3 p-4 rounded-2xl transition-all {{ $isUnlocked ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 text-white shadow-xl shadow-indigo-600/30 scale-105' : 'bg-slate-50 border border-slate-200 opacity-60' }}">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg {{ $isUnlocked ? 'bg-white text-indigo-600 shadow-md' : 'bg-slate-200 text-slate-600' }}">
                     @if($isUnlocked) <i data-lucide="unlock" class="w-6 h-6"></i> @else <i data-lucide="lock" class="w-6 h-6 text-slate-400"></i> @endif
@@ -98,7 +91,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Active Step Action Cards -->
     @if(!$step1Complete)

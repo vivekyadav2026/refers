@@ -45,8 +45,18 @@
                     <div class="space-y-5">
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category/Section <span class="text-red-500">*</span></label>
-                            <input type="text" name="section" placeholder="e.g., Ecommerce, Shopify, UI/UX" required
+                            <select name="section" required
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                                <option value="">Select a Category/Section...</option>
+                                @foreach($categories as $parent)
+                                    <optgroup label="{{ $parent->name }}">
+                                        <option value="{{ $parent->name }}">{{ $parent->name }} (Parent)</option>
+                                        @foreach($parent->subcategories as $sub)
+                                            <option value="{{ $sub->name }}">{{ $sub->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Project Name <span class="text-red-500">*</span></label>
@@ -59,7 +69,7 @@
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Image <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Image (Optional)</label>
                             <div class="flex items-center justify-center w-full">
                                 <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
                                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -67,10 +77,11 @@
                                         <p class="text-sm text-slate-500 font-medium">Click to upload image</p>
                                         <p class="text-xs text-slate-400 mt-1">PNG, JPG or WEBP (Max 5MB)</p>
                                     </div>
-                                    <input id="dropzone-file" type="file" name="image" accept="image/*" class="hidden" required />
+                                    <input id="dropzone-file" type="file" name="image" accept="image/*" class="hidden" />
                                 </label>
                             </div>
                         </div>
+
                         <button type="submit" 
                             class="w-full inline-flex justify-center items-center gap-2 rounded-xl bg-indigo-600 py-2.5 px-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors">
                             <i data-lucide="plus" class="w-4 h-4"></i> Add to Portfolio
@@ -99,11 +110,15 @@
                             @foreach($portfolios as $portfolio)
                                 <tr x-data="{ editOpen: false }" class="hover:bg-slate-50 transition-colors group">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="h-20 w-28 rounded-lg overflow-hidden border border-slate-200 shadow-sm relative group cursor-pointer">
-                                            <img src="{{ Storage::url($portfolio->image) }}" alt="{{ $portfolio->name }}" class="w-full h-full object-cover">
-                                            <a href="{{ Storage::url($portfolio->image) }}" target="_blank" class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <i data-lucide="external-link" class="w-5 h-5 text-white"></i>
-                                            </a>
+                                        <div class="h-20 w-28 rounded-lg overflow-hidden border border-slate-200 shadow-sm relative group bg-slate-50 flex items-center justify-center">
+                                            @if($portfolio->image)
+                                                <img src="{{ Storage::url($portfolio->image) }}" alt="{{ $portfolio->name }}" class="w-full h-full object-cover">
+                                                <a href="{{ Storage::url($portfolio->image) }}" target="_blank" class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <i data-lucide="external-link" class="w-5 h-5 text-white"></i>
+                                                </a>
+                                            @else
+                                                <i data-lucide="image" class="w-8 h-8 text-slate-300"></i>
+                                            @endif
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
@@ -155,7 +170,17 @@
                                                         <div class="space-y-4">
                                                             <div>
                                                                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category/Section</label>
-                                                                <input type="text" name="section" value="{{ $portfolio->section }}" required class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                                <select name="section" required class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                                    <option value="">Select a Category/Section...</option>
+                                                                    @foreach($categories as $parent)
+                                                                        <optgroup label="{{ $parent->name }}">
+                                                                            <option value="{{ $parent->name }}" {{ $portfolio->section == $parent->name ? 'selected' : '' }}>{{ $parent->name }} (Parent)</option>
+                                                                            @foreach($parent->subcategories as $sub)
+                                                                                <option value="{{ $sub->name }}" {{ $portfolio->section == $sub->name ? 'selected' : '' }}>{{ $sub->name }}</option>
+                                                                            @endforeach
+                                                                        </optgroup>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                             <div>
                                                                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Project Name</label>
@@ -170,6 +195,7 @@
                                                                 <input type="file" name="image" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                                                                 <p class="text-xs text-slate-400 mt-1">Leave empty to keep current image</p>
                                                             </div>
+
                                                             <div class="pt-2 flex justify-end gap-3">
                                                                 <button type="button" @click="editOpen = false" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Cancel</button>
                                                                 <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-sm">Save Changes</button>

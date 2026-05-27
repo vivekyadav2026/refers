@@ -99,16 +99,25 @@ class PaymentController extends Controller
             // Notify admin
             $this->notifyAdmin($order);
 
-            $user = auth()->user();
-            if ($user && in_array($user->role, ['admin', 'superadmin'])) {
+            $customer = \Illuminate\Support\Facades\Auth::guard('customer')->user();
+            $partner  = \Illuminate\Support\Facades\Auth::guard('partner')->user();
+            $admin    = \Illuminate\Support\Facades\Auth::guard('admin')->user();
+
+            if ($customer && $order->user_id == $customer->id) {
+                // If the logged-in customer is the owner of the order, prioritize the business details form
+                return redirect()->route('customer.business-details.create', $order)->with('success', 'Payment successful! Please provide your business details to start the project.');
+            } elseif ($admin) {
                 $redirectRoute = 'admin.orders.show';
                 return redirect()->route($redirectRoute, $order)->with('success', 'Payment successful! Order is now paid.');
-            } elseif ($user && $user->isCustomer()) {
-                // Redirect customers to fill out the business details form after payment
-                return redirect()->route('customer.business-details.create', $order)->with('success', 'Payment successful! Please provide your business details to start the project.');
-            } else {
+            } elseif ($partner) {
                 $redirectRoute = 'partner.orders.show';
                 return redirect()->route($redirectRoute, $order)->with('success', 'Payment successful! Order is now paid.');
+            } else {
+                // Fallback using the order owner's role
+                if ($order->user && $order->user->isCustomer()) {
+                    return redirect()->route('customer.business-details.create', $order)->with('success', 'Payment successful! Please provide your business details to start the project.');
+                }
+                return redirect()->route('customer.orders')->with('success', 'Payment successful! Order is now paid.');
             }
         } else {
             return redirect()->route('customer.orders')->with('error', 'Payment verification failed.');
@@ -219,7 +228,32 @@ class PaymentController extends Controller
         ]);
 
         $service = \App\Models\Service::findOrFail($request->service_id);
-        $total = $service->min_price;
+        
+        // Calculate price based on selected plan
+        $plans = $service->plans ?? [];
+        $selectedPlanKey = strtolower($request->plan_selected ?? 'basic');
+        $planPrice = (float) ($plans[$selectedPlanKey]['price'] ?? $service->min_price);
+
+        // Calculate domain charge if required and enabled
+        $domainCharge = 0.0;
+        $enableDomain = (\App\Models\Setting::get_val('enable_domain_charge', '0') == '1') && $service->requires_domain;
+        if ($enableDomain && $request->domain_choice) {
+            if ($request->domain_choice === 'in') {
+                $domainCharge = (float) \App\Models\Setting::get_val('domain_in_charge_amount', '599');
+            } elseif ($request->domain_choice === 'com') {
+                $domainCharge = (float) \App\Models\Setting::get_val('domain_com_charge_amount', '999');
+            }
+        }
+
+        // Calculate GST
+        $gstAmount = 0.0;
+        $enableGst = \App\Models\Setting::get_val('enable_gst', '1') == '1';
+        if ($enableGst) {
+            $gstPercent = (float) \App\Models\Setting::get_val('gst_percent', '18');
+            $gstAmount = $planPrice * ($gstPercent / 100);
+        }
+
+        $total = $planPrice + $gstAmount + $domainCharge;
 
         // Resolve the referring partner with proper fallback chain
         $referredByPartner = session('ref_partner_id')
@@ -244,26 +278,50 @@ class PaymentController extends Controller
             $user->update(['name' => $request->customer_name]);
         }
 
+        $requirements = $request->requirements;
+        if ($enableDomain && $request->filled('domain_choice')) {
+            $choiceLabel = match($request->domain_choice) {
+                'in' => '.in Extension',
+                'com' => '.com Extension',
+                default => 'Already Have Domain'
+            };
+            $domainText = "Selected Domain Option: " . $choiceLabel . "\n";
+            if ($request->filled('domain_name')) {
+                $domainText .= "Domain Name: " . $request->domain_name . "\n";
+            }
+            $domainText .= "\n";
+            $requirements = $domainText . $requirements;
+        }
+
         // Create order
         $order = \App\Models\Order::create([
             'user_id' => auth()->id(),
             'service_id' => $service->id,
             'amount' => max(0, $total),
             'status' => 'pending',
-            'requirements' => $request->requirements,
+            'requirements' => $requirements,
             'customer_name' => $request->customer_name,
             'customer_email' => auth()->user()->email,
             'customer_phone' => $request->customer_phone,
             'referred_by_partner' => $referredByPartner,
         ]);
 
+        // Create business details if domain name is submitted
+        if ($enableDomain && $request->filled('domain_name')) {
+            \App\Models\BusinessDetail::create([
+                'order_id' => $order->id,
+                'business_name' => $request->customer_name . "'s Business",
+                'domain_name' => $request->domain_name,
+            ]);
+        }
+
         // Create order item
         \App\Models\OrderItem::create([
             'order_id' => $order->id,
             'service_id' => $service->id,
-            'price' => $service->min_price,
+            'price' => $planPrice,
             'quantity' => 1,
-            'subtotal' => $service->min_price,
+            'subtotal' => $planPrice,
         ]);
 
         // Create Razorpay Order

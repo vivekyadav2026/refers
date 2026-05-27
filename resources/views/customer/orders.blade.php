@@ -135,9 +135,9 @@
         </div>
         <h3 class="text-xl font-black text-slate-900 mb-2">No orders found</h3>
         <p class="text-slate-500 text-sm font-medium mb-6">You haven't placed any orders matching this filter.</p>
-        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+        <!-- <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
             <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
-        </a>
+        </a> -->
     </div>
     @endforelse
 </div>

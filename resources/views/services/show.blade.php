@@ -164,14 +164,19 @@ body {
 
 @php
     $plans = $service->plans ?? [];
-    $hasPlan = !empty($plans) && isset($plans['basic']['price']);
+    if (!empty($plans)) {
+        $plans = array_filter($plans, function($p) {
+            return ($p['active'] ?? true) == true;
+        });
+    }
+    $hasPlan = !empty($plans);
 
     // Fallback legacy plan if no plans set
     if (!$hasPlan) {
         $plans = [
-            'Basic'    => ['price' => $service->min_price, 'description' => $service->short_description, 'delivery' => $service->delivery_timeline ?? '', 'features' => $service->features ?? [], 'emoji' => '🌱'],
-            'Standard' => ['price' => $service->min_price * 1.5, 'description' => 'Standard package with more features', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '⭐'],
-            'Premium'  => ['price' => $service->min_price * 2.5, 'description' => 'Premium package — everything included', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '👑'],
+            'basic'    => ['name' => 'Basic', 'price' => $service->min_price, 'description' => $service->short_description, 'delivery' => $service->delivery_timeline ?? '', 'features' => $service->features ?? [], 'emoji' => '🌱'],
+            'standard' => ['name' => 'Standard', 'price' => $service->min_price * 1.5, 'description' => 'Standard package with more features', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '⭐'],
+            'premium'  => ['name' => 'Premium', 'price' => $service->min_price * 2.5, 'description' => 'Premium package — everything included', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '👑'],
         ];
     }
     
@@ -181,8 +186,9 @@ body {
     // Charges (Admin Toggles)
     $enableGst = \App\Models\Setting::get_val('enable_gst', '1') == '1';
     $gstPercent = (float) \App\Models\Setting::get_val('gst_percent', '18');
-    $enableDomain = \App\Models\Setting::get_val('enable_domain_charge', '0') == '1'; // Default off unless toggled
-    $domainCharge = (float) \App\Models\Setting::get_val('domain_charge_amount', '999');
+    $enableDomain = (\App\Models\Setting::get_val('enable_domain_charge', '1') == '1') && $service->requires_domain;
+    $domainInCharge = (float) \App\Models\Setting::get_val('domain_in_charge_amount', '599');
+    $domainComCharge = (float) \App\Models\Setting::get_val('domain_com_charge_amount', '999');
 @endphp
 
 <div x-data="{ 
@@ -193,15 +199,23 @@ body {
     enableGst: {{ $enableGst ? 'true' : 'false' }},
     gstPercent: {{ $gstPercent }},
     enableDomain: {{ $enableDomain ? 'true' : 'false' }},
-    domainCharge: {{ $domainCharge }},
+    domainChoice: 'in',
+    domainInCharge: {{ $domainInCharge }},
+    domainComCharge: {{ $domainComCharge }},
     get subtotal() {
         return Number(this.selectedPlanData[this.selectedPlan]?.price || 0);
     },
     get gstAmount() {
         return this.enableGst ? (this.subtotal * (this.gstPercent / 100)) : 0;
     },
+    get domainChargeAmount() {
+        if (!this.enableDomain) return 0;
+        if (this.domainChoice === 'in') return this.domainInCharge;
+        if (this.domainChoice === 'com') return this.domainComCharge;
+        return 0;
+    },
     get finalTotal() {
-        return this.subtotal + this.gstAmount + (this.enableDomain ? this.domainCharge : 0);
+        return this.subtotal + this.gstAmount + this.domainChargeAmount;
     }
 }"
      @processing-start.window="isProcessing = true"
@@ -228,28 +242,32 @@ body {
 
         {{-- HERO --}}
         <div class="mb-6 max-w-4xl relative z-10">
+            @if($service->category || $service->is_popular)
             <div class="flex flex-wrap items-center gap-2 mb-3">
+                @if($service->category)
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200/40 text-blue-700 text-[9px] font-bold uppercase tracking-wider">
                     <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-3 h-3"></i> {{ $service->category }}
                 </span>
+                @endif
                 @if($service->is_popular)
                 <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/40 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
                     🔥 Hot Selling Service
                 </span>
                 @endif
             </div>
+            @endif
             <h1 class="text-3xl sm:text-4xl md:text-[42px] font-black text-slate-900 tracking-tight leading-tight mb-3">
-                {{ $service->name }}
+                {{ $service->name }} (<span class="capitalize" x-text="selectedPlanData[selectedPlan]?.name || selectedPlan"></span>)
             </h1>
             @if($service->short_description)
             <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-2xl">
                 {{ $service->short_description }}
             </p>
             @endif
-            @if(isset($plans['basic']['price']) && $plans['basic']['price'] > 0)
+            @if(count($plans) > 0)
             <div class="mt-4 flex items-center gap-3">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Starting from</span>
-                <span class="text-2xl font-black text-indigo-700">₹{{ number_format($plans['basic']['price'], 0) }}</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider" x-text="selectedPlan === '{{ $defaultPlanKey }}' ? 'Starting from' : 'Selected Plan Price'"></span>
+                <span class="text-2xl font-black text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
             </div>
             @endif
         </div>
@@ -259,13 +277,6 @@ body {
 
             {{-- LEFT COLUMN --}}
             <div class="lg:col-span-7 xl:col-span-8 space-y-6">
-
-                {{-- BANNER MEDIA --}}
-                @if($service->banner_image)
-                <div class="w-full aspect-[21/9] sm:aspect-[16/7] rounded-[32px] overflow-hidden border border-slate-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.015)] bg-slate-50 flex items-center justify-center">
-                    <img src="{{ asset('storage/' . $service->banner_image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
-                </div>
-                @endif
 
                 {{-- ABOUT CARD --}}
                 @if($service->description)
@@ -310,7 +321,7 @@ body {
                             @click="selectedPlan = '{{ addslashes($planKey) }}'"
                             :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'plan-tab-btn active text-indigo-700 font-black bg-white border-b-2 border-indigo-500' : 'plan-tab-btn text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100'"
                             class="flex-1 min-w-fit px-4 py-4 text-xs uppercase tracking-wider relative transition-all whitespace-nowrap">
-                            {{ $planMeta['emoji'] ?? '' }} {{ $planKey }}
+                            {{ $planMeta['emoji'] ?? '' }} <span class="capitalize" x-text="selectedPlanData['{{ addslashes($planKey) }}']?.name || '{{ $planKey }}'"></span>
                         </button>
                         @endforeach
                     </div>
@@ -408,38 +419,6 @@ body {
                     </div>
                 </div>
 
-                {{-- COMPARE PLANS MINI TABLE: only show if more than 1 plan with real prices --}}
-                @php
-                    $filledPlans = array_filter($plans, fn($p) => !empty($p['price']) && $p['price'] > 0);
-                @endphp
-                @if(count($filledPlans) > 1)
-                <div class="bg-white rounded-[32px] p-5 sm:p-6 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
-                    <h3 class="text-sm font-black text-slate-900 mb-4 tracking-tight flex items-center gap-2">
-                        <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i> Compare Plans
-                    </h3>
-                    <div class="overflow-x-auto -mx-1">
-                        <table class="w-full text-[11px]">
-                            <thead>
-                                <tr class="border-b border-slate-100">
-                                    <th class="text-left py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Plan</th>
-                                    <th class="text-center py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Price</th>
-                                    <th class="text-center py-2 px-2 text-slate-400 font-bold uppercase tracking-wider text-[9px]">Delivery</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-50">
-                                @foreach($filledPlans as $pk => $pd)
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="py-2.5 px-2 font-black text-slate-700">{{ $pd['emoji'] ?? '' }} {{ $pk }}</td>
-                                    <td class="py-2.5 px-2 text-center font-bold text-slate-800">₹{{ number_format($pd['price'] ?? 0, 0) }}</td>
-                                    <td class="py-2.5 px-2 text-center text-slate-600">{{ $pd['delivery'] ?? '—' }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                @endif
-
             </div>
         </div>
 
@@ -487,17 +466,20 @@ body {
                                 <p class="text-[10px] text-slate-500 mb-4" x-text="selectedPlanData[selectedPlan]?.description"></p>
                                 
                                 <div class="space-y-2 border-t border-slate-100 pt-3">
-                                    <template x-if="enableDomain">
-                                        <div class="flex items-center justify-between text-xs">
-                                            <span class="text-slate-500 font-medium">Domain & Hosting Charges</span>
-                                            <span class="font-bold text-slate-700" x-text="'₹' + domainCharge.toLocaleString('en-IN')"></span>
-                                        </div>
-                                    </template>
-                                    
                                     <template x-if="enableGst">
                                         <div class="flex items-center justify-between text-xs">
                                             <span class="text-slate-500 font-medium" x-text="'GST (' + gstPercent + '%)'"></span>
                                             <span class="font-bold text-slate-700" x-text="'₹' + gstAmount.toLocaleString('en-IN')"></span>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="enableDomain">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="text-slate-500 font-medium">
+                                                Domain & Hosting Charges 
+                                                <span class="text-[10px] text-slate-400" x-text="domainChoice === 'in' ? '(.in)' : (domainChoice === 'com' ? '(.com)' : '(Already Have)')"></span>
+                                            </span>
+                                            <span class="font-bold text-slate-700" x-text="'₹' + domainChargeAmount.toLocaleString('en-IN')"></span>
                                         </div>
                                     </template>
                                 </div>
@@ -517,6 +499,38 @@ body {
                             <input type="hidden" name="plan_price" x-bind:value="finalTotal">
 
                             <div class="space-y-4 font-sans">
+                                <template x-if="enableDomain">
+                                    <div class="bg-white border border-slate-200 rounded-2xl p-4">
+                                        <label class="block text-[10px] sm:text-xs font-black text-slate-700 mb-2.5 uppercase tracking-wider">Select Domain Option</label>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <label class="flex flex-col items-center justify-center p-2.5 rounded-xl border cursor-pointer transition-all text-center"
+                                                :class="domainChoice === 'in' ? 'border-indigo-600 bg-indigo-50/40 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-600 bg-slate-50'">
+                                                <input type="radio" name="domain_choice" value="in" x-model="domainChoice" class="sr-only">
+                                                <span class="text-xs">.in Extension</span>
+                                                <span class="text-[10px] text-slate-500 mt-1 font-normal" x-text="'₹' + domainInCharge"></span>
+                                            </label>
+                                            <label class="flex flex-col items-center justify-center p-2.5 rounded-xl border cursor-pointer transition-all text-center"
+                                                :class="domainChoice === 'com' ? 'border-indigo-600 bg-indigo-50/40 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-600 bg-slate-50'">
+                                                <input type="radio" name="domain_choice" value="com" x-model="domainChoice" class="sr-only">
+                                                <span class="text-xs">.com Extension</span>
+                                                <span class="text-[10px] text-slate-500 mt-1 font-normal" x-text="'₹' + domainComCharge"></span>
+                                            </label>
+                                            <label class="flex flex-col items-center justify-center p-2.5 rounded-xl border cursor-pointer transition-all text-center"
+                                                :class="domainChoice === 'already_have' ? 'border-indigo-600 bg-indigo-50/40 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-650 bg-slate-50'">
+                                                <input type="radio" name="domain_choice" value="already_have" x-model="domainChoice" class="sr-only">
+                                                <span class="text-xs leading-tight">Already Have</span>
+                                                <span class="text-[10px] text-slate-500 mt-1 font-normal">₹0</span>
+                                            </label>
+                                        </div>
+
+                                        <!-- Domain Name field (shows if already have or buying) -->
+                                        <div class="mt-3">
+                                            <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider" x-text="domainChoice === 'already_have' ? 'Your Existing Domain Name *' : 'Preferred Domain Name'"></label>
+                                            <input type="text" name="domain_name" :required="domainChoice === 'already_have'" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all font-sans" placeholder="e.g. www.example.com">
+                                        </div>
+                                    </div>
+                                </template>
+
                                 <div>
                                     <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Full Name *</label>
                                     @php
@@ -535,12 +549,12 @@ body {
                                 </div>
                             </div>
 
-                            <div class="mt-6 sm:mt-8 flex gap-3 pb-4 sm:pb-0">
+                            <div class="mt-6 sm:mt-8 flex gap-3 pb-10 sm:pb-0">
                                 <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-xl text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
                                     Cancel
                                 </button>
                                 <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-xl text-[10px] sm:text-xs font-black tracking-wider uppercase text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
-                                    <span x-show="!isProcessing">Pay <span x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span></span>
+                                    <span x-show="!isProcessing">Pay <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span></span>
                                     <span x-show="isProcessing">Processing...</span>
                                 </button>
                             </div>

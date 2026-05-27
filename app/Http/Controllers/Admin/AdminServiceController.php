@@ -21,16 +21,17 @@ class AdminServiceController extends Controller
         }
 
         $services = $query->orderBy('name')->paginate(15)->withQueryString();
+        $categories = \App\Models\BusinessCategory::whereNull('parent_id')->with('subcategories')->where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.services', compact('services'));
+        return view('admin.services', compact('services', 'categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category'         => 'required|string|max:255',
+            'category'         => 'nullable|string|max:255',
             'name'             => 'required|string|max:255',
-            'short_description'=> 'required|string',
+            'short_description'=> 'nullable|string',
             'description'      => 'nullable|string',
             'icon'             => 'nullable|string',
             'banner_image'     => 'nullable|image|max:10240',
@@ -39,21 +40,24 @@ class AdminServiceController extends Controller
             'commission_rate'  => 'nullable|numeric|min:0',
             'commission_type'  => 'nullable|in:fixed,percentage',
             // Plan fields
+            'basic_name'          => 'nullable|string|max:100',
             'basic_price'         => 'required|numeric|min:0',
-            'basic_description'   => 'required|string',
-            'basic_delivery'      => 'required|string|max:100',
-            'basic_revisions'     => 'required|string|max:50',
-            'basic_features'      => 'required|string',
-            'standard_price'      => 'required|numeric|min:0',
-            'standard_description'=> 'required|string',
-            'standard_delivery'   => 'required|string|max:100',
-            'standard_revisions'  => 'required|string|max:50',
-            'standard_features'   => 'required|string',
-            'premium_price'       => 'required|numeric|min:0',
-            'premium_description' => 'required|string',
-            'premium_delivery'    => 'required|string|max:100',
-            'premium_revisions'   => 'required|string|max:50',
-            'premium_features'    => 'required|string',
+            'basic_description'   => 'nullable|string',
+            'basic_delivery'      => 'nullable|string|max:100',
+            'basic_revisions'     => 'nullable|string|max:50',
+            'basic_features'      => 'nullable|string',
+            'standard_name'       => 'nullable|string|max:100',
+            'standard_price'      => 'nullable|numeric|min:0',
+            'standard_description'=> 'nullable|string',
+            'standard_delivery'   => 'nullable|string|max:100',
+            'standard_revisions'  => 'nullable|string|max:50',
+            'standard_features'   => 'nullable|string',
+            'premium_name'        => 'nullable|string|max:100',
+            'premium_price'       => 'nullable|numeric|min:0',
+            'premium_description' => 'nullable|string',
+            'premium_delivery'    => 'nullable|string|max:100',
+            'premium_revisions'   => 'nullable|string|max:50',
+            'premium_features'    => 'nullable|string',
         ]);
 
         $plans = $this->buildPlans($request);
@@ -65,9 +69,9 @@ class AdminServiceController extends Controller
 
         Service::create([
             'slug'             => Str::slug($validated['name']),
-            'category'         => $validated['category'],
+            'category'         => $validated['category'] ?? null,
             'name'             => $validated['name'],
-            'short_description'=> $validated['short_description'],
+            'short_description'=> $validated['short_description'] ?? null,
             'description'      => $validated['description'] ?? null,
             'min_price'        => $validated['basic_price'],
             'icon'             => $validated['icon'] ?? 'box',
@@ -78,6 +82,7 @@ class AdminServiceController extends Controller
             'commission_type'  => $validated['commission_type'] ?? 'percentage',
             'is_popular'       => $request->has('is_popular'),
             'is_active'        => $request->has('is_active'),
+            'requires_domain'  => $request->has('requires_domain'),
             'features'         => $this->parseFeatures($request->input('basic_features', '')),
             'plans'            => $plans,
         ]);
@@ -88,9 +93,9 @@ class AdminServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $validated = $request->validate([
-            'category'         => 'required|string|max:255',
+            'category'         => 'nullable|string|max:255',
             'name'             => 'required|string|max:255',
-            'short_description'=> 'required|string',
+            'short_description'=> 'nullable|string',
             'description'      => 'nullable|string',
             'icon'             => 'nullable|string',
             'banner_image'     => 'nullable|image|max:10240',
@@ -99,21 +104,24 @@ class AdminServiceController extends Controller
             'commission_rate'  => 'nullable|numeric|min:0',
             'commission_type'  => 'nullable|in:fixed,percentage',
             // Plan fields
+            'basic_name'          => 'nullable|string|max:100',
             'basic_price'         => 'required|numeric|min:0',
-            'basic_description'   => 'required|string',
-            'basic_delivery'      => 'required|string|max:100',
-            'basic_revisions'     => 'required|string|max:50',
-            'basic_features'      => 'required|string',
-            'standard_price'      => 'required|numeric|min:0',
-            'standard_description'=> 'required|string',
-            'standard_delivery'   => 'required|string|max:100',
-            'standard_revisions'  => 'required|string|max:50',
-            'standard_features'   => 'required|string',
-            'premium_price'       => 'required|numeric|min:0',
-            'premium_description' => 'required|string',
-            'premium_delivery'    => 'required|string|max:100',
-            'premium_revisions'   => 'required|string|max:50',
-            'premium_features'    => 'required|string',
+            'basic_description'   => 'nullable|string',
+            'basic_delivery'      => 'nullable|string|max:100',
+            'basic_revisions'     => 'nullable|string|max:50',
+            'basic_features'      => 'nullable|string',
+            'standard_name'       => 'nullable|string|max:100',
+            'standard_price'      => 'nullable|numeric|min:0',
+            'standard_description'=> 'nullable|string',
+            'standard_delivery'   => 'nullable|string|max:100',
+            'standard_revisions'  => 'nullable|string|max:50',
+            'standard_features'   => 'nullable|string',
+            'premium_name'        => 'nullable|string|max:100',
+            'premium_price'       => 'nullable|numeric|min:0',
+            'premium_description' => 'nullable|string',
+            'premium_delivery'    => 'nullable|string|max:100',
+            'premium_revisions'   => 'nullable|string|max:50',
+            'premium_features'    => 'nullable|string',
         ]);
 
         $plans = $this->buildPlans($request);
@@ -128,9 +136,9 @@ class AdminServiceController extends Controller
 
         $service->update([
             'slug'             => Str::slug($validated['name']),
-            'category'         => $validated['category'],
+            'category'         => $validated['category'] ?? null,
             'name'             => $validated['name'],
-            'short_description'=> $validated['short_description'],
+            'short_description'=> $validated['short_description'] ?? null,
             'description'      => $validated['description'] ?? null,
             'min_price'        => $validated['basic_price'],
             'icon'             => $validated['icon'] ?? 'box',
@@ -141,6 +149,7 @@ class AdminServiceController extends Controller
             'commission_type'  => $validated['commission_type'] ?? 'percentage',
             'is_popular'       => $request->has('is_popular'),
             'is_active'        => $request->has('is_active'),
+            'requires_domain'  => $request->has('requires_domain'),
             'features'         => $this->parseFeatures($request->input('basic_features', '')),
             'plans'            => $plans,
         ]);
@@ -155,25 +164,28 @@ class AdminServiceController extends Controller
     {
         return [
             'basic' => [
+                'name'        => $request->input('basic_name', 'Basic'),
                 'price'       => (float) $request->input('basic_price', 0),
                 'description' => $request->input('basic_description', ''),
                 'delivery'    => $request->input('basic_delivery', ''),
-                'revisions'   => $request->input('basic_revisions', ''),
                 'features'    => $this->parseFeatures($request->input('basic_features', '')),
+                'active'      => $request->has('basic_active'),
             ],
             'standard' => [
-                'price'       => (float) $request->input('standard_price', 0),
+                'name'        => $request->input('standard_name', 'Standard'),
+                'price'       => $request->filled('standard_price') ? (float) $request->input('standard_price') : 0,
                 'description' => $request->input('standard_description', ''),
                 'delivery'    => $request->input('standard_delivery', ''),
-                'revisions'   => $request->input('standard_revisions', ''),
                 'features'    => $this->parseFeatures($request->input('standard_features', '')),
+                'active'      => $request->has('standard_active'),
             ],
             'premium' => [
-                'price'       => (float) $request->input('premium_price', 0),
+                'name'        => $request->input('premium_name', 'Premium'),
+                'price'       => $request->filled('premium_price') ? (float) $request->input('premium_price') : 0,
                 'description' => $request->input('premium_description', ''),
                 'delivery'    => $request->input('premium_delivery', ''),
-                'revisions'   => $request->input('premium_revisions', ''),
                 'features'    => $this->parseFeatures($request->input('premium_features', '')),
+                'active'      => $request->has('premium_active'),
             ],
         ];
     }
@@ -181,8 +193,11 @@ class AdminServiceController extends Controller
     /**
      * Parse a newline-separated string into a clean array of features.
      */
-    private function parseFeatures(string $raw): array
+    private function parseFeatures(?string $raw): array
     {
+        if (is_null($raw)) {
+            return [];
+        }
         return array_values(array_filter(array_map('trim', explode("\n", $raw))));
     }
 

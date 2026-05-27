@@ -19,9 +19,9 @@
         <a href="{{ route('customer.orders') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider hover:border-blue-300 hover:text-blue-600 shadow-sm transition-all hover:-translate-y-0.5">
             <i data-lucide="package" class="w-4 h-4"></i> My Orders
         </a>
-        <a href="{{ route('customer.services') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+        <!-- <a href="{{ route('customer.services') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black uppercase tracking-wider hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
             <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
-        </a>
+        </a> -->
     </div>
 </div>
 
@@ -149,9 +149,9 @@
         </div>
         <h3 class="text-lg font-black text-slate-900 mb-2">No orders yet</h3>
         <p class="text-slate-500 text-sm mb-6 max-w-xs mx-auto font-medium">Browse our premium digital services and place your first order today!</p>
-        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
+        <!-- <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
             <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
-        </a>
+        </a> -->
     </div>
     @endif
 </div>
