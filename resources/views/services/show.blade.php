@@ -576,7 +576,7 @@ body {
                                     <template x-if="enableDomain">
                                         <div class="flex items-center justify-between text-xs">
                                             <span class="text-slate-500 font-medium">
-                                                Domain & Hosting Charges 
+                                                Domain
                                                 <span class="text-[10px] text-slate-400" x-text="domainChoice === 'in' ? '(.in)' : (domainChoice === 'com' ? '(.com)' : '(Already Have)')"></span>
                                             </span>
                                             <span class="font-bold text-slate-700" x-text="'₹' + domainChargeAmount.toLocaleString('en-IN')"></span>

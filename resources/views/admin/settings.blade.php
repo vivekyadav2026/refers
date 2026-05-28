@@ -210,7 +210,7 @@
 
                         <div class="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-slate-50 mt-6">
                             <div>
-                                <div class="text-sm font-semibold text-slate-900">Enable Domain & Hosting Charge</div>
+                                <div class="text-sm font-semibold text-slate-900">Enable Domain</div>
                                 <div class="text-xs text-slate-500 mt-1">If enabled, a fixed domain charge is added during checkout.</div>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
