@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\ReferralTrackingMiddleware::class,
+            \App\Http\Middleware\SetDefaultGuard::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             '/webhook/razorpay',

@@ -287,17 +287,9 @@ class AuthController extends Controller
             $loggedOut = true;
         }
 
-        // Fallback: If no referrer matched, identify who is logged in and log them out
+        // Fallback: Use the dynamically detected default guard
         if (!$loggedOut) {
-            if (Auth::guard('admin')->check()) {
-                Auth::guard('admin')->logout();
-            } elseif (Auth::guard('partner')->check()) {
-                Auth::guard('partner')->logout();
-            } elseif (Auth::guard('customer')->check()) {
-                Auth::guard('customer')->logout();
-            } else {
-                Auth::logout();
-            }
+            Auth::logout();
         }
 
         // Regenerate session ID (security best practice) without clearing session data

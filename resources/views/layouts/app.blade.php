@@ -273,12 +273,12 @@
                     $isCustomer = request()->is('customer*', 'cart*', 'checkout*') && auth('customer')->check();
 
                     if (!$isAdmin && !$isPartner && !$isCustomer) {
-                        if (auth('admin')->check()) {
-                            $isAdmin = true;
+                        if (auth('customer')->check()) {
+                            $isCustomer = true;
                         } elseif (auth('partner')->check()) {
                             $isPartner = true;
-                        } elseif (auth('customer')->check()) {
-                            $isCustomer = true;
+                        } elseif (auth('admin')->check()) {
+                            $isAdmin = true;
                         }
                     }
 
