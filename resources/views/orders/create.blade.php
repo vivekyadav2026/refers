@@ -191,10 +191,10 @@
                 <i data-lucide="clock" class="w-4 h-4" style="color:#6366f1;"></i>
                 Order confirmed instantly
             </div>
-            <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:#475569;">
+            <!-- <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:#475569;">
                 <i data-lucide="headphones" class="w-4 h-4" style="color:#f59e0b;"></i>
-                Dedicated support team
-            </div>
+                Experience Team team
+            </div> -->
         </div>
 
     </div>

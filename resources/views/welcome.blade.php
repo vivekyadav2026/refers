@@ -148,7 +148,7 @@ body {
     font-weight: 900;
     letter-spacing: 0.05em;
     color: #1e1b4b;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 @media (min-width: 640px)  { .section-title { font-size: 0.95rem; } }
 @media (min-width: 1024px) { .section-title { font-size: 1.15rem; } }
@@ -186,7 +186,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    background: transparent;
     flex-shrink: 0;
 }
 @media (min-width: 640px) { .svc-icon-wrap { width: 56px; height: 56px; border-radius: 14px; } }
@@ -239,7 +239,7 @@ body {
 .why-icon-wrap {
     width: 42px; height: 42px;
     border-radius: 50%;
-    background: #ede9fe;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -572,7 +572,7 @@ body {
 
         <!-- Header row -->
         <div class="flex items-center justify-between mb-4 sm:mb-6">
-            <h2 class="section-title">OUR SERVICES</h2>
+            <h2 class="section-title">Our Services</h2>
             <a href="{{ route('services.index') }}" class="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-violet-600 hover:text-violet-800 transition-colors group">
                 View All
                 <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -616,11 +616,8 @@ body {
 ════════════════════════════════════════════════════════ -->
 <section id="why-choose-us" class="px-3 sm:px-5 lg:px-8 pt-5 pb-24 sm:pt-8 sm:pb-24 lg:py-12 mb-0 scroll-mt-20" style="background:#f8f8fb;">
     <div class="max-w-5xl mx-auto">
-
-        <h2 class="section-title mb-4 sm:mb-6 uppercase">WHY CHOOSE SK SOLUTIONS</h2>
-
+        <h2 class="section-title mb-4 sm:mb-6  normal-case">Why Choose SK Solutions</h2>
         <div class="why-row">
-
             <!-- Trusted by Thousands -->
             <div class="why-card group">
                 <div class="why-icon-wrap group-hover:scale-110 transition-transform">
@@ -643,6 +640,21 @@ body {
                 <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Enterprise-grade security standards and stable hosting guarantees to keep your systems running 24/7.</p>
             </div>
 
+            <!-- Experience Team -->
+            <div class="why-card group">
+                <div class="why-icon-wrap group-hover:scale-110 transition-transform">
+                    <svg class="w-5 h-5 lg:w-6 lg:h-6 text-violet-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2m10 0V6a3 3 0 00-6 0v2m6 0H9m3 4v4m-2-2h4"/>
+                    </svg>
+                </div>
+                <span class="why-label">Client-Focused Service</span>
+                    <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">
+                    We prioritize client satisfaction by providing personalized solutions, transparent communication, and reliable support.
+                </p>
+                <!-- <span class="why-label">Dedicated Support</span>
+                <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Our support managers are online around the clock to assist you with active setups, reviews, and modifications.</p> -->
+            </div>
+
             <!-- Experienced Team -->
             <div class="why-card group">
                 <div class="why-icon-wrap group-hover:scale-110 transition-transform">
@@ -654,16 +666,6 @@ body {
                 <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Our team of experts brings years of experience in delivering high-quality, modern, and scalable digital solutions tailored to your unique needs.</p>
             </div>
 
-            <!-- Dedicated Support -->
-            <div class="why-card group">
-                <div class="why-icon-wrap group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5 lg:w-6 lg:h-6 text-violet-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                </div>
-                <span class="why-label">Dedicated Support</span>
-                <p class="hidden lg:block text-xs text-gray-500 mt-1 font-medium leading-relaxed">Our support managers are online around the clock to assist you with active setups, reviews, and modifications.</p>
-            </div>
 
         </div>
     </div>
