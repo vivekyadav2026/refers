@@ -181,7 +181,7 @@ select.input-field {
             @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
                 <!-- User avatar -->
                 @php
-                    $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
+                    $u = auth()->user();
                     $ini = strtoupper(implode('', array_map(fn($w)=>mb_substr($w,0,1), array_slice(array_filter(explode(' ',trim($u->name))),0,2))));
                     $dashUrl = match($u->role){ 'admin'=>route('admin.dashboard'),'partner'=>route('partner.dashboard'),default=>route('customer.dashboard')};
                 @endphp
@@ -470,7 +470,7 @@ select.input-field {
     </a>
     @auth
         @php
-            $u = auth('admin')->user() ?? auth('partner')->user() ?? auth('customer')->user();
+            $u = auth()->user();
             $ordersUrl = match($u->role){
                 'admin' => route('admin.dashboard'),
                 'partner' => route('partner.orders'),
