@@ -332,7 +332,7 @@
             <div class="p-6 sm:p-8 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
                 <p class="text-sm text-slate-500 flex items-center gap-2">
                     <i data-lucide="lock" class="w-4 h-4"></i>
-                    Your data is securely encrypted and stored.
+                    
                 </p>
                 
                 @if($isEditable)
