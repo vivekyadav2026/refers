@@ -12,7 +12,8 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-        padding: 5.5rem 1rem 1.5rem;
+        /* padding: 5.5rem 1rem 1.5rem; */
+        padding-bottom: 2rem;
         position: relative;
         overflow: hidden;
     }

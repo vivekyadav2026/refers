@@ -51,7 +51,7 @@
     /* ── Timeline ── */
     .timeline { position: relative; padding-left: 1.5rem; }
     .timeline::before { content:''; position:absolute; left:0.6rem; top:0; bottom:0; width:2px; background:#e2e8f0; }
-    .tl-item { position:relative; padding-bottom: 1.5rem; }
+    .tl-item { position:relative; padding-bottom: 2rem; }
     .tl-item:last-child { padding-bottom: 0; }
     .tl-dot { position:absolute; left:-1.5rem; top:0.15rem; width:1.15rem; height:1.15rem; border-radius:50%; border:3px solid #fff; box-shadow:0 0 0 2px #e2e8f0; background:#cbd5e1; }
     .tl-dot.done { background:#6366f1; box-shadow:0 0 0 2px #6366f1, 0 0 0 4px #eef2ff; }
