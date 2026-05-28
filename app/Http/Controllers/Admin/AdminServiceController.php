@@ -58,9 +58,16 @@ class AdminServiceController extends Controller
             'premium_delivery'    => 'nullable|string|max:100',
             'premium_revisions'   => 'nullable|string|max:50',
             'premium_features'    => 'nullable|string',
+            // Platform fields
+            'enable_platforms'    => 'nullable|boolean',
+            'platform_names'      => 'nullable|array',
+            'platform_prices'     => 'nullable|array',
+            'platform_names.*'    => 'nullable|string',
+            'platform_prices.*'   => 'nullable|numeric|min:0',
         ]);
 
         $plans = $this->buildPlans($request);
+        $platforms = $this->buildPlatforms($request);
 
         $bannerPath = null;
         if ($request->hasFile('banner_image')) {
@@ -83,6 +90,8 @@ class AdminServiceController extends Controller
             'is_popular'       => $request->has('is_popular'),
             'is_active'        => $request->has('is_active'),
             'requires_domain'  => $request->has('requires_domain'),
+            'enable_platforms' => $request->has('enable_platforms'),
+            'platforms'        => $platforms,
             'features'         => $this->parseFeatures($request->input('basic_features', '')),
             'plans'            => $plans,
         ]);
@@ -122,9 +131,16 @@ class AdminServiceController extends Controller
             'premium_delivery'    => 'nullable|string|max:100',
             'premium_revisions'   => 'nullable|string|max:50',
             'premium_features'    => 'nullable|string',
+            // Platform fields
+            'enable_platforms'    => 'nullable|boolean',
+            'platform_names'      => 'nullable|array',
+            'platform_prices'     => 'nullable|array',
+            'platform_names.*'    => 'nullable|string',
+            'platform_prices.*'   => 'nullable|numeric|min:0',
         ]);
 
         $plans = $this->buildPlans($request);
+        $platforms = $this->buildPlatforms($request);
 
         $bannerPath = $service->banner_image;
         if ($request->hasFile('banner_image')) {
@@ -150,6 +166,8 @@ class AdminServiceController extends Controller
             'is_popular'       => $request->has('is_popular'),
             'is_active'        => $request->has('is_active'),
             'requires_domain'  => $request->has('requires_domain'),
+            'enable_platforms' => $request->has('enable_platforms'),
+            'platforms'        => $platforms,
             'features'         => $this->parseFeatures($request->input('basic_features', '')),
             'plans'            => $plans,
         ]);
@@ -188,6 +206,26 @@ class AdminServiceController extends Controller
                 'active'      => $request->has('premium_active'),
             ],
         ];
+    }
+
+    /**
+     * Build the platforms array from request inputs.
+     */
+    private function buildPlatforms(Request $request): array
+    {
+        $platforms = [];
+        $names = $request->input('platform_names', []);
+        $prices = $request->input('platform_prices', []);
+
+        foreach ($names as $index => $name) {
+            if (!empty($name)) {
+                $platforms[] = [
+                    'name' => $name,
+                    'price' => isset($prices[$index]) ? (float) $prices[$index] : 0,
+                ];
+            }
+        }
+        return $platforms;
     }
 
     /**

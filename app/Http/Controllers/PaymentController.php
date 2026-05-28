@@ -224,7 +224,7 @@ class PaymentController extends Controller
             'service_id' => 'required|exists:services,id',
             'customer_name' => 'required|string|max:255',
             'customer_phone' => 'required|numeric|digits:10',
-            'requirements' => 'required|string|min:5',
+            'requirements' => 'nullable|string',
         ]);
 
         $service = \App\Models\Service::findOrFail($request->service_id);
@@ -253,7 +253,22 @@ class PaymentController extends Controller
             $gstAmount = $planPrice * ($gstPercent / 100);
         }
 
-        $total = $planPrice + $gstAmount + $domainCharge;
+        // Handle platform selection
+        $platformPrice = 0.0;
+        $platformChoice = null;
+        if ($service->enable_platforms && $request->filled('platform_choice')) {
+            $platformChoice = $request->platform_choice;
+            // Validate the platform choice actually exists in the service's available platforms
+            $platforms = $service->platforms ?? [];
+            foreach ($platforms as $p) {
+                if ($p['name'] === $platformChoice) {
+                    $platformPrice = (float) ($p['price'] ?? 0);
+                    break;
+                }
+            }
+        }
+
+        $total = $planPrice + $platformPrice + $gstAmount + $domainCharge;
 
         // Resolve the referring partner with proper fallback chain
         $referredByPartner = session('ref_partner_id')
@@ -278,7 +293,15 @@ class PaymentController extends Controller
             $user->update(['name' => $request->customer_name]);
         }
 
-        $requirements = $request->requirements;
+        $requirements = $request->requirements ?? '';
+        if ($platformChoice) {
+            $platformText = "Selected Platform: " . $platformChoice;
+            if ($platformPrice > 0) {
+                $platformText .= " (+₹" . $platformPrice . ")";
+            }
+            $requirements = $platformText . "\n\n" . $requirements;
+        }
+
         if ($enableDomain && $request->filled('domain_choice')) {
             $choiceLabel = match($request->domain_choice) {
                 'in' => '.in Extension',
@@ -304,6 +327,8 @@ class PaymentController extends Controller
             'customer_email' => auth()->user()->email,
             'customer_phone' => $request->customer_phone,
             'referred_by_partner' => $referredByPartner,
+            'platform_choice' => $platformChoice,
+            'platform_price' => $platformPrice,
         ]);
 
         // Create business details if domain name is submitted

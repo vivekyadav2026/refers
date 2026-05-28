@@ -5,11 +5,11 @@
 @section('content')
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&display=swap');
 
 body {
     background-color: #fafafa;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Roboto', sans-serif;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -27,7 +27,7 @@ body {
     position: relative;
 }
 .plan-tab-btn.active {
-    color: #4338ca;
+    color:black;
 }
 .plan-tab-btn.active::after {
     content: '';
@@ -35,12 +35,11 @@ body {
     bottom: 0;
     left: 0; right: 0;
     height: 2px;
-    background: #4338ca;
     border-radius: 2px 2px 0 0;
 }
 
 .plan-feature-check {
-    color: #10b981;
+    color: black;
 }
 </style>
 
@@ -88,7 +87,7 @@ body {
                              </div>
                              <div>
                                  <div class="text-xs font-bold text-slate-900">Welcome to SK Solutions!</div>
-                                 <div class="text-[10px] text-slate-500 mt-0.5">Explore our premium digital agency services and scale your business today.</div>
+                                 <div class="text-[15px] text-slate-500 font-[400] mt-0.5">Explore our premium digital agency services and scale your business today.</div>
                                  <div class="text-[9px] text-slate-400 mt-1">Just now</div>
                              </div>
                          </div>
@@ -117,11 +116,11 @@ body {
                          x-transition:leave="transition ease-in duration-150"
                          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                          x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                         class="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
+                         class="absolute right-0 mt-3 w-48 bg-white rounded-[16px] shadow-xl border border-slate-100 z-50 overflow-hidden"
                          style="display:none">
                          <div class="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
                              <div class="text-xs font-bold text-slate-800 truncate">{{ $user->name }}</div>
-                             <div class="text-[10px] text-slate-500 truncate mt-0.5">{{ $user->email ?: $user->phone }}</div>
+                             <div class="text-[15px] text-slate-500 font-[400] truncate mt-0.5">{{ $user->email ?: $user->phone }}</div>
                          </div>
                          <div class="py-1.5">
                              <a href="{{ $dashUrl }}" class="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-indigo-800 transition-colors">
@@ -148,12 +147,12 @@ body {
                             default   => route('customer.dashboard'),
                         };
                     @endphp
-                    <a href="{{ $dashUrl }}" class="inline-flex items-center gap-2 bg-indigo-800 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-indigo-900 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                    <a href="{{ $dashUrl }}" class="inline-flex items-center gap-2 bg-[#0d1f0b] text-balck px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-[#0d1f0b] transition-all hover:-translate-y-0.5 active:translate-y-0">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 hover:text-indigo-800 transition-colors px-3 py-2">Log in</a>
-                    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 bg-indigo-800 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-indigo-900 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 bg-[#0d1f0b] text-black px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-[#0d1f0b] transition-all hover:-translate-y-0.5 active:translate-y-0">
                         Explore Services <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
                 @endauth
@@ -196,14 +195,23 @@ body {
     isProcessing: false, 
     selectedPlan: '{{ addslashes($defaultPlanKey) }}', 
     selectedPlanData: {{ json_encode($plans) }},
+    platformsData: {{ json_encode($service->platforms ?? []) }},
+    enablePlatforms: {{ $service->enable_platforms ? 'true' : 'false' }},
+    selectedPlatformIndex: {{ ($service->enable_platforms && !empty($service->platforms)) ? 0 : 'null' }},
     enableGst: {{ $enableGst ? 'true' : 'false' }},
     gstPercent: {{ $gstPercent }},
     enableDomain: {{ $enableDomain ? 'true' : 'false' }},
     domainChoice: 'in',
+    domainName: '',
     domainInCharge: {{ $domainInCharge }},
     domainComCharge: {{ $domainComCharge }},
     get subtotal() {
-        return Number(this.selectedPlanData[this.selectedPlan]?.price || 0);
+        let base = Number(this.selectedPlanData[this.selectedPlan]?.price || 0);
+        let platformExtra = 0;
+        if (this.enablePlatforms && this.selectedPlatformIndex != null && this.platformsData[this.selectedPlatformIndex]) {
+            platformExtra = Number(this.platformsData[this.selectedPlatformIndex].price || 0);
+        }
+        return base + platformExtra;
     },
     get gstAmount() {
         return this.enableGst ? (this.subtotal * (this.gstPercent / 100)) : 0;
@@ -220,7 +228,7 @@ body {
 }"
      @processing-start.window="isProcessing = true"
      @processing-end.window="isProcessing = false"
-     class="bg-[#FAFAFA] min-h-screen relative overflow-hidden">
+     class="bg-white min-h-screen relative overflow-hidden">
 
     <!-- Ambient blobs -->
     <div class="absolute top-20 left-10 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -256,18 +264,18 @@ body {
                 @endif
             </div>
             @endif
-            <h1 class="text-3xl sm:text-4xl md:text-[42px] font-black text-slate-900 tracking-tight leading-tight mb-3">
+            <h1 class="text-[20px] font-[600] text-slate-900 tracking-tight leading-tight mb-3">
                 {{ $service->name }} (<span class="capitalize" x-text="selectedPlanData[selectedPlan]?.name || selectedPlan"></span>)
             </h1>
             @if($service->short_description)
-            <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-2xl">
+            <p class="text-[15px] text-slate-500 font-[400] font-medium leading-relaxed max-w-2xl">
                 {{ $service->short_description }}
             </p>
             @endif
             @if(count($plans) > 0)
             <div class="mt-4 flex items-center gap-3">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider" x-text="selectedPlan === '{{ $defaultPlanKey }}' ? 'Starting from' : 'Selected Plan Price'"></span>
-                <span class="text-2xl font-black text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
+                <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
             </div>
             @endif
         </div>
@@ -280,8 +288,8 @@ body {
 
                 {{-- ABOUT CARD --}}
                 @if($service->description)
-                <div class="bg-white rounded-[32px] p-5 sm:p-6 lg:p-7 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] relative overflow-hidden transition-all duration-300 hover:shadow-md">
-                    <h3 class="text-base sm:text-lg font-black text-slate-900 mb-3 tracking-tight flex items-center gap-2">
+                <div class="bg-white rounded-[16px] p-5 sm:p-6 lg:p-7 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] relative overflow-hidden transition-all duration-300 hover:shadow-md">
+                    <h3 class="text-[20px] font-[600] text-slate-900 mb-3 tracking-tight flex items-center gap-2">
                         <span class="w-1 h-5 bg-indigo-600 rounded-full"></span> About This Service
                     </h3>
                     <div class="prose prose-slate max-w-none text-slate-600 font-medium leading-relaxed text-xs sm:text-sm space-y-3 font-sans">
@@ -292,8 +300,8 @@ body {
 
                 {{-- REQUIREMENTS CARD --}}
                 @if($service->requirements_text)
-                <div class="bg-indigo-50/10 rounded-[32px] p-5 sm:p-6 lg:p-7 border border-indigo-100/50 relative overflow-hidden transition-all duration-300 hover:shadow-sm">
-                    <h3 class="text-base sm:text-lg font-black text-indigo-950 mb-2.5 tracking-tight flex items-center gap-2">
+                <div class="bg-indigo-50/10 rounded-[16px] p-5 sm:p-6 lg:p-7 border border-indigo-100/50 relative overflow-hidden transition-all duration-300 hover:shadow-sm">
+                    <h3 class="text-[20px] font-[600] text-indigo-950 mb-2.5 tracking-tight flex items-center gap-2">
                         <div class="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-100/30">
                             <i data-lucide="alert-circle" class="w-4 h-4"></i>
                         </div>
@@ -310,17 +318,42 @@ body {
             {{-- RIGHT COLUMN --}}
             <div class="lg:col-span-5 xl:col-span-4 space-y-6">
 
+                {{-- ── PLATFORM SELECTOR ──────────────────────────── --}}
+                <template x-if="enablePlatforms && platformsData.length > 0">
+                    <div class="bg-white rounded-[16px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] p-5 sm:p-6">
+                        <h4 class="text-[17px] font-[600] text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-indigo-500"></i> Select Platform</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <template x-for="(platform, index) in platformsData" :key="index">
+                                <label class="relative flex cursor-pointer rounded-xl p-4 shadow-sm focus:outline-none transition-all"
+                                    :class="selectedPlatformIndex == index ? 'border border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500' : 'border border-slate-200 bg-white hover:border-indigo-400'">
+                                    <input type="radio" name="platform_choice" class="sr-only" :value="index" x-model="selectedPlatformIndex">
+                                    <div class="flex w-full items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="text-sm">
+                                                <p x-text="platform.name" class="font-bold text-slate-900"></p>
+                                                <p x-show="platform.price > 0" x-text="'+ ₹' + Number(platform.price).toLocaleString('en-IN')" class="text-xs text-slate-500 font-semibold"></p>
+                                                <p x-show="platform.price <= 0" class="text-xs text-slate-500 font-semibold">Included</p>
+                                            </div>
+                                        </div>
+                                        <svg x-show="selectedPlatformIndex == index" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-indigo-600"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                                    </div>
+                                </label>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
                 {{-- ── PLAN SELECTOR CARD ──────────────────────────── --}}
-                <div class="bg-white rounded-[32px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] overflow-hidden">
+                <div class="bg-white rounded-[16px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] overflow-hidden">
 
                     <!-- Plan Tabs -->
-                    <div class="flex border-b border-slate-100 bg-slate-50/60 overflow-x-auto">
+                    <div class="flex border-b border-slate-100 bg-slate-100 overflow-x-auto">
                         @foreach($plans as $planKey => $planMeta)
                         <button
                             type="button"
                             @click="selectedPlan = '{{ addslashes($planKey) }}'"
-                            :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'plan-tab-btn active text-indigo-700 font-black bg-white border-b-2 border-indigo-500' : 'plan-tab-btn text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100'"
-                            class="flex-1 min-w-fit px-4 py-4 text-xs uppercase tracking-wider relative transition-all whitespace-nowrap">
+                            :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'plan-tab-btn active text-[#0d1f0b] font-[600] bg-white border-b-2 border-[#0d1f0b]' : 'plan-tab-btn text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100'"
+                            class="flex-1 min-w-fit px-4 py-4 text-[17px] uppercase tracking-wider relative transition-all font-[600] whitespace-nowrap">
                             {{ $planMeta['emoji'] ?? '' }} <span class="capitalize" x-text="selectedPlanData['{{ addslashes($planKey) }}']?.name || '{{ $planKey }}'"></span>
                         </button>
                         @endforeach
@@ -332,10 +365,10 @@ body {
                         <!-- Price + Description -->
                         <div class="mb-5">
                             <div class="flex items-end gap-2 mb-1">
-                                <span class="text-3xl font-black text-slate-900" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
+                                <span class="text-[32px] font-[700] text-slate-900" x-text="'₹' + subtotal.toLocaleString('en-IN')"></span>
                                 <span class="text-xs text-slate-400 font-bold mb-1">/ project</span>
                             </div>
-                            <p class="text-xs text-slate-500 font-medium leading-relaxed" x-text="selectedPlanData[selectedPlan]?.description || ''"></p>
+                            <p class="text-[15px] text-slate-500 font-[400] font-medium leading-relaxed" x-text="selectedPlanData[selectedPlan]?.description || ''"></p>
                         </div>
 
                         <!-- Delivery -->
@@ -359,18 +392,73 @@ body {
                                     <div class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
                                         <i data-lucide="check" class="w-2.5 h-2.5" stroke-width="3"></i>
                                     </div>
-                                    <span class="text-[12px] sm:text-xs text-slate-700 font-bold leading-snug" x-text="feature"></span>
+                                    <span class="text-[15px] text-slate-700 font-[400] leading-snug" x-text="feature"></span>
                                 </div>
                             </template>
+                        </div>
+
+                        <!-- DOMAIN SELECTION ON MAIN PAGE -->
+                        <template x-if="enableDomain">
+                            <div class="mb-5 bg-slate-50 border border-slate-200 rounded-[16px] p-4">
+                                <label class="block text-[10px] sm:text-xs font-black text-slate-700 mb-2.5 uppercase tracking-wider">Select Domain Option</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <label class="flex flex-col items-center justify-center p-2.5 rounded-full border cursor-pointer transition-all text-center"
+                                        :class="domainChoice === 'in' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-600 bg-white'">
+                                        <input type="radio" name="main_domain_choice" value="in" x-model="domainChoice" class="sr-only">
+                                        <span class="text-xs">.in</span>
+                                        <span class="text-[12px] text-slate-500 font-[400] mt-0.5 font-normal" x-text="'₹' + domainInCharge"></span>
+                                    </label>
+                                    <label class="flex flex-col items-center justify-center p-2.5 rounded-full border cursor-pointer transition-all text-center"
+                                        :class="domainChoice === 'com' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-600 bg-white'">
+                                        <input type="radio" name="main_domain_choice" value="com" x-model="domainChoice" class="sr-only">
+                                        <span class="text-xs">.com</span>
+                                        <span class="text-[12px] text-slate-500 font-[400] mt-0.5 font-normal" x-text="'₹' + domainComCharge"></span>
+                                    </label>
+                                    <label class="flex flex-col items-center justify-center p-2.5 rounded-full border cursor-pointer transition-all text-center"
+                                        :class="domainChoice === 'already_have' ? 'border-indigo-600 bg-indigo-50 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-650 bg-white'">
+                                        <input type="radio" name="main_domain_choice" value="already_have" x-model="domainChoice" class="sr-only">
+                                        <span class="text-[11px] leading-tight mt-1">Already Have</span>
+                                        <span class="text-[12px] text-slate-500 font-[400] mt-0.5 font-normal">₹0</span>
+                                    </label>
+                                </div>
+                                <!-- <div class="mt-3">
+                                    <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider" x-text="domainChoice === 'already_have' ? 'Your Existing Domain Name *' : 'Preferred Domain Name'"></label>
+                                    <input type="text" x-model="domainName" class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-white outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all font-sans" placeholder="e.g. www.example.com">
+                                </div> -->
+                            </div>
+                        </template>
+
+                        <!-- TOTAL SUMMARY ON MAIN PAGE -->
+                        <div class="mb-5 space-y-2 border-t border-slate-100 pt-4 px-1">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-500 font-medium">Subtotal</span>
+                                <span class="text-slate-700 font-bold" x-text="'₹' + subtotal.toLocaleString('en-IN')"></span>
+                            </div>
+                            <template x-if="enableDomain">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-500 font-medium">Domain <span class="text-[10px]" x-text="domainChoice === 'in' ? '(.in)' : (domainChoice === 'com' ? '(.com)' : '')"></span></span>
+                                    <span class="text-slate-700 font-bold" x-text="'+ ₹' + domainChargeAmount.toLocaleString('en-IN')"></span>
+                                </div>
+                            </template>
+                            <template x-if="enableGst">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-500 font-medium" x-text="'GST (' + gstPercent + '%)'"></span>
+                                    <span class="text-slate-700 font-bold" x-text="'+ ₹' + gstAmount.toLocaleString('en-IN')"></span>
+                                </div>
+                            </template>
+                            <div class="flex justify-between items-center text-[18px] font-black text-indigo-900 border-t border-slate-100 pt-3 mt-3">
+                                <span>Total Price</span>
+                                <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
+                            </div>
                         </div>
 
                         <!-- Action Buttons -->
                         @auth
                             @if(auth()->user()->isCustomer())
                             <button type="button" @click="buyNowModal = true"
-                                class="w-full py-3.5 rounded-2xl text-xs font-black tracking-wide uppercase text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-black bg-[#000000] hover:bg-[#000000] rounded-full shadow-lg shadow-[#000000]/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
                                 <i data-lucide="zap" class="w-4 h-4"></i>
-                                Order Now — <span x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
+                                Order Now — <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </button>
                             @endif
 
@@ -380,38 +468,41 @@ body {
                                 <span>Submit Lead</span>
                                 <div class="h-px bg-slate-100 flex-1"></div>
                             </div>
-                            <form action="{{ route('partner.leads.store') }}" method="POST" class="space-y-3 font-sans">
-                                @csrf
-                                <input type="hidden" name="service_needed" value="{{ $service->name }}">
-                                <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
-                                <div>
+                                <form action="{{ route('partner.leads.store') }}" method="POST" class="space-y-3 font-sans">
+                                    @csrf
+                                    <input type="hidden" name="service_needed" value="{{ $service->name }}">
+                                    <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
+                                    <template x-if="enablePlatforms && selectedPlatformIndex != null">
+                                        <input type="hidden" name="platform_choice" :value="platformsData[selectedPlatformIndex]?.name">
+                                    </template>
+                                    <div>
                                     <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Full Name *</label>
-                                    <input type="text" name="client_name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="e.g. Rahul Sharma">
+                                    <input type="text" name="client_name" required class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="e.g. Rahul Sharma">
                                 </div>
                                 <div>
                                     <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Phone Number *</label>
-                                    <input type="tel" name="client_phone" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="+91 9999999999">
+                                    <input type="tel" name="client_phone" required class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="+91 9999999999">
                                 </div>
                                 <div>
                                     <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Project Requirements</label>
-                                    <textarea name="notes" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all resize-none" placeholder="Deliverables, details..."></textarea>
+                                    <textarea name="notes" rows="2" class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all resize-none" placeholder="Deliverables, details..."></textarea>
                                 </div>
-                                <button type="submit" class="w-full py-2.5 rounded-xl text-[10px] font-black tracking-widest uppercase text-white bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-1.5 active:translate-y-0 cursor-pointer mt-1">
+                                <button type="submit" class="w-full py-2.5 rounded-full text-[10px] font-black tracking-widest uppercase text-white bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-1.5 active:translate-y-0 cursor-pointer mt-1">
                                     <i data-lucide="send" class="w-3.5 h-3.5"></i> Submit Lead
                                 </button>
                             </form>
                             @endif
                         @else
-                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center mb-4">
+                            <div class="bg-slate-50 border border-slate-200 rounded-[16px] p-5 text-center mb-4">
                                 <i data-lucide="lock" class="w-7 h-7 text-slate-400 mx-auto mb-2.5"></i>
                                 <h4 class="text-sm font-black text-slate-800 mb-1">Sign In to Order</h4>
-                                <p class="text-[10px] text-slate-500 leading-normal mb-4 font-semibold">Sign in to purchase or submit client leads.</p>
-                                <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-1.5 w-full py-3 bg-indigo-600 text-white font-black text-[10px] uppercase tracking-wider rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-600/20 transition-all hover:-translate-y-0.5">
+                                <p class="text-[15px] text-slate-500 font-[400] leading-normal mb-4 font-semibold">Sign in to purchase or submit client leads.</p>
+                                <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-1.5 w-full py-3 bg-[#0d1f0b] text-black font-[600] text-[18px] tracking-wider rounded-full hover:bg-[#0d1f0b] shadow-md shadow-[#20C20E]/20 transition-all hover:-translate-y-0.5">
                                     Secure Sign In
                                 </a>
                             </div>
                             <a href="https://wa.me/919999999999?text=Hi, I am interested in {{ urlencode($service->name) }}" target="_blank"
-                               class="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
+                               class="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
                                 <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Inquire via WhatsApp
                             </a>
                         @endauth
@@ -435,7 +526,7 @@ body {
                          x-transition:leave="ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                          x-transition:leave-end="opacity-0 translate-y-full sm:translate-y-4 sm:scale-95"
-                         class="relative transform overflow-hidden rounded-t-[32px] sm:rounded-[32px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-lg border-t sm:border border-slate-200 mt-6 sm:mt-0"
+                         class="relative transform overflow-hidden rounded-t-[32px] sm:rounded-[16px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-lg border-t sm:border border-slate-200 mt-6 sm:mt-0"
                          @click.away="buyNowModal = false">
 
                         <!-- Mobile Drag Handle -->
@@ -445,10 +536,10 @@ body {
 
                         <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <div>
-                                <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2" id="modal-title">
+                                <h3 class="text-[20px] font-[600] text-slate-900 flex items-center gap-2" id="modal-title">
                                     <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i> Order Summary
                                 </h3>
-                                <p class="text-[10px] text-slate-500 font-bold mt-0.5">Review your package details</p>
+                                <p class="text-[15px] text-slate-500 font-[400] font-bold mt-0.5">Review your package details</p>
                             </div>
                             <button @click="buyNowModal = false" type="button" class="p-2 -mr-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-200/50">
                                 <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
@@ -458,14 +549,23 @@ body {
                         <!-- Modal Body -->
                         <div class="p-5 sm:p-6 bg-slate-50">
                             <!-- Selected Package Summary -->
-                            <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
+                            <div class="bg-white rounded-[16px] border border-slate-200 p-4 mb-4">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-black text-slate-900" x-text="selectedPlan + ' Package'"></span>
-                                    <span class="text-sm font-black text-indigo-700" x-text="'₹' + subtotal.toLocaleString('en-IN')"></span>
+                                    <span class="text-[20px] font-[600] text-slate-900" x-text="selectedPlan + ' Package'"></span>
+                                    <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
                                 </div>
-                                <p class="text-[10px] text-slate-500 mb-4" x-text="selectedPlanData[selectedPlan]?.description"></p>
+                                <p class="text-[15px] text-slate-500 font-[400] mb-4" x-text="selectedPlanData[selectedPlan]?.description"></p>
                                 
-                                <div class="space-y-2 border-t border-slate-100 pt-3">
+                                <template x-if="enablePlatforms && selectedPlatformIndex != null && platformsData[selectedPlatformIndex]">
+                                    <div class="border-t border-slate-100 pt-3 mt-3">
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-slate-700 font-medium flex items-center gap-2"><i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-500"></i> Platform: <span x-text="platformsData[selectedPlatformIndex].name"></span></span>
+                                            <span class="font-bold text-slate-700" x-text="platformsData[selectedPlatformIndex].price > 0 ? '+ ₹' + Number(platformsData[selectedPlatformIndex].price).toLocaleString('en-IN') : 'Included'"></span>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <div class="space-y-2 border-t border-slate-100 pt-3 mt-3">
                                     <template x-if="enableGst">
                                         <div class="flex items-center justify-between text-xs">
                                             <span class="text-slate-500 font-medium" x-text="'GST (' + gstPercent + '%)'"></span>
@@ -486,9 +586,9 @@ body {
                             </div>
                             
                             <!-- Total -->
-                            <div class="flex items-center justify-between bg-indigo-50 rounded-2xl border border-indigo-100 p-4 mb-6">
+                            <div class="flex items-center justify-between bg-indigo-50 rounded-[16px] border border-indigo-100 p-4 mb-6">
                                 <span class="text-sm font-black text-indigo-900">Total Amount</span>
-                                <span class="text-lg font-black text-indigo-700" x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
+                                <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </div>
                         </div>
 
@@ -497,37 +597,18 @@ body {
                             <input type="hidden" name="service_id" value="{{ $service->id }}">
                             <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
                             <input type="hidden" name="plan_price" x-bind:value="finalTotal">
+                            <template x-if="enablePlatforms && selectedPlatformIndex != null && platformsData[selectedPlatformIndex]">
+                                <input type="hidden" name="platform_choice" :value="platformsData[selectedPlatformIndex].name">
+                            </template>
+                            <template x-if="enablePlatforms && selectedPlatformIndex != null && platformsData[selectedPlatformIndex]">
+                                <input type="hidden" name="platform_price" :value="platformsData[selectedPlatformIndex].price">
+                            </template>
 
                             <div class="space-y-4 font-sans">
                                 <template x-if="enableDomain">
-                                    <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                                        <label class="block text-[10px] sm:text-xs font-black text-slate-700 mb-2.5 uppercase tracking-wider">Select Domain Option</label>
-                                        <div class="grid grid-cols-3 gap-2">
-                                            <label class="flex flex-col items-center justify-center p-2.5 rounded-xl border cursor-pointer transition-all text-center"
-                                                :class="domainChoice === 'in' ? 'border-indigo-600 bg-indigo-50/40 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-600 bg-slate-50'">
-                                                <input type="radio" name="domain_choice" value="in" x-model="domainChoice" class="sr-only">
-                                                <span class="text-xs">.in Extension</span>
-                                                <span class="text-[10px] text-slate-500 mt-1 font-normal" x-text="'₹' + domainInCharge"></span>
-                                            </label>
-                                            <label class="flex flex-col items-center justify-center p-2.5 rounded-xl border cursor-pointer transition-all text-center"
-                                                :class="domainChoice === 'com' ? 'border-indigo-600 bg-indigo-50/40 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-600 bg-slate-50'">
-                                                <input type="radio" name="domain_choice" value="com" x-model="domainChoice" class="sr-only">
-                                                <span class="text-xs">.com Extension</span>
-                                                <span class="text-[10px] text-slate-500 mt-1 font-normal" x-text="'₹' + domainComCharge"></span>
-                                            </label>
-                                            <label class="flex flex-col items-center justify-center p-2.5 rounded-xl border cursor-pointer transition-all text-center"
-                                                :class="domainChoice === 'already_have' ? 'border-indigo-600 bg-indigo-50/40 text-indigo-700 font-bold' : 'border-slate-200 hover:border-slate-350 text-slate-650 bg-slate-50'">
-                                                <input type="radio" name="domain_choice" value="already_have" x-model="domainChoice" class="sr-only">
-                                                <span class="text-xs leading-tight">Already Have</span>
-                                                <span class="text-[10px] text-slate-500 mt-1 font-normal">₹0</span>
-                                            </label>
-                                        </div>
-
-                                        <!-- Domain Name field (shows if already have or buying) -->
-                                        <div class="mt-3">
-                                            <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider" x-text="domainChoice === 'already_have' ? 'Your Existing Domain Name *' : 'Preferred Domain Name'"></label>
-                                            <input type="text" name="domain_name" :required="domainChoice === 'already_have'" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all font-sans" placeholder="e.g. www.example.com">
-                                        </div>
+                                    <div>
+                                        <input type="hidden" name="domain_choice" :value="domainChoice">
+                                        <input type="hidden" name="domain_name" :value="domainName">
                                     </div>
                                 </template>
 
@@ -537,23 +618,23 @@ body {
                                         $defaultName = auth()->check() ? 'User ' . substr(auth()->user()->phone, -4) : '';
                                         $displayName = auth()->check() && auth()->user()->name !== $defaultName ? auth()->user()->name : '';
                                     @endphp
-                                    <input type="text" name="customer_name" value="{{ $displayName }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
+                                    <input type="text" name="customer_name" value="{{ $displayName }}" required class="w-full px-4 py-3 rounded-full border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Mobile Number *</label>
-                                    <input type="tel" name="customer_phone" value="{{ auth()->check() ? auth()->user()->phone : '' }}" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
+                                    <input type="tel" name="customer_phone" value="{{ auth()->check() ? auth()->user()->phone : '' }}" required class="w-full px-4 py-3 rounded-full border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Project Requirements *</label>
-                                    <textarea name="requirements" rows="3" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all resize-none" placeholder="Describe your project requirements briefly..."></textarea>
-                                </div>
+                                    <textarea name="requirements" rows="3" required class="w-full px-4 py-3 rounded-full border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all resize-none" placeholder="Describe your project requirements briefly..."></textarea>
+                                </div> -->
                             </div>
 
                             <div class="mt-6 sm:mt-8 flex gap-3 pb-10 sm:pb-0">
-                                <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-xl text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+                                <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
                                     Cancel
                                 </button>
-                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-xl text-[10px] sm:text-xs font-black tracking-wider uppercase text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
+                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-full text-[18px] font-[600] tracking-wider text-black bg-[#0d1f0b] hover:bg-[#0d1f0b] rounded-full shadow-lg shadow-[#20C20E]/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
                                     <span x-show="!isProcessing">Pay <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span></span>
                                     <span x-show="isProcessing">Processing...</span>
                                 </button>

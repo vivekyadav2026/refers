@@ -162,6 +162,8 @@
                                 'is_popular'       => $service->is_popular,
                                 'is_active'        => $service->is_active,
                                 'requires_domain'  => $service->requires_domain,
+                                'enable_platforms' => $service->enable_platforms,
+                                'platforms'        => $service->platforms ?? [],
                                 'delivery_timeline'=> $service->delivery_timeline,
                                 'requirements_text'=> $service->requirements_text,
                                 'commission_rate'  => $service->commission_rate,
@@ -490,6 +492,34 @@
                     </div>
                 </div>
 
+                {{-- ── PLATFORM SELECTION ─────────────────────────────────── --}}
+                <div class="mt-8 mb-4 border border-indigo-100 rounded-2xl p-5 bg-white">
+                    <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="layers" class="w-4 h-4 text-indigo-500"></i> Platform Selection
+                            </h4>
+                            <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] text-slate-500 font-bold">Optional</span>
+                        </div>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="enable_platforms" id="serviceEnablePlatforms" value="1"
+                                class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4"
+                                onchange="togglePlatformsPanel(this.checked)">
+                            <span class="text-xs font-bold text-slate-700">Enable Platforms</span>
+                        </label>
+                    </div>
+
+                    <div id="platformsPanel" class="hidden">
+                        <p class="text-[11px] text-slate-500 mb-3 font-medium">Add platforms (e.g. WordPress, Shopify, Custom) and their additional price.</p>
+                        <div id="platformsContainer" class="space-y-3">
+                            <!-- Platform rows will be appended here -->
+                        </div>
+                        <button type="button" onclick="addPlatformRow()" class="mt-4 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5">
+                            <i data-lucide="plus" class="w-3 h-3"></i> Add Platform
+                        </button>
+                    </div>
+                </div>
+
                 {{-- ── COMMISSION & SETTINGS ────────────────────────────── --}}
                 <div class="mt-8 mb-4">
                     <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -688,6 +718,15 @@ function openModal(service = null) {
         document.getElementById('tabLabel-standard').innerText = service.standard_name || 'Standard';
         document.getElementById('tabLabel-premium').innerText = service.premium_name || 'Premium';
 
+        // Platforms
+        document.getElementById('serviceEnablePlatforms').checked = service.enable_platforms ? true : false;
+        togglePlatformsPanel(service.enable_platforms);
+        const pContainer = document.getElementById('platformsContainer');
+        pContainer.innerHTML = '';
+        if (service.platforms && service.platforms.length > 0) {
+            service.platforms.forEach(p => addPlatformRow(p.name, p.price));
+        }
+
         if (service.banner_image) {
             analyzeImage('/storage/' + service.banner_image, false);
         }
@@ -706,6 +745,9 @@ function openModal(service = null) {
         document.getElementById('standardName').value = 'Standard';
         document.getElementById('premiumActive').checked = true;
         document.getElementById('premiumName').value = 'Premium';
+        document.getElementById('serviceEnablePlatforms').checked = false;
+        togglePlatformsPanel(false);
+        document.getElementById('platformsContainer').innerHTML = '';
     }
 
     const modal = document.getElementById('serviceModal');
@@ -717,6 +759,37 @@ function closeModal() {
     const modal = document.getElementById('serviceModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+}
+
+// ── Platforms Helpers ────────────────────────────────────────────────────────
+function togglePlatformsPanel(show) {
+    const panel = document.getElementById('platformsPanel');
+    if (show) {
+        panel.classList.remove('hidden');
+    } else {
+        panel.classList.add('hidden');
+    }
+}
+
+function addPlatformRow(name = '', price = '') {
+    const container = document.getElementById('platformsContainer');
+    const div = document.createElement('div');
+    div.className = 'flex items-center gap-3';
+    div.innerHTML = `
+        <div class="flex-1">
+            <input type="text" name="platform_names[]" value="${name}" required placeholder="Platform Name (e.g. WordPress)" 
+                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+        <div class="w-32">
+            <input type="number" name="platform_prices[]" value="${price}" min="0" step="0.01" placeholder="Price (₹)"
+                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="p-2 text-slate-400 hover:text-red-500 bg-slate-100 hover:bg-red-50 rounded-lg transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+    `;
+    container.appendChild(div);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 // File input selection
