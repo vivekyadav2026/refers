@@ -300,7 +300,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
             </div>
-            <h1>Partner Login</h1>
+            <h1>Login</h1>
             <p>Login with your mobile number</p>
         </div>
 

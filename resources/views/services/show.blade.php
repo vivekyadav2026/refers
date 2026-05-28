@@ -456,7 +456,7 @@ body {
                         @auth
                             @if(auth()->user()->isCustomer())
                             <button type="button" @click="buyNowModal = true"
-                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-black bg-[#000000] hover:bg-[#000000] rounded-full shadow-lg shadow-[#000000]/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-black bg-[#ffffff] hover:bg-[#ffffff] rounded-full shadow-lg shadow-[#000000]/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
                                 <i data-lucide="zap" class="w-4 h-4"></i>
                                 Order Now — <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </button>
@@ -634,7 +634,7 @@ body {
                                 <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
                                     Cancel
                                 </button>
-                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-full text-[18px] font-[600] tracking-wider text-black bg-[#0d1f0b] hover:bg-[#0d1f0b] rounded-full shadow-lg shadow-[#20C20E]/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
+                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-full text-[18px] font-[600] tracking-wider text-black bg-[#ffffff] hover:bg-[#ffffff] rounded-full shadow-lg shadow-[#20C20E]/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
                                     <span x-show="!isProcessing">Pay <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span></span>
                                     <span x-show="isProcessing">Processing...</span>
                                 </button>
