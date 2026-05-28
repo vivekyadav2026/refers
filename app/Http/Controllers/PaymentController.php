@@ -329,6 +329,9 @@ class PaymentController extends Controller
             'referred_by_partner' => $referredByPartner,
             'platform_choice' => $platformChoice,
             'platform_price' => $platformPrice,
+            'domain_choice' => $request->domain_choice,
+            'domain_charge' => $domainCharge,
+            'gst_amount' => $gstAmount,
         ]);
 
         // Create business details if domain name is submitted

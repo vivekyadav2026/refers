@@ -95,7 +95,7 @@
             </div>
             @if($order->status !== 'pending' && $order->status !== 'cancelled' && !$order->postPaymentDetail)
             <div class="mt-3">
-                <a href="{{ route('post-payment.create', $order) }}" class="block text-center w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-black uppercase tracking-wider rounded-lg border border-indigo-200 transition-colors">
+                <a href="{{ route('customer.business-details.create', $order) }}" class="block text-center w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-black uppercase tracking-wider rounded-lg border border-indigo-200 transition-colors">
                     Submit Project Details <i data-lucide="arrow-right" class="w-3 h-3 inline"></i>
                 </a>
             </div>
@@ -134,7 +134,7 @@
                     <div class="font-black text-slate-900 text-sm min-w-[5rem] text-right">₹{{ number_format($order->amount) }}</div>
                 </div>
                 @if($order->status !== 'pending' && $order->status !== 'cancelled' && !$order->postPaymentDetail)
-                <a href="{{ route('post-payment.create', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-black uppercase tracking-wider rounded-lg border border-indigo-200 transition-colors z-10">
+                <a href="{{ route('customer.business-details.create', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10px] font-black uppercase tracking-wider rounded-lg border border-indigo-200 transition-colors z-10">
                     <i data-lucide="file-text" class="w-3 h-3"></i> Submit Details
                 </a>
                 @endif

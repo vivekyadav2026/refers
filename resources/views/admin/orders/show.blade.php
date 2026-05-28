@@ -359,6 +359,44 @@
             </div>
             @endif
 
+            <!-- Payment Breakdown -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i data-lucide="receipt" class="w-4 h-4"></i> Payment Breakdown
+                </h2>
+                <div class="space-y-3 text-sm">
+                    @php
+                        $planPrice = $order->items->first()->subtotal ?? $order->amount;
+                    @endphp
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600 font-medium">Plan Price</span>
+                        <span class="text-slate-900 font-bold">₹{{ number_format($planPrice) }}</span>
+                    </div>
+                    @if($order->platform_choice)
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600 font-medium">Platform ({{ ucfirst($order->platform_choice) }})</span>
+                        <span class="text-slate-900 font-bold">₹{{ number_format($order->platform_price) }}</span>
+                    </div>
+                    @endif
+                    @if($order->domain_choice && $order->domain_choice !== 'already_have')
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600 font-medium">Domain (.{{ $order->domain_choice }})</span>
+                        <span class="text-slate-900 font-bold">₹{{ number_format($order->domain_charge) }}</span>
+                    </div>
+                    @endif
+                    @if($order->gst_amount > 0)
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-600 font-medium">GST (18%)</span>
+                        <span class="text-slate-900 font-bold">₹{{ number_format($order->gst_amount) }}</span>
+                    </div>
+                    @endif
+                    <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-slate-800 font-bold">Total Paid</span>
+                        <span class="text-indigo-600 font-black text-lg">₹{{ number_format($order->amount) }}</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Commissions -->
             @if($order->commissions->count() > 0)
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">

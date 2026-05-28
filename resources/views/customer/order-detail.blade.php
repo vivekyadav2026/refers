@@ -216,10 +216,34 @@
             <h2 class="text-xl font-black mb-6">Payment Summary</h2>
             
             <div class="space-y-4 pb-6 border-b border-white/10 text-sm font-medium">
+                @php
+                    $planPrice = $order->items->first()->subtotal ?? $order->amount;
+                @endphp
                 <div class="flex items-center justify-between text-blue-100">
-                    <span>Subtotal</span>
-                    <span class="text-white">₹{{ number_format($order->amount) }}</span>
+                    <span>Plan Price</span>
+                    <span class="text-white">₹{{ number_format($planPrice) }}</span>
                 </div>
+                
+                @if($order->platform_choice)
+                <div class="flex items-center justify-between text-blue-100">
+                    <span>Platform ({{ ucfirst($order->platform_choice) }})</span>
+                    <span class="text-white">₹{{ number_format($order->platform_price) }}</span>
+                </div>
+                @endif
+                
+                @if($order->domain_choice && $order->domain_choice !== 'already_have')
+                <div class="flex items-center justify-between text-blue-100">
+                    <span>Domain (.{{ $order->domain_choice }})</span>
+                    <span class="text-white">₹{{ number_format($order->domain_charge) }}</span>
+                </div>
+                @endif
+                
+                @if($order->gst_amount > 0)
+                <div class="flex items-center justify-between text-blue-100">
+                    <span>GST (18%)</span>
+                    <span class="text-white">₹{{ number_format($order->gst_amount) }}</span>
+                </div>
+                @endif
             </div>
             
             <div class="flex items-center justify-between pt-6">
