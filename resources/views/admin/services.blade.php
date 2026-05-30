@@ -164,6 +164,8 @@
                                 'requires_domain'  => $service->requires_domain,
                                 'enable_platforms' => $service->enable_platforms,
                                 'platforms'        => $service->platforms ?? [],
+                                'plans'            => $service->plans ?? [],
+                                'pricing_matrix'   => $service->pricing_matrix ?? [],
                                 'delivery_timeline'=> $service->delivery_timeline,
                                 'requirements_text'=> $service->requirements_text,
                                 'commission_rate'  => $service->commission_rate,
@@ -350,175 +352,8 @@
                         placeholder="Key access details, design references, business assets needed..."></textarea>
                 </div>
 
-                {{-- ── PRICING PLANS ─────────────────────────────────────── --}}
-                <div class="mb-5 border border-indigo-100 rounded-2xl overflow-hidden">
-                    <!-- Plan Tab Header -->
-                    <div class="flex border-b border-slate-100 bg-slate-50/60 overflow-x-auto rounded-t-xl">
-                        <button type="button" onclick="switchPlanTab('basic')" id="tab-basic" class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-indigo-700 bg-white border-b-2 border-indigo-500">🌱 <span id="tabLabel-basic">Basic</span></button>
-                        <button type="button" onclick="switchPlanTab('standard')" id="tab-standard" class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">⭐ <span id="tabLabel-standard">Standard</span></button>
-                        <button type="button" onclick="switchPlanTab('premium')" id="tab-premium" class="plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100">👑 <span id="tabLabel-premium">Premium</span></button>
-                    </div>
-
-                    <!-- Basic Plan -->
-                    <div id="panel-basic" class="plan-panel p-5 space-y-4">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" name="basic_active" id="basicActive" value="1" checked
-                                    class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4">
-                                <label for="basicActive" class="text-xs font-bold text-slate-700">Enable Basic Plan</label>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <label class="text-[11px] font-bold text-slate-600">Plan Name:</label>
-                                <input type="text" name="basic_name" id="basicName" value="Basic"
-                                    class="border border-slate-200 bg-slate-50 text-slate-900 text-xs rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-indigo-500 outline-none w-36"
-                                    placeholder="e.g. Startup / Basic">
-                            </div>
-                        </div>
-                        <p class="text-[11px] text-slate-500 font-medium">Essential features at an entry-level price.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹)</label>
-                                <input type="number" name="basic_price" id="basicPrice" min="0" step="0.01"
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 4999">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery</label>
-                                <input type="text" name="basic_delivery" id="basicDelivery"
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 5 Days">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description</label>
-                            <input type="text" name="basic_description" id="basicDescription"
-                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                placeholder="e.g. Perfect for small businesses getting started">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line)</label>
-                            <textarea name="basic_features" id="basicFeatures" rows="4"
-                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
-                                placeholder="e.g.&#10;5 Page Website&#10;Mobile Responsive&#10;Contact Form"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Standard Plan -->
-                    <div id="panel-standard" class="plan-panel p-5 space-y-4 hidden">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" name="standard_active" id="standardActive" value="1" checked
-                                    class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4">
-                                <label for="standardActive" class="text-xs font-bold text-slate-700">Enable Standard Plan</label>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <label class="text-[11px] font-bold text-slate-600">Plan Name:</label>
-                                <input type="text" name="standard_name" id="standardName" value="Standard"
-                                    class="border border-slate-200 bg-slate-50 text-slate-900 text-xs rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-indigo-500 outline-none w-36"
-                                    placeholder="e.g. Professional / Standard">
-                            </div>
-                        </div>
-                        <p class="text-[11px] text-slate-500 font-medium">Great value with more features and faster delivery.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹)</label>
-                                <input type="number" name="standard_price" id="standardPrice" min="0" step="0.01"
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 9999">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery</label>
-                                <input type="text" name="standard_delivery" id="standardDelivery"
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 7 Days">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description</label>
-                            <input type="text" name="standard_description" id="standardDescription"
-                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                placeholder="e.g. Ideal for growing businesses needing more">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line)</label>
-                            <textarea name="standard_features" id="standardFeatures" rows="4"
-                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
-                                placeholder="e.g.&#10;10 Page Website&#10;Mobile Responsive&#10;SEO Optimization&#10;Live Chat Integration"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Premium Plan -->
-                    <div id="panel-premium" class="plan-panel p-5 space-y-4 hidden">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" name="premium_active" id="premiumActive" value="1" checked
-                                    class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4">
-                                <label for="premiumActive" class="text-xs font-bold text-slate-700">Enable Premium Plan</label>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <label class="text-[11px] font-bold text-slate-600">Plan Name:</label>
-                                <input type="text" name="premium_name" id="premiumName" value="Premium"
-                                    class="border border-slate-200 bg-slate-50 text-slate-900 text-xs rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-indigo-500 outline-none w-36"
-                                    placeholder="e.g. Enterprise / Premium">
-                            </div>
-                        </div>
-                        <p class="text-[11px] text-slate-500 font-medium">Full-featured solution for maximum results.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹)</label>
-                                <input type="number" name="premium_price" id="premiumPrice" min="0" step="0.01"
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 19999">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery</label>
-                                <input type="text" name="premium_delivery" id="premiumDelivery"
-                                    class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                    placeholder="e.g. 14 Days">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Plan Description</label>
-                            <input type="text" name="premium_description" id="premiumDescription"
-                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                                placeholder="e.g. Complete solution for enterprise-level needs">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Features (One per line)</label>
-                            <textarea name="premium_features" id="premiumFeatures" rows="4"
-                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
-                                placeholder="e.g.&#10;Unlimited Pages&#10;Custom UI/UX Design&#10;E-Commerce Integration&#10;Priority Support&#10;1 Year Maintenance"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- ── PLATFORM SELECTION ─────────────────────────────────── --}}
-                <div class="mt-8 mb-4 border border-indigo-100 rounded-2xl p-5 bg-white">
-                    <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
-                                <i data-lucide="layers" class="w-4 h-4 text-indigo-500"></i> Platform Selection
-                            </h4>
-                            <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] text-slate-500 font-bold">Optional</span>
-                        </div>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="enable_platforms" id="serviceEnablePlatforms" value="1"
-                                class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 w-4 h-4"
-                                onchange="togglePlatformsPanel(this.checked)">
-                            <span class="text-xs font-bold text-slate-700">Enable Platforms</span>
-                        </label>
-                    </div>
-
-                    <div id="platformsPanel" class="hidden">
-                        <p class="text-[11px] text-slate-500 mb-3 font-medium">Add platforms (e.g. WordPress, Shopify, Custom) and their additional price.</p>
-                        <div id="platformsContainer" class="space-y-3">
-                            <!-- Platform rows will be appended here -->
-                        </div>
-                        <button type="button" onclick="addPlatformRow()" class="mt-4 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5">
-                            <i data-lucide="plus" class="w-3 h-3"></i> Add Platform
-                        </button>
-                    </div>
-                </div>
+                {{-- ── DYNAMIC PRICING MATRIX ─────────────────────────────────────── --}}
+                @include('admin.pricing_matrix')
 
                 {{-- ── COMMISSION & SETTINGS ────────────────────────────── --}}
                 <div class="mt-8 mb-4">
@@ -667,7 +502,6 @@ function openModal(service = null) {
     const submitBtn = document.getElementById('submitBtn');
 
     document.getElementById('bannerPreviewWrapper').classList.add('hidden');
-    switchPlanTab('basic'); // Reset to basic tab
 
     if (service) {
         title.textContent = 'Edit Service';
@@ -689,43 +523,7 @@ function openModal(service = null) {
         document.getElementById('serviceActive').checked   = service.is_active ? true : false;
         document.getElementById('serviceRequiresDomain').checked = service.requires_domain ? true : false;
 
-        // Basic Plan
-        document.getElementById('basicActive').checked    = service.basic_active !== false;
-        document.getElementById('basicName').value        = service.basic_name || 'Basic';
-        document.getElementById('basicPrice').value       = service.basic_price || '';
-        document.getElementById('basicDelivery').value    = service.basic_delivery || '';
-        document.getElementById('basicDescription').value = service.basic_description || '';
-        document.getElementById('basicFeatures').value    = (service.basic_features || '').replace(/\\n/g, '\n');
-
-        // Standard Plan
-        document.getElementById('standardActive').checked = service.standard_active !== false;
-        document.getElementById('standardName').value     = service.standard_name || 'Standard';
-        document.getElementById('standardPrice').value       = service.standard_price || '';
-        document.getElementById('standardDelivery').value    = service.standard_delivery || '';
-        document.getElementById('standardDescription').value = service.standard_description || '';
-        document.getElementById('standardFeatures').value    = (service.standard_features || '').replace(/\\n/g, '\n');
-
-        // Premium Plan
-        document.getElementById('premiumActive').checked  = service.premium_active !== false;
-        document.getElementById('premiumName').value      = service.premium_name || 'Premium';
-        document.getElementById('premiumPrice').value       = service.premium_price || '';
-        document.getElementById('premiumDelivery').value    = service.premium_delivery || '';
-        document.getElementById('premiumDescription').value = service.premium_description || '';
-        document.getElementById('premiumFeatures').value    = (service.premium_features || '').replace(/\\n/g, '\n');
-
-        // Update Tab Labels
-        document.getElementById('tabLabel-basic').innerText = service.basic_name || 'Basic';
-        document.getElementById('tabLabel-standard').innerText = service.standard_name || 'Standard';
-        document.getElementById('tabLabel-premium').innerText = service.premium_name || 'Premium';
-
-        // Platforms
-        document.getElementById('serviceEnablePlatforms').checked = service.enable_platforms ? true : false;
-        togglePlatformsPanel(service.enable_platforms);
-        const pContainer = document.getElementById('platformsContainer');
-        pContainer.innerHTML = '';
-        if (service.platforms && service.platforms.length > 0) {
-            service.platforms.forEach(p => addPlatformRow(p.name, p.price));
-        }
+        window.dispatchEvent(new CustomEvent('load-service-pricing', { detail: service }));
 
         if (service.banner_image) {
             analyzeImage('/storage/' + service.banner_image, false);
@@ -739,15 +537,8 @@ function openModal(service = null) {
         document.getElementById('serviceIcon').value = 'box';
         document.getElementById('serviceActive').checked = true;
         document.getElementById('serviceRequiresDomain').checked = false;
-        document.getElementById('basicActive').checked = true;
-        document.getElementById('basicName').value = 'Basic';
-        document.getElementById('standardActive').checked = true;
-        document.getElementById('standardName').value = 'Standard';
-        document.getElementById('premiumActive').checked = true;
-        document.getElementById('premiumName').value = 'Premium';
-        document.getElementById('serviceEnablePlatforms').checked = false;
-        togglePlatformsPanel(false);
-        document.getElementById('platformsContainer').innerHTML = '';
+        
+        window.dispatchEvent(new CustomEvent('load-service-pricing', { detail: null }));
     }
 
     const modal = document.getElementById('serviceModal');
@@ -761,36 +552,7 @@ function closeModal() {
     modal.classList.remove('flex');
 }
 
-// ── Platforms Helpers ────────────────────────────────────────────────────────
-function togglePlatformsPanel(show) {
-    const panel = document.getElementById('platformsPanel');
-    if (show) {
-        panel.classList.remove('hidden');
-    } else {
-        panel.classList.add('hidden');
-    }
-}
-
-function addPlatformRow(name = '', price = '') {
-    const container = document.getElementById('platformsContainer');
-    const div = document.createElement('div');
-    div.className = 'flex items-center gap-3';
-    div.innerHTML = `
-        <div class="flex-1">
-            <input type="text" name="platform_names[]" value="${name}" required placeholder="Platform Name (e.g. WordPress)" 
-                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
-        </div>
-        <div class="w-32">
-            <input type="number" name="platform_prices[]" value="${price}" min="0" step="0.01" placeholder="Price (₹)"
-                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
-        </div>
-        <button type="button" onclick="this.parentElement.remove()" class="p-2 text-slate-400 hover:text-red-500 bg-slate-100 hover:bg-red-50 rounded-lg transition-colors">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
-        </button>
-    `;
-    container.appendChild(div);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-}
+// Removed legacy platform and plan helpers
 
 // File input selection
 document.getElementById('serviceBanner').addEventListener('change', function(e) {
@@ -806,15 +568,6 @@ document.getElementById('serviceBanner').addEventListener('change', function(e) 
 document.getElementById('serviceModal').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
 });
-// ── Live Tab Label Updates ───────────────────────────────────────────────────
-document.getElementById('basicName').addEventListener('input', function(e) {
-    document.getElementById('tabLabel-basic').innerText = e.target.value || 'Basic';
-});
-document.getElementById('standardName').addEventListener('input', function(e) {
-    document.getElementById('tabLabel-standard').innerText = e.target.value || 'Standard';
-});
-document.getElementById('premiumName').addEventListener('input', function(e) {
-    document.getElementById('tabLabel-premium').innerText = e.target.value || 'Premium';
-});
+
 </script>
 @endsection

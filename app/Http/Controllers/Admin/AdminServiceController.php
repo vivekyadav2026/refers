@@ -39,35 +39,25 @@ class AdminServiceController extends Controller
             'requirements_text'=> 'nullable|string',
             'commission_rate'  => 'nullable|numeric|min:0',
             'commission_type'  => 'nullable|in:fixed,percentage',
-            // Plan fields
-            'basic_name'          => 'nullable|string|max:100',
-            'basic_price'         => 'required|numeric|min:0',
-            'basic_description'   => 'nullable|string',
-            'basic_delivery'      => 'nullable|string|max:100',
-            'basic_revisions'     => 'nullable|string|max:50',
-            'basic_features'      => 'nullable|string',
-            'standard_name'       => 'nullable|string|max:100',
-            'standard_price'      => 'nullable|numeric|min:0',
-            'standard_description'=> 'nullable|string',
-            'standard_delivery'   => 'nullable|string|max:100',
-            'standard_revisions'  => 'nullable|string|max:50',
-            'standard_features'   => 'nullable|string',
-            'premium_name'        => 'nullable|string|max:100',
-            'premium_price'       => 'nullable|numeric|min:0',
-            'premium_description' => 'nullable|string',
-            'premium_delivery'    => 'nullable|string|max:100',
-            'premium_revisions'   => 'nullable|string|max:50',
-            'premium_features'    => 'nullable|string',
-            // Platform fields
+            // Dynamic Plan fields
+            'plans'               => 'nullable|array',
+            'plans.*.name'        => 'required|string|max:100',
+            'plans.*.description' => 'nullable|string',
+            'plans.*.delivery'    => 'nullable|string|max:100',
+            'plans.*.features'    => 'nullable|string',
+
+            // Dynamic Platform fields
             'enable_platforms'    => 'nullable|boolean',
-            'platform_names'      => 'nullable|array',
-            'platform_prices'     => 'nullable|array',
-            'platform_names.*'    => 'nullable|string',
-            'platform_prices.*'   => 'nullable|numeric|min:0',
+            'platforms'           => 'nullable|array',
+            'platforms.*.name'    => 'required|string|max:100',
+
+            // Pricing Matrix
+            'pricing_matrix'      => 'nullable|array',
         ]);
 
-        $plans = $this->buildPlans($request);
-        $platforms = $this->buildPlatforms($request);
+        $plans = $this->buildDynamicPlans($request);
+        $platforms = $this->buildDynamicPlatforms($request);
+        $pricingMatrix = $this->buildPricingMatrix($request, $platforms, $plans);
 
         $bannerPath = null;
         if ($request->hasFile('banner_image')) {
@@ -80,7 +70,7 @@ class AdminServiceController extends Controller
             'name'             => $validated['name'],
             'short_description'=> $validated['short_description'] ?? null,
             'description'      => $validated['description'] ?? null,
-            'min_price'        => $validated['basic_price'],
+            'min_price'        => $this->calculateMinPrice($pricingMatrix),
             'icon'             => $validated['icon'] ?? 'box',
             'banner_image'     => $bannerPath,
             'delivery_timeline'=> $validated['delivery_timeline'] ?? null,
@@ -90,10 +80,11 @@ class AdminServiceController extends Controller
             'is_popular'       => $request->has('is_popular'),
             'is_active'        => $request->has('is_active'),
             'requires_domain'  => $request->has('requires_domain'),
-            'enable_platforms' => $request->has('enable_platforms'),
+            'enable_platforms' => $request->has('enable_platforms') || !empty($platforms),
             'platforms'        => $platforms,
-            'features'         => $this->parseFeatures($request->input('basic_features', '')),
+            'features'         => [], // Features moved to plans
             'plans'            => $plans,
+            'pricing_matrix'   => $pricingMatrix,
         ]);
 
         return redirect()->back()->with('success', 'Service created successfully.');
@@ -112,35 +103,25 @@ class AdminServiceController extends Controller
             'requirements_text'=> 'nullable|string',
             'commission_rate'  => 'nullable|numeric|min:0',
             'commission_type'  => 'nullable|in:fixed,percentage',
-            // Plan fields
-            'basic_name'          => 'nullable|string|max:100',
-            'basic_price'         => 'required|numeric|min:0',
-            'basic_description'   => 'nullable|string',
-            'basic_delivery'      => 'nullable|string|max:100',
-            'basic_revisions'     => 'nullable|string|max:50',
-            'basic_features'      => 'nullable|string',
-            'standard_name'       => 'nullable|string|max:100',
-            'standard_price'      => 'nullable|numeric|min:0',
-            'standard_description'=> 'nullable|string',
-            'standard_delivery'   => 'nullable|string|max:100',
-            'standard_revisions'  => 'nullable|string|max:50',
-            'standard_features'   => 'nullable|string',
-            'premium_name'        => 'nullable|string|max:100',
-            'premium_price'       => 'nullable|numeric|min:0',
-            'premium_description' => 'nullable|string',
-            'premium_delivery'    => 'nullable|string|max:100',
-            'premium_revisions'   => 'nullable|string|max:50',
-            'premium_features'    => 'nullable|string',
-            // Platform fields
+            // Dynamic Plan fields
+            'plans'               => 'nullable|array',
+            'plans.*.name'        => 'required|string|max:100',
+            'plans.*.description' => 'nullable|string',
+            'plans.*.delivery'    => 'nullable|string|max:100',
+            'plans.*.features'    => 'nullable|string',
+
+            // Dynamic Platform fields
             'enable_platforms'    => 'nullable|boolean',
-            'platform_names'      => 'nullable|array',
-            'platform_prices'     => 'nullable|array',
-            'platform_names.*'    => 'nullable|string',
-            'platform_prices.*'   => 'nullable|numeric|min:0',
+            'platforms'           => 'nullable|array',
+            'platforms.*.name'    => 'required|string|max:100',
+
+            // Pricing Matrix
+            'pricing_matrix'      => 'nullable|array',
         ]);
 
-        $plans = $this->buildPlans($request);
-        $platforms = $this->buildPlatforms($request);
+        $plans = $this->buildDynamicPlans($request);
+        $platforms = $this->buildDynamicPlatforms($request);
+        $pricingMatrix = $this->buildPricingMatrix($request, $platforms, $plans);
 
         $bannerPath = $service->banner_image;
         if ($request->hasFile('banner_image')) {
@@ -156,7 +137,7 @@ class AdminServiceController extends Controller
             'name'             => $validated['name'],
             'short_description'=> $validated['short_description'] ?? null,
             'description'      => $validated['description'] ?? null,
-            'min_price'        => $validated['basic_price'],
+            'min_price'        => $this->calculateMinPrice($pricingMatrix),
             'icon'             => $validated['icon'] ?? 'box',
             'banner_image'     => $bannerPath,
             'delivery_timeline'=> $validated['delivery_timeline'] ?? null,
@@ -166,66 +147,82 @@ class AdminServiceController extends Controller
             'is_popular'       => $request->has('is_popular'),
             'is_active'        => $request->has('is_active'),
             'requires_domain'  => $request->has('requires_domain'),
-            'enable_platforms' => $request->has('enable_platforms'),
+            'enable_platforms' => $request->has('enable_platforms') || !empty($platforms),
             'platforms'        => $platforms,
-            'features'         => $this->parseFeatures($request->input('basic_features', '')),
+            'features'         => [],
             'plans'            => $plans,
+            'pricing_matrix'   => $pricingMatrix,
         ]);
 
         return redirect()->back()->with('success', 'Service updated successfully.');
     }
 
-    /**
-     * Build the plans array from request inputs.
-     */
-    private function buildPlans(Request $request): array
+    private function buildDynamicPlans(Request $request): array
     {
-        return [
-            'basic' => [
-                'name'        => $request->input('basic_name', 'Basic'),
-                'price'       => (float) $request->input('basic_price', 0),
-                'description' => $request->input('basic_description', ''),
-                'delivery'    => $request->input('basic_delivery', ''),
-                'features'    => $this->parseFeatures($request->input('basic_features', '')),
-                'active'      => $request->has('basic_active'),
-            ],
-            'standard' => [
-                'name'        => $request->input('standard_name', 'Standard'),
-                'price'       => $request->filled('standard_price') ? (float) $request->input('standard_price') : 0,
-                'description' => $request->input('standard_description', ''),
-                'delivery'    => $request->input('standard_delivery', ''),
-                'features'    => $this->parseFeatures($request->input('standard_features', '')),
-                'active'      => $request->has('standard_active'),
-            ],
-            'premium' => [
-                'name'        => $request->input('premium_name', 'Premium'),
-                'price'       => $request->filled('premium_price') ? (float) $request->input('premium_price') : 0,
-                'description' => $request->input('premium_description', ''),
-                'delivery'    => $request->input('premium_delivery', ''),
-                'features'    => $this->parseFeatures($request->input('premium_features', '')),
-                'active'      => $request->has('premium_active'),
-            ],
-        ];
+        $plans = [];
+        $inputPlans = $request->input('plans', []);
+        
+        foreach ($inputPlans as $planData) {
+            if (!empty($planData['name'])) {
+                $plans[] = [
+                    'name'        => $planData['name'],
+                    'description' => $planData['description'] ?? '',
+                    'delivery'    => $planData['delivery'] ?? '',
+                    'features'    => $this->parseFeatures($planData['features'] ?? ''),
+                ];
+            }
+        }
+        return $plans;
     }
 
-    /**
-     * Build the platforms array from request inputs.
-     */
-    private function buildPlatforms(Request $request): array
+    private function buildDynamicPlatforms(Request $request): array
     {
         $platforms = [];
-        $names = $request->input('platform_names', []);
-        $prices = $request->input('platform_prices', []);
-
-        foreach ($names as $index => $name) {
-            if (!empty($name)) {
+        $inputPlatforms = $request->input('platforms', []);
+        
+        foreach ($inputPlatforms as $platformData) {
+            if (!empty($platformData['name'])) {
                 $platforms[] = [
-                    'name' => $name,
-                    'price' => isset($prices[$index]) ? (float) $prices[$index] : 0,
+                    'name' => $platformData['name'],
                 ];
             }
         }
         return $platforms;
+    }
+
+    private function buildPricingMatrix(Request $request, array $platforms, array $plans): array
+    {
+        $matrix = [];
+        $inputMatrix = $request->input('pricing_matrix', []);
+
+        foreach ($platforms as $platIndex => $platform) {
+            $platformName = $platform['name'];
+            $matrix[$platformName] = [];
+            
+            foreach ($plans as $planIndex => $plan) {
+                $planName = $plan['name'];
+                $price = isset($inputMatrix[$platIndex][$planIndex]) ? (float) $inputMatrix[$platIndex][$planIndex] : 0;
+                $matrix[$platformName][$planName] = $price;
+            }
+        }
+        return $matrix;
+    }
+
+    private function calculateMinPrice(array $pricingMatrix): float
+    {
+        $minPrice = 0;
+        $prices = [];
+        foreach ($pricingMatrix as $platformName => $planPrices) {
+            foreach ($planPrices as $planName => $price) {
+                if ($price > 0) {
+                    $prices[] = $price;
+                }
+            }
+        }
+        if (!empty($prices)) {
+            $minPrice = min($prices);
+        }
+        return $minPrice;
     }
 
     /**

@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Services Management - SKSolutions Admin</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Styles / Scripts -->
+            <link rel="preload" as="style" href="http://refers.test/build/assets/app-CzgIlJBj.css" /><link rel="modulepreload" as="script" href="http://refers.test/build/assets/app-taXXq4rK.js" /><link rel="stylesheet" href="http://refers.test/build/assets/app-CzgIlJBj.css" /><script type="module" src="http://refers.test/build/assets/app-taXXq4rK.js"></script>        
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Page-specific styles -->
+        <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        /* ── GLOBAL PREMIUM STYLING & ANIMATIONS ───────────────── */
+        @keyframes gradient-shift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-gradient {
+            background: linear-gradient(270deg, #7C3AED, #A855F7, #EC4899, #7C3AED);
+            background-size: 400% 400%;
+            animation: gradient-shift 4s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50%      { transform: translateY(-16px) scale(1.02); }
+        }
+        @keyframes float-slow2 {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50%      { transform: translateY(12px) scale(0.98); }
+        }
+        .blob1 { animation: float-slow 8s ease-in-out infinite; }
+        .blob2 { animation: float-slow2 10s ease-in-out infinite; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* ── GLOBAL RESPONSIVE TABLE FIX ────────────────────────── */
+        /* Any table inside a .table-responsive wrapper scrolls on mobile */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Auto-wrap ALL tables inside cards */
+        .bg-white table, .bg-white .overflow-x-auto {
+            min-width: 0;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        /* Prevent table cell overflow on mobile */
+        @media (max-width: 640px) {
+            td, th {
+                white-space: nowrap;
+            }
+        }
+
+        /* ── DASHBOARD CONTENT PADDING ───────────────────────────── */
+        @media (max-width: 640px) {
+            main > div {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+
+
+        /* ── FORMS: Full width inputs on mobile ─────────────────── */
+        @media (max-width: 640px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="number"],
+            input[type="url"],
+            input[type="password"],
+            input[type="search"],
+            select,
+            textarea {
+                width: 100%;
+                font-size: 16px; /* prevent iOS zoom */
+            }
+        }
+
+        /* ── STAT CARDS: Label truncation ────────────────────────── */
+        .stat-label-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── ACTION BUTTONS: Wrap on mobile ─────────────────────── */
+        @media (max-width: 640px) {
+            .page-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            .page-actions a,
+            .page-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ── MOBILE BOTTOM NAV BAR (dashboard users) ────────────── */
+        .mobile-bottom-nav {
+            display: none;
+        }
+        @media (max-width: 1024px) {
+            .mobile-bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                border-top: 1px solid #e2e8f0;
+                z-index: 40;
+                padding: 6px 0 env(safe-area-inset-bottom, 0);
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            }
+            /* Add bottom padding to main content so it doesn't hide behind nav */
+            .min-h-full main {
+                padding-bottom: 5rem !important;
+            }
+        }
+        @media (min-width: 1024px) {
+            .mobile-bottom-nav {
+                display: none !important;
+            }
+        }
+
+        /* ── SIDEBAR SCROLLBAR HIDE ──────────────────────────────── */
+        .lg\:overflow-y-auto::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lg\:overflow-y-auto::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .lg\:overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        /* ── HIDE SCROLLBAR FOR HORIZONTAL SCROLL ───────────────── */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── NOTIFICATION DROPDOWN: Full width on mobile ─────────── */
+        @media (max-width: 480px) {
+            [x-data*="notifOpen"] > div[x-show] {
+                position: fixed !important;
+                left: 1rem !important;
+                right: 1rem !important;
+                width: auto !important;
+            }
+        }
+
+        /* ── MODAL FIX: Full screen on mobile ────────────────────── */
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 1rem;
+                max-height: calc(100vh - 2rem);
+                overflow-y: auto;
+            }
+        }
+
+        /* ── FORCE TEXT WRAP IN TIGHT CELLS ─────────────────────── */
+        .allow-wrap { white-space: normal !important; }
+
+        /* Ensure all inputs placeholders are not bold */
+        ::placeholder {
+            font-weight: 400 !important;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white" x-data="{ sidebarOpen: false }">
+
+            <!-- Dashboard Layout -->
+        <div class="min-h-full">
+            <!-- Off-canvas menu for mobile -->
+            <div x-show="sidebarOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true" style="display: none;">
+                <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
+
+                <div class="fixed inset-0 flex">
+                    <div x-show="sidebarOpen" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="relative mr-16 flex w-full max-w-xs flex-1" @click.away="sidebarOpen = false">
+                        <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+                            <button type="button" class="-m-2.5 p-2.5" @click="sidebarOpen = false">
+                                <span class="sr-only">Close sidebar</span>
+                                <i data-lucide="x" class="h-6 w-6 text-white"></i>
+                            </button>
+                        </div>
+                        <!-- Mobile Sidebar -->
+                        <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 shadow-2xl">
+                            <div class="flex h-20 shrink-0 items-center gap-3.5 border-b border-slate-100/80 -mx-6 px-8 mb-6">
+    <img src="http://refers.test/sksolutions_logo.jpg" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+</div>
+
+<nav class="flex flex-1 flex-col">
+    <ul role="list" class="flex flex-1 flex-col gap-y-1.5">
+
+        
+                
+        <li class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-3 py-2 mt-2 flex items-center justify-between">
+            <span>Partner Network</span>
+                            <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse"><i data-lucide="lock" class="w-3 h-3"></i> LOCKED</span>
+                    </li>
+
+        
+        <li class="mb-2">
+            <a href="http://refers.test/partner/apply" class="group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 bg-indigo-50/80 border border-indigo-100/80 text-indigo-700 hover:bg-indigo-100">
+                <div class="flex items-center gap-x-3.5">
+                    <i data-lucide="shield-check" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-indigo-600"></i>
+                    <span>Onboarding Status</span>
+                </div>
+                                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/dashboard" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Dashboard Overview</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/services" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="grid-3x3" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Services Catalog</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/leads" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="target" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Lead Management</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/referrals" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="link" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Referrals</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/earnings" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="coins" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Earnings</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/withdrawals" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="wallet" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Wallet &amp; Payouts</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/tickets" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="headphones" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Support Desk</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/training" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="graduation-cap" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Training Center</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/marketing" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="image" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Marketing Assets</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/kyc" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="shield-check" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>KYC &amp; Agreements</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/profile" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="user" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Account Settings</span>
+            </a>
+        </li>
+        
+        
+                
+        
+        <li class="mt-auto pt-6 border-t border-slate-100 mb-2">
+            <div class="flex items-center gap-3.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-100 mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-md">
+                        VT
+                    </div>
+                                <div class="min-w-0 flex-1">
+                    <div class="text-sm font-bold text-slate-900 truncate">User</div>
+                    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5">customer</div>
+                </div>
+            </div>
+            <form method="POST" action="http://refers.test/logout">
+                <input type="hidden" name="_token" value="" autocomplete="off">                <button type="submit" class="w-full group flex items-center justify-center gap-x-3 rounded-2xl py-3 px-4 text-sm font-bold text-red-600 bg-red-50/60 hover:bg-red-500 hover:text-white transition-all duration-200 shadow-sm">
+                    <i data-lucide="log-out" class="h-4 w-4 shrink-0 transition-transform group-hover:scale-110"></i>
+                    <span>Secure Sign Out</span>
+                </button>
+            </form>
+        </li>
+    </ul>
+</nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Static sidebar for desktop -->
+            <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+                <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-slate-200 bg-white px-6 pb-4 shadow-sm">
+                    <div class="flex h-20 shrink-0 items-center gap-3.5 border-b border-slate-100/80 -mx-6 px-8 mb-6">
+    <img src="http://refers.test/sksolutions_logo.jpg" alt="SK Solutions Logo" class="h-12 sm:h-14 w-auto rounded-xl object-contain shadow-sm border border-slate-100 bg-white">
+</div>
+
+<nav class="flex flex-1 flex-col">
+    <ul role="list" class="flex flex-1 flex-col gap-y-1.5">
+
+        
+                
+        <li class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-3 py-2 mt-2 flex items-center justify-between">
+            <span>Partner Network</span>
+                            <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse"><i data-lucide="lock" class="w-3 h-3"></i> LOCKED</span>
+                    </li>
+
+        
+        <li class="mb-2">
+            <a href="http://refers.test/partner/apply" class="group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 bg-indigo-50/80 border border-indigo-100/80 text-indigo-700 hover:bg-indigo-100">
+                <div class="flex items-center gap-x-3.5">
+                    <i data-lucide="shield-check" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-indigo-600"></i>
+                    <span>Onboarding Status</span>
+                </div>
+                                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/dashboard" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Dashboard Overview</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/services" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="grid-3x3" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Services Catalog</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/leads" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="target" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Lead Management</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/referrals" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="link" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Referrals</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/earnings" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="coins" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Earnings</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/withdrawals" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="wallet" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Wallet &amp; Payouts</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/tickets" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="headphones" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Support Desk</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/training" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="graduation-cap" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Training Center</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/marketing" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="image" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Marketing Assets</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/kyc" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="shield-check" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>KYC &amp; Agreements</span>
+            </a>
+        </li>
+                <li>
+            <a href="http://refers.test/partner/profile" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 text-slate-600 hover:bg-blue-50/60 hover:text-blue-700">
+                <i data-lucide="user" class="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110 text-slate-400 group-hover:text-blue-600"></i>
+                <span>Account Settings</span>
+            </a>
+        </li>
+        
+        
+                
+        
+        <li class="mt-auto pt-6 border-t border-slate-100 mb-2">
+            <div class="flex items-center gap-3.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-100 mb-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-md">
+                        VT
+                    </div>
+                                <div class="min-w-0 flex-1">
+                    <div class="text-sm font-bold text-slate-900 truncate">User</div>
+                    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5">customer</div>
+                </div>
+            </div>
+            <form method="POST" action="http://refers.test/logout">
+                <input type="hidden" name="_token" value="" autocomplete="off">                <button type="submit" class="w-full group flex items-center justify-center gap-x-3 rounded-2xl py-3 px-4 text-sm font-bold text-red-600 bg-red-50/60 hover:bg-red-500 hover:text-white transition-all duration-200 shadow-sm">
+                    <i data-lucide="log-out" class="h-4 w-4 shrink-0 transition-transform group-hover:scale-110"></i>
+                    <span>Secure Sign Out</span>
+                </button>
+            </form>
+        </li>
+    </ul>
+</nav>
+
+                </div>
+            </div>
+
+            <div class="lg:pl-72 flex flex-col min-h-screen">
+                <!-- Dashboard Navbar -->
+                <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-slate-200 bg-white/80 backdrop-blur-md px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <button type="button" class="-m-2.5 p-2.5 text-slate-700 lg:hidden" @click="sidebarOpen = true">
+        <i data-lucide="menu" class="h-6 w-6"></i>
+    </button>
+    <div class="h-6 w-px bg-slate-200 lg:hidden"></div>
+    <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+                <form class="relative flex flex-1" action="http://refers.test/services" method="GET">
+            <i data-lucide="search" class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-slate-400"></i>
+            <input value="" class="block h-full w-full border-0 py-0 pl-8 pr-0 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm bg-transparent outline-none" placeholder="Search services..." type="search" name="search">
+        </form>
+        <div class="flex items-center gap-x-4 lg:gap-x-6">
+            
+            
+                        <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-slate-200"></div>
+            <div class="relative" x-data="{ open: false }">
+                <button type="button" class="-m-1.5 flex items-center p-1.5 rounded-full hover:bg-slate-50 transition-colors" @click="open = !open" @click.away="open = false">
+                                            <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white">
+                            VT
+                        </div>
+                                        <span class="hidden lg:flex lg:items-center">
+                        <span class="ml-4 text-sm font-semibold leading-6 text-slate-900">Partner</span>
+                        <i data-lucide="chevron-down" class="ml-2 h-4 w-4 text-slate-400"></i>
+                    </span>
+                </button>
+                <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="transform opacity-0 scale-95 translate-y-2" x-transition:enter-end="transform opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="transform opacity-100 scale-100 translate-y-0" x-transition:leave-end="transform opacity-0 scale-95 translate-y-2" class="absolute right-0 z-50 mt-3 w-56 origin-top-right rounded-3xl bg-white p-2 shadow-2xl border border-slate-100" style="display:none">
+                    <div class="px-3 py-2 border-b border-slate-100 mb-1">
+                        <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Signed in as</div>
+                        <div class="text-sm font-bold text-slate-900 truncate"></div>
+                    </div>
+                                        <div class="border-t border-slate-100 my-1"></div>
+                    <form method="POST" action="http://refers.test/logout">
+                        <input type="hidden" name="_token" value="" autocomplete="off">                        <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold text-red-600 rounded-xl hover:bg-red-50 transition-colors">
+                            <i data-lucide="log-out" class="w-4 h-4 text-red-400"></i> Sign out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                <!-- Main Content -->
+                <main class="py-6 sm:py-10 flex-1">
+                    <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                        
+
+<!-- Header -->
+<div class="sm:flex sm:justify-between sm:items-center mb-8">
+    <div class="mb-4 sm:mb-0">
+        <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Services Management</h1>
+        <p class="text-slate-500 mt-1">Configure services with Basic, Standard & Premium plans.</p>
+    </div>
+    <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-3">
+        <button onclick="openModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-2 text-sm font-medium shadow-sm transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Add New Service
+        </button>
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+    <form method="GET" action="http://refers.test/admin/services" id="filter-form">
+        <div class="p-4 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Active Services Directory</h2>
+            
+            <div class="flex gap-2 w-full sm:w-auto">
+                <div class="relative w-full sm:w-64">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </div>
+                    <input type="text" name="search" value=""
+                        class="bg-white border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2"
+                        placeholder="Search services...">
+                </div>
+                <button type="submit" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Search</button>
+                            </div>
+        </div>
+    </form>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Service Name & Description</th>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-center">Plans (Basic→Premium)</th>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Category</th>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <img src="http://refers.test/storage/services/6a129094a01cd.jpg" alt="Custom E-commerce Website Development" class="w-full h-full object-cover">
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Custom E-commerce Website Development</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="inline-flex items-center justify-center px-4 py-2 rounded-full border-2 border-emerald-100 bg-emerald-50 text-emerald-700 font-bold text-sm">
+                                ₹0
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Web Development
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/1/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:1,&quot;name&quot;:&quot;Custom E-commerce Website Development&quot;,&quot;category&quot;:&quot;Web Development&quot;,&quot;short_description&quot;:null,&quot;description&quot;:null,&quot;icon&quot;:&quot;shopping-cart&quot;,&quot;banner_image&quot;:&quot;services\/6a129094a01cd.jpg&quot;,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:true,&quot;enable_platforms&quot;:true,&quot;platforms&quot;:[{&quot;name&quot;:&quot;WordPress&quot;},{&quot;name&quot;:&quot;Shopify&quot;},{&quot;name&quot;:&quot;Custom PHP&quot;}],&quot;plans&quot;:[{&quot;name&quot;:&quot;Basic&quot;,&quot;description&quot;:&quot;Perfect for small business&quot;,&quot;delivery&quot;:&quot;5 Days&quot;,&quot;features&quot;:&quot;Feature 1\nFeature 2&quot;},{&quot;name&quot;:&quot;Standard&quot;,&quot;description&quot;:&quot;Ideal for growing businesses&quot;,&quot;delivery&quot;:&quot;10 Days&quot;,&quot;features&quot;:&quot;Feature 1\nFeature 2\nFeature 3&quot;},{&quot;name&quot;:&quot;Premium&quot;,&quot;description&quot;:&quot;Enterprise level solution&quot;,&quot;delivery&quot;:&quot;15 Days&quot;,&quot;features&quot;:&quot;Feature 1\nFeature 2\nFeature 3\nFeature 4&quot;}],&quot;pricing_matrix&quot;:{&quot;WordPress&quot;:{&quot;Basic&quot;:15000,&quot;Standard&quot;:25000,&quot;Premium&quot;:40000},&quot;Shopify&quot;:{&quot;Basic&quot;:20000,&quot;Standard&quot;:35000,&quot;Premium&quot;:50000},&quot;Custom PHP&quot;:{&quot;Basic&quot;:30000,&quot;Standard&quot;:50000,&quot;Premium&quot;:80000}},&quot;delivery_timeline&quot;:&quot;14 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;15.02&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Basic&quot;,&quot;basic_price&quot;:&quot;0.00&quot;,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Standard&quot;,&quot;standard_price&quot;:&quot;&quot;,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Premium&quot;,&quot;premium_price&quot;:&quot;&quot;,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/1"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <img src="http://refers.test/storage/services/6a1290dcb85f9.jpg" alt="Premium Mobile App Development" class="w-full h-full object-cover">
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Premium Mobile App Development</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">Stunning cross-platform iOS &amp; Android mobile applications built using Flutter.</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Basic</span>
+                                    ₹45,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Standard</span>
+                                    ₹333
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Premium</span>
+                                    ₹333
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            App Development
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                        <form method="POST" action="http://refers.test/admin/services/2/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:2,&quot;name&quot;:&quot;Premium Mobile App Development&quot;,&quot;category&quot;:&quot;App Development&quot;,&quot;short_description&quot;:&quot;Stunning cross-platform iOS &amp; Android mobile applications built using Flutter.&quot;,&quot;description&quot;:&quot;Get a state-of-the-art mobile app for iOS and Android platforms.\r\n\r\nWe design and develop fast, secure, and beautiful applications with features like real-time push notifications, custom user profiles, offline support, maps integration, and analytics tracking.&quot;,&quot;icon&quot;:&quot;smartphone&quot;,&quot;banner_image&quot;:&quot;services\/6a1290dcb85f9.jpg&quot;,&quot;is_popular&quot;:false,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;price&quot;:45000,&quot;description&quot;:&quot;perfect for bussiness&quot;,&quot;delivery&quot;:&quot;2&quot;,&quot;revisions&quot;:&quot;2&quot;,&quot;features&quot;:[&quot;Cross-platform (Android &amp; iOS)&quot;,&quot;Push Notifications Integration&quot;,&quot;User Authentication &amp; Social Login&quot;,&quot;API \/ Database Integration&quot;,&quot;App Store &amp; Play Store Publishing&quot;,&quot;2 Months Tech Support&quot;]},&quot;standard&quot;:{&quot;price&quot;:333,&quot;description&quot;:&quot;perfect for bussiness&quot;,&quot;delivery&quot;:&quot;3&quot;,&quot;revisions&quot;:&quot;2&quot;,&quot;features&quot;:[&quot;this is me&quot;]},&quot;premium&quot;:{&quot;price&quot;:333,&quot;description&quot;:&quot;perfect for bussiness&quot;,&quot;delivery&quot;:&quot;3&quot;,&quot;revisions&quot;:&quot;4&quot;,&quot;features&quot;:[&quot;this is me&quot;]}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;21 Days&quot;,&quot;requirements_text&quot;:&quot;1. App logo and splash screen assets.\r\n2. Feature specification document.\r\n3. Developer account access (Google\/Apple).&quot;,&quot;commission_rate&quot;:&quot;10.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Basic&quot;,&quot;basic_price&quot;:45000,&quot;basic_description&quot;:&quot;perfect for bussiness&quot;,&quot;basic_delivery&quot;:&quot;2&quot;,&quot;basic_revisions&quot;:&quot;2&quot;,&quot;basic_features&quot;:&quot;Cross-platform (Android &amp; iOS)\nPush Notifications Integration\nUser Authentication &amp; Social Login\nAPI \/ Database Integration\nApp Store &amp; Play Store Publishing\n2 Months Tech Support&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Standard&quot;,&quot;standard_price&quot;:333,&quot;standard_description&quot;:&quot;perfect for bussiness&quot;,&quot;standard_delivery&quot;:&quot;3&quot;,&quot;standard_revisions&quot;:&quot;2&quot;,&quot;standard_features&quot;:&quot;this is me&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Premium&quot;,&quot;premium_price&quot;:333,&quot;premium_description&quot;:&quot;perfect for bussiness&quot;,&quot;premium_delivery&quot;:&quot;3&quot;,&quot;premium_revisions&quot;:&quot;4&quot;,&quot;premium_features&quot;:&quot;this is me&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/2"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <img src="http://refers.test/storage/services/6a128f214c70d.jpg" alt="Advanced SEO &amp; Google Search Ranking" class="w-full h-full object-cover">
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Advanced SEO &amp; Google Search Ranking</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">Dominate Google search results with our technical SEO, keyword optimization, and...</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">one time setup</span>
+                                    ₹18,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Standard</span>
+                                    ₹3
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Premium</span>
+                                    ₹33
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Voiceover &amp; Audio Production
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/3/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:3,&quot;name&quot;:&quot;Advanced SEO &amp; Google Search Ranking&quot;,&quot;category&quot;:&quot;Voiceover &amp; Audio Production&quot;,&quot;short_description&quot;:&quot;Dominate Google search results with our technical SEO, keyword optimization, and high-DA backlink building.&quot;,&quot;description&quot;:&quot;Rank your business at the top of Google. We handle on-page optimization, technical site audits, schema markup, and premium authoritative link building to drive organic traffic.&quot;,&quot;icon&quot;:&quot;trending-up&quot;,&quot;banner_image&quot;:&quot;services\/6a128f214c70d.jpg&quot;,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;name&quot;:&quot;one time setup&quot;,&quot;price&quot;:18000,&quot;description&quot;:&quot;3&quot;,&quot;delivery&quot;:&quot;3&quot;,&quot;features&quot;:[&quot;this is me23&quot;],&quot;active&quot;:false},&quot;standard&quot;:{&quot;name&quot;:&quot;Standard&quot;,&quot;price&quot;:3,&quot;description&quot;:&quot;3&quot;,&quot;delivery&quot;:&quot;3&quot;,&quot;features&quot;:[&quot;3&quot;],&quot;active&quot;:false},&quot;premium&quot;:{&quot;name&quot;:&quot;Premium&quot;,&quot;price&quot;:33,&quot;description&quot;:&quot;3&quot;,&quot;delivery&quot;:&quot;3&quot;,&quot;features&quot;:[&quot;23&quot;],&quot;active&quot;:true}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;30 Days&quot;,&quot;requirements_text&quot;:&quot;dasdasd&quot;,&quot;commission_rate&quot;:&quot;15.00&quot;,&quot;commission_type&quot;:&quot;fixed&quot;,&quot;basic_name&quot;:&quot;one time setup&quot;,&quot;basic_price&quot;:18000,&quot;basic_description&quot;:&quot;3&quot;,&quot;basic_delivery&quot;:&quot;3&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;this is me23&quot;,&quot;basic_active&quot;:false,&quot;standard_name&quot;:&quot;Standard&quot;,&quot;standard_price&quot;:3,&quot;standard_description&quot;:&quot;3&quot;,&quot;standard_delivery&quot;:&quot;3&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;3&quot;,&quot;standard_active&quot;:false,&quot;premium_name&quot;:&quot;Premium&quot;,&quot;premium_price&quot;:33,&quot;premium_description&quot;:&quot;3&quot;,&quot;premium_delivery&quot;:&quot;3&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;23&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/3"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <img src="http://refers.test/storage/services/6a1291218eb85.jpg" alt="Facebook &amp; Instagram Viral Ads Mastery" class="w-full h-full object-cover">
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Facebook &amp; Instagram Viral Ads Mastery</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">High-converting ad campaigns optimized for maximum ROAS, lead generation, and di...</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="inline-flex items-center justify-center px-4 py-2 rounded-full border-2 border-emerald-100 bg-emerald-50 text-emerald-700 font-bold text-sm">
+                                ₹20,000
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Digital Marketing
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/4/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:4,&quot;name&quot;:&quot;Facebook &amp; Instagram Viral Ads Mastery&quot;,&quot;category&quot;:&quot;Digital Marketing&quot;,&quot;short_description&quot;:&quot;High-converting ad campaigns optimized for maximum ROAS, lead generation, and direct sales.&quot;,&quot;description&quot;:&quot;Stop wasting ad spend. We create compelling ad creatives, set up precise audience targeting, custom retargeting funnels, and manage end-to-end Meta ad campaigns.&quot;,&quot;icon&quot;:&quot;target&quot;,&quot;banner_image&quot;:&quot;services\/6a1291218eb85.jpg&quot;,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;1000\/Day&quot;:{&quot;price&quot;:1000,&quot;description&quot;:&quot;Spend \u20b91000 per day&quot;,&quot;delivery&quot;:&quot;Daily&quot;,&quot;features&quot;:[&quot;Ad Setup (\u20b9500 Charge)&quot;,&quot;Audience Targeting&quot;],&quot;emoji&quot;:&quot;\ud83d\ude80&quot;},&quot;2000\/Day&quot;:{&quot;price&quot;:2000,&quot;description&quot;:&quot;Spend \u20b92000 per day&quot;,&quot;delivery&quot;:&quot;Daily&quot;,&quot;features&quot;:[&quot;Advanced Targeting&quot;,&quot;A\/B Testing&quot;],&quot;emoji&quot;:&quot;\ud83d\udd25&quot;},&quot;5000\/Day&quot;:{&quot;price&quot;:5000,&quot;description&quot;:&quot;Spend \u20b95000 per day&quot;,&quot;delivery&quot;:&quot;Daily&quot;,&quot;features&quot;:[&quot;Scaling Strategy&quot;,&quot;Retargeting&quot;],&quot;emoji&quot;:&quot;\u26a1&quot;},&quot;Custom&quot;:{&quot;price&quot;:0,&quot;description&quot;:&quot;Custom Leads Guarantee&quot;,&quot;delivery&quot;:&quot;Custom&quot;,&quot;features&quot;:[&quot;Custom Budget&quot;,&quot;Guaranteed Leads&quot;],&quot;emoji&quot;:&quot;\ud83e\udd1d&quot;}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;7 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;15.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Basic&quot;,&quot;basic_price&quot;:&quot;20000.00&quot;,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;tgs a d\ndasd\nasd\ndsadad&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Standard&quot;,&quot;standard_price&quot;:&quot;&quot;,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Premium&quot;,&quot;premium_price&quot;:&quot;&quot;,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/4"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <img src="http://refers.test/storage/services/6a128f8f7413e.jpg" alt="Cinematic Video Editing &amp; Viral Reels" class="w-full h-full object-cover">
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Cinematic Video Editing &amp; Viral Reels</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">Engaging short-form and long-form video editing with motion graphics, captions,...</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="inline-flex items-center justify-center px-4 py-2 rounded-full border-2 border-emerald-100 bg-emerald-50 text-emerald-700 font-bold text-sm">
+                                ₹15,000
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Video Editing
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/5/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:5,&quot;name&quot;:&quot;Cinematic Video Editing &amp; Viral Reels&quot;,&quot;category&quot;:&quot;Video Editing&quot;,&quot;short_description&quot;:&quot;Engaging short-form and long-form video editing with motion graphics, captions, and sound design.&quot;,&quot;description&quot;:&quot;Capture attention in the first 3 seconds. Perfect for YouTube, Instagram Reels, and TikTok. We include dynamic subtitles, sound FX, color grading, and smooth transitions.&quot;,&quot;icon&quot;:&quot;video&quot;,&quot;banner_image&quot;:&quot;services\/6a128f8f7413e.jpg&quot;,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;Normal (299)&quot;:{&quot;price&quot;:299,&quot;description&quot;:&quot;Normal editing for reels\/shorts&quot;,&quot;delivery&quot;:&quot;24-48 Hours&quot;,&quot;features&quot;:[&quot;Basic Cuts&quot;,&quot;Background Music&quot;],&quot;emoji&quot;:&quot;\u2702\ufe0f&quot;},&quot;Advance (399)&quot;:{&quot;price&quot;:399,&quot;description&quot;:&quot;Advanced editing for reels\/shorts&quot;,&quot;delivery&quot;:&quot;24-48 Hours&quot;,&quot;features&quot;:[&quot;Motion Graphics&quot;,&quot;Color Grading&quot;,&quot;Captions&quot;],&quot;emoji&quot;:&quot;\ud83c\udfac&quot;},&quot;Per Minute&quot;:{&quot;price&quot;:0,&quot;description&quot;:&quot;Custom pricing based on video length&quot;,&quot;delivery&quot;:&quot;Custom&quot;,&quot;features&quot;:[&quot;Long Form Video&quot;,&quot;Custom Requirements&quot;],&quot;emoji&quot;:&quot;\u23f1\ufe0f&quot;}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;5 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;20.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Basic&quot;,&quot;basic_price&quot;:&quot;15000.00&quot;,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;this is me&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Standard&quot;,&quot;standard_price&quot;:&quot;&quot;,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Premium&quot;,&quot;premium_price&quot;:&quot;&quot;,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/5"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <i data-lucide="globe" class="w-5 h-5 text-indigo-600"></i>
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Custom Website Development</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Basic</span>
+                                    ₹25,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Standard</span>
+                                    ₹45,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Premium</span>
+                                    ₹75,000
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Web Development
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/9/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:9,&quot;name&quot;:&quot;Custom Website Development&quot;,&quot;category&quot;:&quot;Web Development&quot;,&quot;short_description&quot;:null,&quot;description&quot;:&quot;Get a fully custom-built website with modern design, responsive layouts, fast page loads, and high security. Ideal for portfolio websites, blogs, corporate portals, and custom web applications.&quot;,&quot;icon&quot;:&quot;globe&quot;,&quot;banner_image&quot;:null,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;price&quot;:25000,&quot;description&quot;:null,&quot;delivery&quot;:&quot;15 Days&quot;,&quot;revisions&quot;:null,&quot;features&quot;:[&quot;5 Pages, Responsive Design&quot;]},&quot;standard&quot;:{&quot;price&quot;:45000,&quot;description&quot;:null,&quot;delivery&quot;:&quot;25 Days&quot;,&quot;revisions&quot;:null,&quot;features&quot;:[&quot;10 Pages, Contact Form, CMS&quot;]},&quot;premium&quot;:{&quot;price&quot;:75000,&quot;description&quot;:null,&quot;delivery&quot;:&quot;40 Days&quot;,&quot;revisions&quot;:null,&quot;features&quot;:[&quot;Unlimited Pages, Custom Admin Panel&quot;]}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;15 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;10.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Basic&quot;,&quot;basic_price&quot;:25000,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;15 Days&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;5 Pages, Responsive Design&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Standard&quot;,&quot;standard_price&quot;:45000,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;25 Days&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;10 Pages, Contact Form, CMS&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Premium&quot;,&quot;premium_price&quot;:75000,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;40 Days&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;Unlimited Pages, Custom Admin Panel&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/9"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <i data-lucide="palette" class="w-5 h-5 text-indigo-600"></i>
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Graphics &amp; Logo Designing Pack</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">Complete logo and branding guidelines package to build your company identity.</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Logo Basic</span>
+                                    ₹8,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Logo &amp; Business Card</span>
+                                    ₹15,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Full Branding Kit</span>
+                                    ₹25,000
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Graphics Design
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                        <form method="POST" action="http://refers.test/admin/services/10/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:10,&quot;name&quot;:&quot;Graphics &amp; Logo Designing Pack&quot;,&quot;category&quot;:&quot;Graphics Design&quot;,&quot;short_description&quot;:&quot;Complete logo and branding guidelines package to build your company identity.&quot;,&quot;description&quot;:&quot;Craft a unique identity for your brand. Includes logo designs, color schemes, brand typography guidelines, social media kit, and business card designs.&quot;,&quot;icon&quot;:&quot;palette&quot;,&quot;banner_image&quot;:null,&quot;is_popular&quot;:false,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;name&quot;:&quot;Logo Basic&quot;,&quot;price&quot;:8000,&quot;delivery&quot;:&quot;5 Days&quot;,&quot;features&quot;:&quot;3 Logo Concepts, Transparent PNG&quot;},&quot;standard&quot;:{&quot;name&quot;:&quot;Logo &amp; Business Card&quot;,&quot;price&quot;:15000,&quot;delivery&quot;:&quot;7 Days&quot;,&quot;features&quot;:&quot;Logo + Business Card designs, Source files&quot;},&quot;premium&quot;:{&quot;name&quot;:&quot;Full Branding Kit&quot;,&quot;price&quot;:25000,&quot;delivery&quot;:&quot;10 Days&quot;,&quot;features&quot;:&quot;Logo, Business Card, Social Media Kit, Brand Guidelines&quot;}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;5 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;20.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Logo Basic&quot;,&quot;basic_price&quot;:8000,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;5 Days&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;3 Logo Concepts, Transparent PNG&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Logo &amp; Business Card&quot;,&quot;standard_price&quot;:15000,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;7 Days&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;Logo + Business Card designs, Source files&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Full Branding Kit&quot;,&quot;premium_price&quot;:25000,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;10 Days&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;Logo, Business Card, Social Media Kit, Brand Guidelines&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/10"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <i data-lucide="share-2" class="w-5 h-5 text-indigo-600"></i>
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Social Media Growth Management</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">Grow your presence on Instagram, LinkedIn, and Facebook with daily high-quality...</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Starter Pack</span>
+                                    ₹12,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Growth Pack</span>
+                                    ₹22,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Ultimate Growth Pack</span>
+                                    ₹35,000
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Digital Marketing
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/11/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:11,&quot;name&quot;:&quot;Social Media Growth Management&quot;,&quot;category&quot;:&quot;Digital Marketing&quot;,&quot;short_description&quot;:&quot;Grow your presence on Instagram, LinkedIn, and Facebook with daily high-quality post creation.&quot;,&quot;description&quot;:&quot;Engage your target audience and grow organic followers. We handle content strategy, graphic creation, caption writing, hashtag research, and publishing across three major platforms.&quot;,&quot;icon&quot;:&quot;share-2&quot;,&quot;banner_image&quot;:null,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;name&quot;:&quot;Starter Pack&quot;,&quot;price&quot;:12000,&quot;delivery&quot;:&quot;30 Days&quot;,&quot;features&quot;:&quot;12 posts\/month, 1 platform&quot;},&quot;standard&quot;:{&quot;name&quot;:&quot;Growth Pack&quot;,&quot;price&quot;:22000,&quot;delivery&quot;:&quot;30 Days&quot;,&quot;features&quot;:&quot;20 posts\/month, 2 platforms, stories&quot;},&quot;premium&quot;:{&quot;name&quot;:&quot;Ultimate Growth Pack&quot;,&quot;price&quot;:35000,&quot;delivery&quot;:&quot;30 Days&quot;,&quot;features&quot;:&quot;30 posts\/month, 3 platforms, Reels setup&quot;}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;30 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;15.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Starter Pack&quot;,&quot;basic_price&quot;:12000,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;30 Days&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;12 posts\/month, 1 platform&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Growth Pack&quot;,&quot;standard_price&quot;:22000,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;30 Days&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;20 posts\/month, 2 platforms, stories&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Ultimate Growth Pack&quot;,&quot;premium_price&quot;:35000,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;30 Days&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;30 posts\/month, 3 platforms, Reels setup&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/11"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <i data-lucide="smartphone" class="w-5 h-5 text-indigo-600"></i>
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">Premium Mobile App Development</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">High-performance Android and iOS apps built with Flutter or React Native.</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Basic App</span>
+                                    ₹45,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Standard App</span>
+                                    ₹85,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Premium App</span>
+                                    ₹150,000
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            App Development
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                            <span class="inline-flex items-center w-max gap-1 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                    <i data-lucide="star" class="w-2.5 h-2.5"></i> Popular
+                                </span>
+                                                        <form method="POST" action="http://refers.test/admin/services/12/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:12,&quot;name&quot;:&quot;Premium Mobile App Development&quot;,&quot;category&quot;:&quot;App Development&quot;,&quot;short_description&quot;:&quot;High-performance Android and iOS apps built with Flutter or React Native.&quot;,&quot;description&quot;:&quot;Get a modern, fast, and feature-rich mobile application for both Android &amp; iOS platforms. Includes custom UI\/UX design, API integrations, push notifications, and Play Store\/App Store submission support.&quot;,&quot;icon&quot;:&quot;smartphone&quot;,&quot;banner_image&quot;:null,&quot;is_popular&quot;:true,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;name&quot;:&quot;Basic App&quot;,&quot;price&quot;:45000,&quot;delivery&quot;:&quot;25 Days&quot;,&quot;features&quot;:&quot;Up to 5 screens, standard features&quot;},&quot;standard&quot;:{&quot;name&quot;:&quot;Standard App&quot;,&quot;price&quot;:85000,&quot;delivery&quot;:&quot;40 Days&quot;,&quot;features&quot;:&quot;Up to 12 screens, Payment Integration, Push Notifications&quot;},&quot;premium&quot;:{&quot;name&quot;:&quot;Premium App&quot;,&quot;price&quot;:150000,&quot;delivery&quot;:&quot;60 Days&quot;,&quot;features&quot;:&quot;Custom features, Full backend API, Chat integration&quot;}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;25 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;12.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Basic App&quot;,&quot;basic_price&quot;:45000,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;25 Days&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;Up to 5 screens, standard features&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Standard App&quot;,&quot;standard_price&quot;:85000,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;40 Days&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;Up to 12 screens, Payment Integration, Push Notifications&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Premium App&quot;,&quot;premium_price&quot;:150000,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;60 Days&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;Custom features, Full backend API, Chat integration&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/12"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                                    <i data-lucide="file-text" class="w-5 h-5 text-indigo-600"></i>
+                                                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-base">SEO Content Writing &amp; Blogging</div>
+                                <div class="text-slate-500 text-xs mt-1 max-w-md">Engaging, SEO-optimized blog posts and articles to rank higher on search engines...</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                                                                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-bold border border-slate-200">
+                                    <span class="text-[8px] uppercase tracking-wider text-slate-400">Single Article (1000 words)</span>
+                                    ₹5,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-indigo-400">Blogging Pack (5 Articles)</span>
+                                    ₹22,000
+                                </span>
+                                <span class="text-slate-300">→</span>
+                                <span class="inline-flex flex-col items-center px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-100">
+                                    <span class="text-[8px] uppercase tracking-wider text-amber-400">Monthly Content Partner</span>
+                                    ₹40,000
+                                </span>
+                            </div>
+                                            </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            Content Writing
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5">
+                                                        <form method="POST" action="http://refers.test/admin/services/13/toggle">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <button type="submit" class="inline-flex items-center gap-1.5 py-0.5 px-2.5 rounded-full text-[10px] font-black uppercase transition-all bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200" title="Click to Toggle Status">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Published
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                                                         <button onclick="openModal({&quot;id&quot;:13,&quot;name&quot;:&quot;SEO Content Writing &amp; Blogging&quot;,&quot;category&quot;:&quot;Content Writing&quot;,&quot;short_description&quot;:&quot;Engaging, SEO-optimized blog posts and articles to rank higher on search engines.&quot;,&quot;description&quot;:&quot;Boost your website traffic and authority with high-quality, research-backed content. We provide SEO-friendly articles, keyword-targeted blog posts, and copy optimized to convert readers into customers.&quot;,&quot;icon&quot;:&quot;file-text&quot;,&quot;banner_image&quot;:null,&quot;is_popular&quot;:false,&quot;is_active&quot;:true,&quot;requires_domain&quot;:false,&quot;enable_platforms&quot;:false,&quot;platforms&quot;:[],&quot;plans&quot;:{&quot;basic&quot;:{&quot;name&quot;:&quot;Single Article (1000 words)&quot;,&quot;price&quot;:5000,&quot;delivery&quot;:&quot;3 Days&quot;,&quot;features&quot;:&quot;1000 words, SEO optimized, 1 revision&quot;},&quot;standard&quot;:{&quot;name&quot;:&quot;Blogging Pack (5 Articles)&quot;,&quot;price&quot;:22000,&quot;delivery&quot;:&quot;10 Days&quot;,&quot;features&quot;:&quot;5 articles of 1200 words each, Keyword research&quot;},&quot;premium&quot;:{&quot;name&quot;:&quot;Monthly Content Partner&quot;,&quot;price&quot;:40000,&quot;delivery&quot;:&quot;30 Days&quot;,&quot;features&quot;:&quot;10 articles, Keyword planning, Meta tags optimization&quot;}},&quot;pricing_matrix&quot;:[],&quot;delivery_timeline&quot;:&quot;3 Days&quot;,&quot;requirements_text&quot;:null,&quot;commission_rate&quot;:&quot;15.00&quot;,&quot;commission_type&quot;:&quot;percentage&quot;,&quot;basic_name&quot;:&quot;Single Article (1000 words)&quot;,&quot;basic_price&quot;:5000,&quot;basic_description&quot;:&quot;&quot;,&quot;basic_delivery&quot;:&quot;3 Days&quot;,&quot;basic_revisions&quot;:&quot;&quot;,&quot;basic_features&quot;:&quot;1000 words, SEO optimized, 1 revision&quot;,&quot;basic_active&quot;:true,&quot;standard_name&quot;:&quot;Blogging Pack (5 Articles)&quot;,&quot;standard_price&quot;:22000,&quot;standard_description&quot;:&quot;&quot;,&quot;standard_delivery&quot;:&quot;10 Days&quot;,&quot;standard_revisions&quot;:&quot;&quot;,&quot;standard_features&quot;:&quot;5 articles of 1200 words each, Keyword research&quot;,&quot;standard_active&quot;:true,&quot;premium_name&quot;:&quot;Monthly Content Partner&quot;,&quot;premium_price&quot;:40000,&quot;premium_description&quot;:&quot;&quot;,&quot;premium_delivery&quot;:&quot;30 Days&quot;,&quot;premium_revisions&quot;:&quot;&quot;,&quot;premium_features&quot;:&quot;10 articles, Keyword planning, Meta tags optimization&quot;,&quot;premium_active&quot;:true})" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit Service">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <form method="POST" action="http://refers.test/admin/services/13"
+                                  onsubmit="return confirm('Delete this service? This cannot be undone.')">
+                                <input type="hidden" name="_token" value="" autocomplete="off">                                <input type="hidden" name="_method" value="DELETE">                                <button type="submit" class="p-2 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    </div>
+
+
+<div id="serviceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 sm:p-6">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl" style="max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+        
+        <!-- Modal Header -->
+        <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                </div>
+                <h3 id="modalTitle" class="font-bold text-slate-900 text-lg">Add New Service</h3>
+            </div>
+            <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div class="p-5 sm:p-6" style="flex: 1 1 0%; overflow-y: auto; min-height: 0;">
+            <form id="serviceForm" method="POST" action="http://refers.test/admin/services" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="" autocomplete="off">                <div id="methodField"></div>
+                
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" id="serviceName" required
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category</label>
+                        <select name="category" id="serviceCategory"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="">Select a Category...</option>
+                                                    </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image (For Details Page)</label>
+                        <input type="file" name="banner_image" id="serviceBanner" accept="image/*"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        <span class="text-[10px] text-slate-400 font-bold block mt-1">Compressed auto under 200KB.</span>
+                        
+                        <!-- Dynamic Image Preview & Ratio Analysis -->
+                        <div id="bannerPreviewWrapper" class="mt-3 hidden bg-slate-50 border border-slate-200/80 rounded-xl p-3 shadow-inner">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Image Preview & Analysis</span>
+                            <div class="flex items-center gap-3">
+                                <div class="w-20 h-16 rounded-lg overflow-hidden border border-slate-200 bg-white flex items-center justify-center shrink-0">
+                                    <img id="bannerPreviewImg" src="" class="max-w-full max-h-full object-contain">
+                                </div>
+                                <div class="text-xs font-sans">
+                                    <div class="font-bold text-slate-800" id="bannerPreviewDimensions">Dimensions: -</div>
+                                    <div class="text-[11px] text-indigo-600 font-bold mt-0.5" id="bannerPreviewRatio">Aspect Ratio: -</div>
+                                    <div class="text-[10px] text-slate-500 mt-0.5" id="bannerPreviewSize">File Size: -</div>
+                                </div>
+                            </div>
+                            <div id="bannerPreviewFeedback" class="mt-2 text-[10px] font-bold hidden"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-sm font-semibold text-slate-700">Lucide Icon Name</label>
+                            <a href="https://lucide.dev/icons" target="_blank" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-bold transition-colors">View Icons Library &rarr;</a>
+                        </div>
+                        <input type="text" name="icon" id="serviceIcon" value="box"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                            placeholder="e.g. globe, smartphone, palette">
+                        <span class="text-[10px] text-slate-400 font-bold block mt-1.5">Suggested: globe (web), code, smartphone (app), palette (design), megaphone (marketing), search (seo), file-text (writing), briefcase, server, shield.</span>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Short Description</label>
+                    <textarea name="short_description" id="serviceDesc" rows="2"
+                        class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"></textarea>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Long Description (Detailed About Page)</label>
+                    <textarea name="description" id="serviceLongDesc" rows="3"
+                        class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                        placeholder="Detailed explanation of the project/service..."></textarea>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">What We Need From Client (Requirements Text)</label>
+                    <textarea name="requirements_text" id="serviceRequirements" rows="2"
+                        class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"
+                        placeholder="Key access details, design references, business assets needed..."></textarea>
+                </div>
+
+                
+                <div x-data="servicePricingManager()" @load-service-pricing.window="loadData($event.detail)" class="mb-8">
+    
+    
+    <div class="mb-5 border border-indigo-100 rounded-2xl overflow-hidden bg-white">
+        <div class="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+            <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                <i data-lucide="layout-grid" class="w-4 h-4 text-indigo-500"></i> Service Plans
+            </h4>
+            <button type="button" @click="addPlan()" class="px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5">
+                <i data-lucide="plus" class="w-3 h-3"></i> Add Plan
+            </button>
+        </div>
+        
+        <div class="p-5 space-y-6">
+            <template x-for="(plan, pIndex) in plans" :key="'plan_'+pIndex">
+                <div class="p-4 border border-slate-200 rounded-xl bg-slate-50/50 relative">
+                    <button type="button" @click="removePlan(pIndex)" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Plan Name</label>
+                            <input type="text" :name="`plans[${pIndex}][name]`" x-model="plan.name" @input="updateMatrix()"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Delivery Time</label>
+                            <input type="text" :name="`plans[${pIndex}][delivery]`" x-model="plan.delivery"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Description</label>
+                        <input type="text" :name="`plans[${pIndex}][description]`" x-model="plan.description"
+                            class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Features (One per line)</label>
+                        <textarea :name="`plans[${pIndex}][features]`" x-model="plan.features" rows="3"
+                            class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none resize-y"></textarea>
+                    </div>
+                </div>
+            </template>
+            <div x-show="plans.length === 0" class="text-center py-4 text-slate-500 text-sm">
+                No plans added. Add at least one plan.
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="mb-5 border border-indigo-100 rounded-2xl overflow-hidden bg-white">
+        <div class="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+            <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4 text-indigo-500"></i> Platforms (Optional)
+            </h4>
+            <button type="button" @click="addPlatform()" class="px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5">
+                <i data-lucide="plus" class="w-3 h-3"></i> Add Platform
+            </button>
+        </div>
+        
+        <div class="p-5 space-y-3">
+            <template x-for="(plat, platIndex) in platforms" :key="'plat_'+platIndex">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <input type="text" :name="`platforms[${platIndex}][name]`" x-model="plat.name" @input="updateMatrix()"
+                            placeholder="Platform Name (e.g. WordPress)" 
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <button type="button" @click="removePlatform(platIndex)" class="p-2 text-slate-400 hover:text-red-500 bg-slate-100 hover:bg-red-50 rounded-lg transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </template>
+            <div x-show="platforms.length === 0" class="text-center py-4 text-slate-500 text-sm">
+                No platforms added.
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="border border-indigo-100 rounded-2xl overflow-hidden bg-white" x-show="plans.length > 0 && platforms.length > 0">
+        <div class="p-4 bg-indigo-50/50 border-b border-indigo-100">
+            <h4 class="text-xs font-black text-indigo-800 uppercase tracking-widest flex items-center gap-2">
+                <i data-lucide="calculator" class="w-4 h-4 text-indigo-500"></i> Pricing Matrix (₹)
+            </h4>
+        </div>
+        
+        <div class="p-5 overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="p-3 bg-slate-50 border border-slate-200 font-bold text-slate-700 w-1/4">Platform \\ Plan</th>
+                        <template x-for="(plan, pIndex) in plans" :key="'th_'+pIndex">
+                            <th class="p-3 bg-slate-50 border border-slate-200 font-bold text-slate-700 text-center" x-text="plan.name || 'Unnamed Plan'"></th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="(plat, platIndex) in platforms" :key="'tr_'+platIndex">
+                        <tr>
+                            <td class="p-3 border border-slate-200 font-semibold text-slate-800 bg-slate-50/30" x-text="plat.name || 'Unnamed Platform'"></td>
+                            <template x-for="(plan, pIndex) in plans" :key="'td_'+platIndex+'_'+pIndex">
+                                <td class="p-2 border border-slate-200">
+                                    <input type="number" step="0.01" min="0"
+                                        :name="`pricing_matrix[${platIndex}][${pIndex}]`" 
+                                        x-model="matrixValues[`${platIndex}_${pIndex}`]"
+                                        class="w-full text-center border-0 bg-transparent focus:ring-2 focus:ring-indigo-500 rounded py-2 outline-none"
+                                        placeholder="0.00">
+                                </td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('servicePricingManager', () => ({
+        plans: [],
+        platforms: [],
+        matrixValues: {}, // Keyed by `${platIndex}_${pIndex}`
+
+        loadData(service) {
+            this.matrixValues = {};
+            if (service) {
+                // Load Plans
+                if (service.plans) {
+                    // Check if it's new dynamic array format or old assoc array
+                    let loadedPlans = Array.isArray(service.plans) ? service.plans : Object.values(service.plans);
+                    this.plans = loadedPlans.map(p => ({
+                        name: p.name || '',
+                        description: p.description || '',
+                        delivery: p.delivery || '',
+                        features: Array.isArray(p.features) ? p.features.join('\n') : (p.features || '')
+                    }));
+                } else {
+                    this.plans = [];
+                }
+
+                // Load Platforms
+                if (service.platforms) {
+                    this.platforms = (Array.isArray(service.platforms) ? service.platforms : Object.values(service.platforms)).map(p => ({
+                        name: p.name || ''
+                    }));
+                } else {
+                    this.platforms = [];
+                }
+
+                // Load Pricing Matrix
+                if (service.pricing_matrix) {
+                    this.platforms.forEach((plat, platIndex) => {
+                        this.plans.forEach((plan, pIndex) => {
+                            let price = 0;
+                            if (service.pricing_matrix[plat.name] && service.pricing_matrix[plat.name][plan.name] !== undefined) {
+                                price = service.pricing_matrix[plat.name][plan.name];
+                            }
+                            this.matrixValues[`${platIndex}_${pIndex}`] = price;
+                        });
+                    });
+                } else if (service.platforms && service.plans) {
+                    // Fallback to legacy pricing where platforms had an additional flat price and plans had a base price
+                    let legacyPlans = service.plans;
+                    this.platforms.forEach((plat, platIndex) => {
+                        this.plans.forEach((plan, pIndex) => {
+                            let planKey = Object.keys(legacyPlans).find(k => legacyPlans[k].name === plan.name);
+                            let basePrice = planKey && legacyPlans[planKey].price ? parseFloat(legacyPlans[planKey].price) : 0;
+                            let platPrice = plat.price !== undefined ? parseFloat(plat.price) : 0;
+                            this.matrixValues[`${platIndex}_${pIndex}`] = basePrice + platPrice;
+                        });
+                    });
+                }
+            } else {
+                // Defaults for new service
+                this.plans = [
+                    { name: 'Standard', description: '', delivery: '', features: '' }
+                ];
+                this.platforms = [];
+            }
+            this.updateMatrix();
+        },
+        
+        addPlan() {
+            this.plans.push({ name: 'New Plan', description: '', delivery: '', features: '' });
+            this.updateMatrix();
+            this.$nextTick(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); });
+        },
+        
+        removePlan(index) {
+            this.plans.splice(index, 1);
+            this.rebuildMatrixKeys();
+        },
+        
+        addPlatform() {
+            this.platforms.push({ name: 'New Platform' });
+            this.updateMatrix();
+            this.$nextTick(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); });
+        },
+        
+        removePlatform(index) {
+            this.platforms.splice(index, 1);
+            this.rebuildMatrixKeys();
+        },
+        
+        updateMatrix() {
+            // Just ensure keys exist
+            this.platforms.forEach((plat, platIndex) => {
+                this.plans.forEach((plan, pIndex) => {
+                    let key = `${platIndex}_${pIndex}`;
+                    if (this.matrixValues[key] === undefined) {
+                        this.matrixValues[key] = '';
+                    }
+                });
+            });
+        },
+        
+        rebuildMatrixKeys() {
+            // If rows/cols are removed, we might lose track of which index is which. 
+            // In a real app we'd use unique IDs, but array indexes are what we submit.
+            // For simplicity, we just clean up old keys that are out of bounds.
+            let newMatrix = {};
+            this.platforms.forEach((plat, platIndex) => {
+                this.plans.forEach((plan, pIndex) => {
+                    let key = `${platIndex}_${pIndex}`;
+                    newMatrix[key] = this.matrixValues[key] || '';
+                });
+            });
+            this.matrixValues = newMatrix;
+        }
+    }));
+});
+</script>
+
+                
+                <div class="mt-8 mb-4">
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="settings-2" class="w-4 h-4 text-indigo-500"></i> Settings & Commission
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Delivery Timeline</label>
+                            <input type="text" name="delivery_timeline" id="serviceTimeline"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                placeholder="e.g. 3-4 Weeks">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Rate</label>
+                            <input type="number" name="commission_rate" id="serviceCommissionRate" min="0" step="0.01"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                placeholder="e.g. 10 or 500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Commission Type</label>
+                            <select name="commission_type" id="serviceCommissionType"
+                                class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm">
+                                <option value="percentage">Percentage (%)</option>
+                                <option value="fixed">Fixed (₹)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 mb-2">
+                    <div class="flex items-center gap-6">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">🔥 Popular Service</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" name="is_active" id="serviceActive" value="1" class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all"></div>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-emerald-700 transition-colors">✅ Published</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" name="requires_domain" id="serviceRequiresDomain" value="1" class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">🌐 Requires Domain</span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-5 sm:p-6 border-t border-slate-100 shrink-0 bg-white rounded-b-2xl flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+            <button type="button" onclick="closeModal()"
+                class="px-6 py-2.5 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center gap-2">
+                <i data-lucide="x" class="w-4 h-4"></i> Cancel
+            </button>
+            <button type="submit" form="serviceForm" id="submitBtn"
+                class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-200 flex items-center gap-2 transform hover:-translate-y-0.5">
+                <i data-lucide="save" class="w-4 h-4"></i> Save Service
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ── Plan Tab Switcher ──────────────────────────────────────────────────────────
+function switchPlanTab(plan) {
+    const tabs   = ['basic', 'standard', 'premium'];
+    tabs.forEach(t => {
+        const tab   = document.getElementById('tab-' + t);
+        const panel = document.getElementById('panel-' + t);
+        if (t === plan) {
+            tab.className = 'plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-indigo-700 bg-white border-b-2 border-indigo-500';
+            panel.classList.remove('hidden');
+        } else {
+            tab.className = 'plan-tab flex-1 py-3 text-xs font-black uppercase tracking-wider transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-100';
+            panel.classList.add('hidden');
+        }
+    });
+}
+
+// ── Image Preview Helpers ──────────────────────────────────────────────────────
+function getClosestRatio(width, height) {
+    const ratio = width / height;
+    const targets = [
+        { name: '16:9', val: 16/9, desc: 'Landscape' },
+        { name: '16:7', val: 16/7, desc: 'Ideal Detail Banner' },
+        { name: '21:9', val: 21/9, desc: 'Widescreen Banner' },
+        { name: '6:5',  val: 6/5,  desc: 'Ideal Card Thumbnail' },
+        { name: '4:3',  val: 4/3,  desc: 'Standard Desktop' },
+        { name: '1:1',  val: 1,    desc: 'Square' }
+    ];
+    let minDiff = Infinity, closest = null;
+    targets.forEach(t => { const d = Math.abs(ratio - t.val); if (d < minDiff) { minDiff = d; closest = t; } });
+    return minDiff < 0.15 ? `${closest.name} (${closest.desc})` : ratio.toFixed(2) + ' : 1';
+}
+
+function analyzeImage(imgSrc, isUploadedFile = false, fileSizeKB = null) {
+    const previewWrapper    = document.getElementById('bannerPreviewWrapper');
+    const previewImg        = document.getElementById('bannerPreviewImg');
+    const previewDimensions = document.getElementById('bannerPreviewDimensions');
+    const previewRatio      = document.getElementById('bannerPreviewRatio');
+    const previewSize       = document.getElementById('bannerPreviewSize');
+    const previewFeedback   = document.getElementById('bannerPreviewFeedback');
+    previewWrapper.classList.remove('hidden');
+    previewFeedback.classList.add('hidden');
+    previewImg.src = imgSrc;
+    previewDimensions.textContent = 'Dimensions: loading...';
+    previewRatio.textContent      = 'Aspect Ratio: loading...';
+    previewSize.textContent       = isUploadedFile ? `File Size: ${fileSizeKB} KB` : 'File Size: Existing Server Image';
+    const imgObj = new Image();
+    imgObj.onload = function() {
+        const w = this.naturalWidth, h = this.naturalHeight;
+        previewDimensions.textContent = `Dimensions: ${w} x ${h} px`;
+        previewRatio.textContent      = `Aspect Ratio: ${getClosestRatio(w, h)}`;
+        previewFeedback.classList.remove('hidden');
+        const ratio = w / h;
+        if (ratio >= 2.0) {
+            previewFeedback.innerHTML = '<span class="text-emerald-600">✓ Perfect aspect ratio for widescreen banner (16:7 / 21:9).</span>';
+        } else if (ratio >= 1.1 && ratio <= 1.3) {
+            previewFeedback.innerHTML = '<span class="text-indigo-600">ℹ️ Great for card thumbnail (6:5).</span>';
+        } else {
+            previewFeedback.innerHTML = '<span class="text-amber-600">⚠️ Widescreen banner is recommended (16:7 / 21:9).</span>';
+        }
+    };
+    imgObj.src = imgSrc;
+}
+
+// ── Modal Open/Close ────────────────────────────────────────────────────────────
+function openModal(service = null) {
+    const form      = document.getElementById('serviceForm');
+    const title     = document.getElementById('modalTitle');
+    const methodField = document.getElementById('methodField');
+    const submitBtn = document.getElementById('submitBtn');
+
+    document.getElementById('bannerPreviewWrapper').classList.add('hidden');
+
+    if (service) {
+        title.textContent = 'Edit Service';
+        form.action = `/admin/services/${service.id}`;
+        methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+        submitBtn.textContent = 'Update Service';
+
+        document.getElementById('serviceName').value       = service.name;
+        document.getElementById('serviceCategory').value   = service.category;
+        document.getElementById('serviceIcon').value       = service.icon || 'box';
+        document.getElementById('serviceBanner').value     = '';
+        document.getElementById('serviceDesc').value       = service.short_description;
+        document.getElementById('serviceLongDesc').value   = service.description || '';
+        document.getElementById('serviceRequirements').value = service.requirements_text || '';
+        document.getElementById('serviceTimeline').value   = service.delivery_timeline || '';
+        document.getElementById('serviceCommissionRate').value = service.commission_rate || '';
+        document.getElementById('serviceCommissionType').value = service.commission_type || 'percentage';
+        document.getElementById('servicePopular').checked  = service.is_popular ? true : false;
+        document.getElementById('serviceActive').checked   = service.is_active ? true : false;
+        document.getElementById('serviceRequiresDomain').checked = service.requires_domain ? true : false;
+
+        window.dispatchEvent(new CustomEvent('load-service-pricing', { detail: service }));
+
+        if (service.banner_image) {
+            analyzeImage('/storage/' + service.banner_image, false);
+        }
+    } else {
+        title.textContent = 'Add New Service';
+        form.action = "http://refers.test/admin/services";
+        methodField.innerHTML = '';
+        submitBtn.textContent = 'Save Service';
+        form.reset();
+        document.getElementById('serviceIcon').value = 'box';
+        document.getElementById('serviceActive').checked = true;
+        document.getElementById('serviceRequiresDomain').checked = false;
+        
+        window.dispatchEvent(new CustomEvent('load-service-pricing', { detail: null }));
+    }
+
+    const modal = document.getElementById('serviceModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeModal() {
+    const modal = document.getElementById('serviceModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+// Removed legacy platform and plan helpers
+
+// File input selection
+document.getElementById('serviceBanner').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) { return; }
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const reader = new FileReader();
+    reader.onload = function(event) { analyzeImage(event.target.result, true, sizeKB); };
+    reader.readAsDataURL(file);
+});
+
+// Close modal on backdrop click
+document.getElementById('serviceModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+</script>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Mobile Bottom Navigation Bar -->
+                    </div>
+
+    
+    <!-- Global Premium Toasts / Notifications -->
+    
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Page-specific scripts -->
+    </body>
+</html>

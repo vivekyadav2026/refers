@@ -231,8 +231,45 @@ class PaymentController extends Controller
         
         // Calculate price based on selected plan
         $plans = $service->plans ?? [];
-        $selectedPlanKey = strtolower($request->plan_selected ?? 'basic');
-        $planPrice = (float) ($plans[$selectedPlanKey]['price'] ?? $service->min_price);
+        $selectedPlanKey = $request->plan_selected ?? 'basic';
+
+        $planName = $selectedPlanKey;
+        $planPrice = (float) $service->min_price;
+
+        if (isset($plans[$selectedPlanKey])) {
+            $planName = $plans[$selectedPlanKey]['name'] ?? $selectedPlanKey;
+            $planPrice = (float) ($plans[$selectedPlanKey]['price'] ?? $planPrice);
+        }
+
+        // Handle platform selection
+        $platformPrice = 0.0;
+        $platformChoice = null;
+        if ($service->enable_platforms && $request->filled('platform_choice')) {
+            $platformInput = $request->platform_choice;
+            $platforms = $service->platforms ?? [];
+            
+            if (is_numeric($platformInput) && isset($platforms[$platformInput])) {
+                $platformChoice = $platforms[$platformInput]['name'];
+                $platformPrice = (float) ($platforms[$platformInput]['price'] ?? 0);
+            } else {
+                foreach ($platforms as $p) {
+                    if (isset($p['name']) && $p['name'] === $platformInput) {
+                        $platformChoice = $p['name'];
+                        $platformPrice = (float) ($p['price'] ?? 0);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Apply Dynamic Pricing Matrix if it exists
+        if ($platformChoice && !empty($service->pricing_matrix)) {
+            $matrix = $service->pricing_matrix;
+            if (isset($matrix[$platformChoice][$planName])) {
+                $planPrice = (float) $matrix[$platformChoice][$planName];
+                $platformPrice = 0.0; // Matrix price is the complete price
+            }
+        }
 
         // Calculate domain charge if required and enabled
         $domainCharge = 0.0;
@@ -250,22 +287,7 @@ class PaymentController extends Controller
         $enableGst = \App\Models\Setting::get_val('enable_gst', '1') == '1';
         if ($enableGst) {
             $gstPercent = (float) \App\Models\Setting::get_val('gst_percent', '18');
-            $gstAmount = $planPrice * ($gstPercent / 100);
-        }
-
-        // Handle platform selection
-        $platformPrice = 0.0;
-        $platformChoice = null;
-        if ($service->enable_platforms && $request->filled('platform_choice')) {
-            $platformChoice = $request->platform_choice;
-            // Validate the platform choice actually exists in the service's available platforms
-            $platforms = $service->platforms ?? [];
-            foreach ($platforms as $p) {
-                if ($p['name'] === $platformChoice) {
-                    $platformPrice = (float) ($p['price'] ?? 0);
-                    break;
-                }
-            }
+            $gstAmount = ($planPrice + $platformPrice) * ($gstPercent / 100);
         }
 
         $total = $planPrice + $platformPrice + $gstAmount + $domainCharge;

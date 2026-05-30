@@ -28,6 +28,7 @@ class Service extends Model
         'commission_rate',
         'commission_type',
         'requires_domain',
+        'pricing_matrix',
     ];
 
     protected $casts = [
@@ -38,6 +39,7 @@ class Service extends Model
         'features'   => 'array',
         'plans'      => 'array',
         'platforms'  => 'array',
+        'pricing_matrix' => 'array',
         'faqs'       => 'array',
         'min_price'  => 'decimal:2',
         'commission_rate' => 'decimal:2',
