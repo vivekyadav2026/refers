@@ -590,7 +590,7 @@ body {
                          x-transition:leave="ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                          x-transition:leave-end="opacity-0 translate-y-full sm:translate-y-4 sm:scale-95"
-                         class="relative transform overflow-hidden rounded-t-[32px] sm:rounded-[16px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-md border-t sm:border border-slate-200 mt-6 sm:mt-0"
+                         class="relative transform overflow-hidden rounded-[32px] sm:rounded-[16px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-md border sm:border-slate-200 mt-6 mb-6 sm:mt-0"
                          @click.away="buyNowModal = false">
 
                         <!-- Mobile Drag Handle -->
