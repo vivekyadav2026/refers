@@ -275,7 +275,7 @@ body {
             @if(count($plans) > 0)
             <div class="mt-4 flex items-center gap-3">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider" x-text="selectedPlan === '{{ $defaultPlanKey }}' ? 'Starting from' : 'Selected Plan Price'"></span>
-                <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
+                <!-- <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span> -->
             </div>
             @endif
         </div>
@@ -456,7 +456,7 @@ body {
                         @auth
                             @if(auth()->user()->isCustomer())
                             <button type="button" @click="buyNowModal = true"
-                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-black bg-[#ffffff] hover:bg-[#ffffff] rounded-full shadow-lg shadow-[#000000]/20 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
                                 <i data-lucide="zap" class="w-4 h-4"></i>
                                 Order Now — <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </button>
@@ -534,12 +534,12 @@ body {
                             <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
                         </div>
 
-                        <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                        <div class="px-4 sm:px-5 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <div>
-                                <h3 class="text-[20px] font-[600] text-slate-900 flex items-center gap-2" id="modal-title">
+                                <h3 class="text-[18px] font-[600] text-slate-900 flex items-center gap-2" id="modal-title">
                                     <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i> Order Summary
                                 </h3>
-                                <p class="text-[15px] text-slate-500 font-[400] font-bold mt-0.5">Review your package details</p>
+                                <p class="text-[13px] text-slate-500 font-[500] mt-0.5">Review your package details</p>
                             </div>
                             <button @click="buyNowModal = false" type="button" class="p-2 -mr-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-200/50">
                                 <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
@@ -547,14 +547,14 @@ body {
                         </div>
 
                         <!-- Modal Body -->
-                        <div class="p-5 sm:p-6 bg-slate-50">
+                        <div class="px-4 sm:px-5 pt-4 pb-1 bg-slate-50">
                             <!-- Selected Package Summary -->
-                            <div class="bg-white rounded-[16px] border border-slate-200 p-4 mb-4">
+                            <div class="bg-white rounded-[16px] border border-slate-200 p-3 mb-3">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-[20px] font-[600] text-slate-900" x-text="selectedPlan + ' Package'"></span>
-                                    <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
+                                    <span class="text-[18px] font-[600] text-slate-900" x-text="selectedPlan + ' Package'"></span>
+                                    <span class="text-[24px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span>
                                 </div>
-                                <p class="text-[15px] text-slate-500 font-[400] mb-4" x-text="selectedPlanData[selectedPlan]?.description"></p>
+                                <p class="text-[13px] text-slate-500 font-[400] mb-3" x-text="selectedPlanData[selectedPlan]?.description"></p>
                                 
                                 <template x-if="enablePlatforms && selectedPlatformIndex != null && platformsData[selectedPlatformIndex]">
                                     <div class="border-t border-slate-100 pt-3 mt-3">
@@ -586,13 +586,13 @@ body {
                             </div>
                             
                             <!-- Total -->
-                            <div class="flex items-center justify-between bg-indigo-50 rounded-[16px] border border-indigo-100 p-4 mb-6">
+                            <div class="flex items-center justify-between bg-indigo-50 rounded-[12px] border border-indigo-100 p-3 mb-0">
                                 <span class="text-sm font-black text-indigo-900">Total Amount</span>
-                                <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
+                                <span class="text-[24px] font-[700] text-indigo-700" x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </div>
                         </div>
 
-                        <form id="buyNowForm" class="p-5 sm:p-6 max-h-[80vh] overflow-y-auto">
+                        <form id="buyNowForm" class="px-4 sm:px-5 pt-2 pb-5 max-h-[80vh] overflow-y-auto">
                             @csrf
                             <input type="hidden" name="service_id" value="{{ $service->id }}">
                             <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
@@ -634,7 +634,7 @@ body {
                                 <button type="button" @click="buyNowModal = false" class="w-1/3 py-3.5 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
                                     Cancel
                                 </button>
-                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-full text-[18px] font-[600] tracking-wider text-black bg-[#ffffff] hover:bg-[#ffffff] rounded-full shadow-lg shadow-[#20C20E]/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
+                                <button type="submit" x-bind:disabled="isProcessing" class="w-2/3 py-3.5 rounded-full text-[18px] font-[600] tracking-wider text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all flex justify-center items-center gap-2 disabled:opacity-70">
                                     <span x-show="!isProcessing">Pay <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span></span>
                                     <span x-show="isProcessing">Processing...</span>
                                 </button>

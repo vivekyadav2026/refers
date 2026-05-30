@@ -4,9 +4,10 @@
     <!-- enable sidebar -->
 @endsection
 @section('content')
+<div class="max-w-3xl mx-auto">
 
 <div class="mb-8">
-    <a href="{{ route('customer.orders') }}" class="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow">
+    <a href="{{ route('customer.orders') }}" class="inline-flex items-center gap-1.5 text-sm font-bold text-white hover:text-white transition-colors bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-full shadow-sm hover:shadow-md">
         <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Orders
     </a>
 </div>
@@ -293,6 +294,8 @@
             </a>
         </div>
     </div>
+</div>
+
 </div>
 
 @endsection

@@ -513,7 +513,7 @@ body {
             @endif
 
             <!-- Slide Wrapper -->
-            <div class="relative overflow-hidden rounded-[16px] sm:rounded-[22px] shadow-sm border border-slate-100 aspect-[16/9] lg:aspect-[21/9] bg-slate-50">
+            <div class="relative overflow-hidden rounded-[16px] sm:rounded-[22px] shadow-sm border border-slate-100 aspect-[16/9] bg-slate-50">
                 <!-- Sliding Track -->
                 <div class="flex w-full h-full transition-transform duration-700 ease-in-out" :style="'transform: translateX(-' + (activeSlide * 100) + '%)'">
                     @forelse($banners as $banner)
