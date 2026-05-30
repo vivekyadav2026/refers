@@ -582,7 +582,7 @@ body {
             <div x-show="buyNowModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[105] bg-slate-900/80 backdrop-blur-sm transition-opacity"></div>
             
             <div class="fixed inset-0 z-[110] w-screen overflow-y-auto">
-                <div class="flex mt-10 items-end justify-center sm:items-center p-0 sm:p-4 text-center">
+                <div class="flex mt-20 sm:mt-24 items-end justify-center sm:items-center p-0 sm:p-4 text-center">
                     <div x-show="buyNowModal"
                          x-transition:enter="ease-out duration-300"
                          x-transition:enter-start="opacity-0 translate-y-full sm:translate-y-4 sm:scale-95"
@@ -590,7 +590,7 @@ body {
                          x-transition:leave="ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                          x-transition:leave-end="opacity-0 translate-y-full sm:translate-y-4 sm:scale-95"
-                         class="relative transform overflow-hidden rounded-t-[32px] sm:rounded-[16px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-lg border-t sm:border border-slate-200 mt-6 sm:mt-0"
+                         class="relative transform overflow-hidden rounded-t-[32px] sm:rounded-[16px] bg-white text-left shadow-2xl transition-all w-full sm:w-full sm:max-w-md border-t sm:border border-slate-200 mt-6 sm:mt-0"
                          @click.away="buyNowModal = false">
 
                         <!-- Mobile Drag Handle -->
