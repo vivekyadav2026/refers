@@ -17,7 +17,7 @@ body {
 /* ── Service card ───────────────────────────────────────── */
 .svc-card {
     background: #fff;
-    border: 1px solid #ede9fe;
+    border: none !important;
     border-radius: 14px;
     display: flex;
     flex-direction: column;
@@ -26,19 +26,22 @@ body {
     gap: 8px;
     padding: 18px 10px;
     text-align: center;
-    box-shadow: 0 2px 12px rgba(109,40,217,0.07);
+    box-shadow: var(--shadow-sm);
     transition: all 0.22s ease;
     cursor: pointer;
     text-decoration: none;
     min-height: 140px;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
 }
 @media (min-width: 640px) {
     .svc-card { border-radius: 18px; gap: 10px; padding: 22px 12px; min-height: 185px; }
 }
-.svc-card:hover {
-    box-shadow: 0 8px 28px rgba(109,40,217,0.14);
+.svc-card:hover, .svc-card:focus, .svc-card:active {
+    box-shadow: var(--shadow-md);
     transform: translateY(-3px);
-    border-color: #c4b5fd;
+    outline: none !important;
+    background: #fff !important;
 }
 
 .svc-icon-wrap {
@@ -47,7 +50,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    background: transparent;
     flex-shrink: 0;
 }
 @media (min-width: 640px) { .svc-icon-wrap { width: 56px; height: 56px; border-radius: 14px; } }
@@ -97,12 +100,12 @@ body {
 {{-- Category Filter Pills --}}
 <div class="flex gap-2 mb-8 overflow-x-auto pb-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:flex-wrap whitespace-nowrap scrollbar-none">
     <a href="{{ route('customer.services') }}"
-       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 text-decoration-none {{ !$selectedCategory ? 'bg-violet-700 text-white shadow-lg shadow-violet-700/25' : 'bg-white text-gray-600 border border-violet-100 hover:border-violet-300 hover:text-violet-700' }}">
+       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 text-decoration-none {{ !$selectedCategory ? 'bg-violet-700 text-white shadow-md' : 'bg-white text-gray-600 border border-violet-100 hover:border-violet-300 hover:text-violet-700' }}">
         🔥 All
     </a>
     @foreach($allCategories as $cat)
     <a href="{{ route('customer.services', ['category' => $cat]) }}"
-       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 text-decoration-none {{ $selectedCategory === $cat ? 'bg-violet-700 text-white shadow-lg shadow-violet-700/25' : 'bg-white text-gray-600 border border-violet-100 hover:border-violet-300 hover:text-violet-700' }}">
+       class="px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 text-decoration-none {{ $selectedCategory === $cat ? 'bg-violet-700 text-white shadow-md' : 'bg-white text-gray-600 border border-violet-100 hover:border-violet-300 hover:text-violet-700' }}">
         {{ $cat }}
     </a>
     @endforeach
@@ -115,18 +118,18 @@ body {
         $lowerName = strtolower($svc->name);
         $lowerSlug = strtolower($svc->slug);
         
-        $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+        $bg = 'transparent';
         $isBrandIcon = false;
         
         if (str_contains($lowerName, 'e-commerce') || str_contains($lowerSlug, 'ecommerce')) {
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $bg = 'transparent';
             $svg = '
                 <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
             ';
         } elseif (str_contains($lowerName, 'informative') || str_contains($lowerSlug, 'informative')) {
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $bg = 'transparent';
             $svg = '
                 <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -180,28 +183,28 @@ body {
                 </svg>
             ';
         } elseif (str_contains($lowerName, 'seo') || str_contains($lowerSlug, 'seo')) {
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $bg = 'transparent';
             $svg = '
                 <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/>
                 </svg>
             ';
         } elseif (str_contains($lowerName, 'video') || str_contains($lowerName, 'reels') || str_contains($lowerName, 'edit')) {
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $bg = 'transparent';
             $svg = '
                 <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
                 </svg>
             ';
         } elseif (str_contains($lowerName, 'app') || str_contains($lowerName, 'mobile') || str_contains($lowerSlug, 'app')) {
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $bg = 'transparent';
             $svg = '
                 <svg class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>
                 </svg>
             ';
         } else {
-            $bg = 'linear-gradient(135deg, #ede9fe, #ddd6fe)';
+            $bg = 'transparent';
             $iconName = $svc->icon ?? 'box';
             $svg = '<i data-lucide="' . $iconName . '" class="w-6 h-6 sm:w-7 sm:h-7 text-violet-600"></i>';
         }
@@ -209,7 +212,7 @@ body {
     
     <a href="{{ route('services.show', $svc->slug) }}" class="svc-card relative text-decoration-none">
         @if($svc->is_popular)
-            <div class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md shadow-violet-500/25">🔥</div>
+            <div class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">🔥</div>
         @endif
         
         <div class="svc-icon-wrap" style="background: {{ $bg }}">
@@ -228,7 +231,7 @@ body {
         </div>
         <h3 class="text-base font-black text-gray-900 mb-2">No services in this category</h3>
         <p class="text-gray-500 text-xs mb-6 font-semibold">Try a different category filter.</p>
-        <a href="{{ route('customer.services') }}" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-violet-700 text-white text-xs font-black uppercase tracking-wider hover:bg-violet-800 shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 text-decoration-none">
+        <a href="{{ route('customer.services') }}" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-violet-700 text-white text-xs font-black uppercase tracking-wider hover:bg-violet-800 shadow-md transition-all hover:-translate-y-0.5 text-decoration-none">
             View All Services
         </a>
     </div>

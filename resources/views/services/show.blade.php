@@ -520,7 +520,7 @@ body {
                         @auth
                             @if(auth()->user()->isCustomer())
                             <button type="button" @click="buyNowModal = true"
-                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
                                 <i data-lucide="zap" class="w-4 h-4"></i>
                                 Order Now — <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </button>

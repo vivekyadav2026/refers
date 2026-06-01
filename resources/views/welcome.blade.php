@@ -156,7 +156,6 @@ body {
 /* ── Service card ───────────────────────────────────────── */
 .svc-card {
     background: #fff;
-    border: 1px solid #ede9fe;
     border-radius: 14px;
     display: flex;
     flex-direction: column;
@@ -165,19 +164,22 @@ body {
     gap: 8px;
     padding: 14px 8px;
     text-align: center;
-    box-shadow: 0 2px 12px rgba(109,40,217,0.07);
+    box-shadow: var(--shadow-sm);
     transition: all 0.22s ease;
     cursor: pointer;
     text-decoration: none;
     min-height: 100px;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
 }
 @media (min-width: 640px) {
     .svc-card { border-radius: 18px; gap: 10px; padding: 18px 10px; min-height: 120px; }
 }
-.svc-card:hover {
-    box-shadow: 0 8px 28px rgba(109,40,217,0.14);
+.svc-card:hover, .svc-card:focus, .svc-card:active {
+    box-shadow: var(--shadow-md);
     transform: translateY(-3px);
-    border-color: #c4b5fd;
+    outline: none !important;
+    background: #fff !important;
 }
 
 .svc-icon-wrap {
@@ -229,10 +231,9 @@ body {
 @media (min-width: 1024px) {
     .why-card {
         background: #fff;
-        border: 1px solid #ede9fe;
         border-radius: 20px;
         padding: 28px 16px;
-        box-shadow: 0 2px 12px rgba(109,40,217,0.07);
+        box-shadow: var(--shadow-sm);
     }
 }
 
