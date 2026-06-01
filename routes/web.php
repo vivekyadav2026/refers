@@ -118,12 +118,8 @@ Route::middleware(['auth:customer'])->prefix('customer')->name('customer.')->gro
     Route::get('/profile', [CustomerDashboardController::class, 'profile'])->name('profile');
     Route::put('/profile', [CustomerDashboardController::class, 'updateProfile'])->name('profile.update');
 
-    // Customer service catalog — inside the dashboard layout with sidebar
     Route::get('/services', function () {
         $query = \App\Models\Service::where('is_active', true);
-        if (request('category')) {
-            $query->where('category', request('category'));
-        }
         if (request('search')) {
             $query->where('name', 'like', '%' . request('search') . '%');
         }
@@ -146,12 +142,11 @@ Route::middleware(['auth:customer'])->prefix('customer')->name('customer.')->gro
             return $pos === false ? 999 : $pos;
         });
 
-        $servicesByCategory = $services->groupBy('category');
         $allCategories = \App\Models\Service::where('is_active', true)->distinct()->pluck('category');
         return view('customer.services', [
-            'servicesByCategory' => $servicesByCategory,
-            'allCategories'      => $allCategories,
-            'selectedCategory'   => request('category'),
+            'services'         => $services,
+            'allCategories'    => $allCategories,
+            'selectedCategory' => request('category'),
         ]);
     })->name('services');
 
