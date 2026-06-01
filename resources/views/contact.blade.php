@@ -6,12 +6,17 @@
 
 <style>
 /* Add the font from the design */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Style+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 body {
     background-color: #fafafa;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Poppins', sans-serif;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Force Poppins globally on this page */
+html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, textarea, label {
+    font-family: 'Poppins', sans-serif !important;
 }
 
 /* ── Header ─────────────────────────────────────────────── */

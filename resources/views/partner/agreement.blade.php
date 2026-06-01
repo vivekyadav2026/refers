@@ -5,7 +5,7 @@
     <title>Partner Agreement - SK Solutions</title>
     <style>
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif !important;
             margin: 40px;
             color: #333;
             line-height: 1.6;

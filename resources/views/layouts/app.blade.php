@@ -8,7 +8,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -21,7 +21,7 @@
                 theme: {
                     extend: {
                         fontFamily: {
-                            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                            sans: ['"Poppins"', 'sans-serif'],
                         }
                     }
                 }
@@ -39,12 +39,12 @@
     @stack('styles')
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Poppins', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Outfit', sans-serif !important;
+            font-family: 'Poppins', sans-serif !important;
         }
 
         /* ── GLOBAL PREMIUM STYLING & ANIMATIONS ───────────────── */

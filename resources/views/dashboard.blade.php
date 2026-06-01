@@ -208,7 +208,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+        Chart.defaults.font.family = "'Poppins', sans-serif";
         
         // Earnings Chart
         const earningsCtx = document.getElementById('earningsChart').getContext('2d');

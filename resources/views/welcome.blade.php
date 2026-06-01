@@ -5,18 +5,23 @@
 @section('content')
 <style>
 /* ── Fonts ──────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ── Base ───────────────────────────────────────────────── */
 body {
     background: #f8f8fb;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Poppins', sans-serif;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Force Poppins globally on this page */
+html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, textarea, label {
+    font-family: 'Poppins', sans-serif !important;
 }
 
 /* ── Script font for "Online" ───────────────────────────── */
 .cursive-online {
-    font-family: 'Dancing Script', cursive;
+    font-family: 'Poppins', sans-serif !important;
     font-size: 1.6rem;
     line-height: 1;
     color: #6d28d9;
@@ -310,7 +315,7 @@ body {
     border-radius: 6px 6px 0 0;
     padding: 8px;
     color: white;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 5px;
 }
 @media (min-width: 640px)  { .dash-screen { font-size: 6px; padding: 10px; } }

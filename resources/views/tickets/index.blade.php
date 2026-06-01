@@ -130,7 +130,7 @@
                     @foreach($tickets as $ticket)
                     <tr>
                         <td>
-                            <span style="font-family:monospace;font-weight:700;font-size:.8rem;background:#f1f5f9;color:#475569;padding:.2rem .55rem;border-radius:.4rem;">
+                            <span style="font-family:'Poppins', sans-serif;font-weight:700;font-size:.8rem;background:#f1f5f9;color:#475569;padding:.2rem .55rem;border-radius:.4rem;">
                                 #TKT-{{ str_pad($ticket->id, 5, '0', STR_PAD_LEFT) }}
                             </span>
                         </td>

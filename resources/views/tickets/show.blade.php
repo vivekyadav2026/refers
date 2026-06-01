@@ -47,9 +47,9 @@
 
     /* Reply box */
     .reply-form { padding:1.25rem 1.4rem; border-top:1px solid #f1f5f9; background:#fafbfc; }
-    .reply-textarea { width:100%; border:1.5px solid #d1d5db; border-radius:.65rem; padding:.75rem 1rem; font-size:.875rem; color:#1e293b; background:#fff; resize:none; font-family:inherit; transition:border-color .2s,box-shadow .2s; box-sizing:border-box; }
+    .reply-textarea { width:100%; border:1.5px solid #d1d5db; border-radius:.65rem; padding:.75rem 1rem; font-size:.875rem; color:#1e293b; background:#fff; resize:none; font-family:'Poppins', sans-serif; transition:border-color .2s,box-shadow .2s; box-sizing:border-box; }
     .reply-textarea:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.15); }
-    .btn-reply { display:inline-flex; align-items:center; gap:.4rem; padding:.65rem 1.25rem; border-radius:.6rem; background:#6366f1; color:#fff; border:none; font-size:.875rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background .15s; }
+    .btn-reply { display:inline-flex; align-items:center; gap:.4rem; padding:.65rem 1.25rem; border-radius:.6rem; background:#6366f1; color:#fff; border:none; font-size:.875rem; font-weight:700; cursor:pointer; font-family:'Poppins', sans-serif; transition:background .15s; }
     .btn-reply:hover { background:#4f46e5; }
 
     /* Info sidebar */

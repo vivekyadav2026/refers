@@ -203,7 +203,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.font.family = "'Poppins', sans-serif";
         
         // Admin Revenue Chart
         const revenueCtx = document.getElementById('adminRevenueChart').getContext('2d');

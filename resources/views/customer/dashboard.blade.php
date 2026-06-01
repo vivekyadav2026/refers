@@ -180,7 +180,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    Chart.defaults.font.family = "'Plus Jakarta Sans', 'Inter', sans-serif";
+    Chart.defaults.font.family = "'Poppins', sans-serif";
 
     const ctx = document.getElementById('orderActivityChart');
     if (!ctx) return;

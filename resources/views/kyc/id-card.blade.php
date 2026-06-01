@@ -5,7 +5,7 @@
     <title>SKSolutions Partner ID Card</title>
     <style>
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif !important;
             margin: 0;
             padding: 0;
         }

@@ -5,13 +5,18 @@
 
 <style>
 /* ── Fonts ──────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ── Base ───────────────────────────────────────────────── */
 body {
     background: #f8f8fb;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Poppins', sans-serif;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* Force Poppins globally on this page */
+html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, textarea, label {
+    font-family: 'Poppins', sans-serif !important;
 }
 
 /* ── Service card ───────────────────────────────────────── */
@@ -77,7 +82,7 @@ body {
 @media (min-width: 640px) { .brand-icon { width: 42px; height: 42px; } }
 </style>
 
-<div class="py-4 sm:py-6" style="font-family: 'Outfit', sans-serif;">
+<div class="py-4 sm:py-6" style="font-family: 'Poppins', sans-serif;">
 
 {{-- Page Header --}}
 <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">

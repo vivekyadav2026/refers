@@ -36,7 +36,7 @@
         background: #fff;
         transition: border-color .2s, box-shadow .2s;
         box-sizing: border-box;
-        font-family: inherit;
+        font-family: 'Poppins', sans-serif;
         resize: vertical;
     }
     .form-input:focus, .form-textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
@@ -64,7 +64,7 @@
     .step-title { font-weight: 700; color: #1e293b; font-size: .85rem; margin-bottom: .15rem; }
 
     /* ── Submit Button ── */
-    .btn-submit { width: 100%; padding: .85rem 1.5rem; background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; border: none; border-radius: .7rem; font-size: .95rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,.35); transition: transform .15s, box-shadow .15s; display: flex; align-items: center; justify-content: center; gap: .5rem; font-family: inherit; }
+    .btn-submit { width: 100%; padding: .85rem 1.5rem; background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; border: none; border-radius: .7rem; font-size: .95rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,.35); transition: transform .15s, box-shadow .15s; display: flex; align-items: center; justify-content: center; gap: .5rem; font-family: 'Poppins', sans-serif; }
     .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99,102,241,.45); }
     .btn-submit:active { transform: translateY(0); }
 </style>

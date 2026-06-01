@@ -25,7 +25,7 @@
     .form-input, .form-select, .form-textarea {
         width:100%; border:1.5px solid #d1d5db; border-radius:.65rem;
         padding:.75rem 1rem; font-size:.9rem; color:#1e293b; background:#fff;
-        transition:border-color .2s,box-shadow .2s; box-sizing:border-box; font-family:inherit;
+        transition:border-color .2s,box-shadow .2s; box-sizing:border-box; font-family: 'Poppins', sans-serif;
     }
     .form-textarea { resize:vertical; }
     .form-input:focus,.form-select:focus,.form-textarea:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.15); }
@@ -46,7 +46,7 @@
     .priority-label:hover { border-color:#a5b4fc; background:#f5f3ff; }
 
     /* Submit */
-    .btn-submit { width:100%; padding:.85rem 1.5rem; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:.7rem; font-size:.95rem; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(99,102,241,.35); transition:transform .15s,box-shadow .15s; display:flex; align-items:center; justify-content:center; gap:.5rem; font-family:inherit; }
+    .btn-submit { width:100%; padding:.85rem 1.5rem; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:.7rem; font-size:.95rem; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(99,102,241,.35); transition:transform .15s,box-shadow .15s; display:flex; align-items:center; justify-content:center; gap:.5rem; font-family: 'Poppins', sans-serif; }
     .btn-submit:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(99,102,241,.45); }
 
     .info-box { background:#eef2ff; border:1px solid #c7d2fe; border-radius:.65rem; padding:1rem 1.25rem; font-size:.85rem; color:#4338ca; display:flex; align-items:flex-start; gap:.65rem; margin-bottom:1.5rem; }

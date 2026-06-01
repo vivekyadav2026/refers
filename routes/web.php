@@ -287,6 +287,22 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('paym
 Route::post('/webhook/razorpay', [PaymentController::class, 'webhook'])->name('payment.webhook');
 Route::post('/buy-now', [PaymentController::class, 'buyNow'])->name('payment.buyNow')->middleware('auth:customer');
 
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+
+Route::get('/terms-and-condition', function () {
+    return view('terms-and-condition');
+})->name('terms-and-condition');
+
+Route::get('/terms-and-conditions', function () {
+    return redirect()->route('terms-and-condition');
+});
+
+Route::get('/refund-policy', function () {
+    return view('refund-policy');
+})->name('refund-policy');
+
 // ─── CONTACT ROUTES ───────────────────────────────────────────────────────
 Route::get('/contact', function () {
     return view('contact');

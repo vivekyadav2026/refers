@@ -46,6 +46,13 @@
 
         <div class="border-t border-slate-100 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-xs font-bold text-slate-400">© {{ date('Y') }} SKSolutions. All rights reserved.</p>
+            <div class="flex items-center gap-4">
+                <a href="{{ url('/privacy-policy') }}" class="text-xs font-bold text-slate-400 hover:text-purple-600 transition-colors">Privacy Policy</a>
+                <span class="text-slate-300">|</span>
+                <a href="{{ url('/terms-and-condition') }}" class="text-xs font-bold text-slate-400 hover:text-purple-600 transition-colors">Terms & Conditions</a>
+                <span class="text-slate-300">|</span>
+                <a href="{{ url('/refund-policy') }}" class="text-xs font-bold text-slate-400 hover:text-purple-600 transition-colors">Refund Policy</a>
+            </div>
             <p class="text-xs font-bold text-slate-400">Built with <span class="text-red-500">❤️</span> by SKSolutions</p>
         </div>
     </div>

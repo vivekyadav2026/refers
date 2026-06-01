@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Invoice #ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</title>
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; line-height: 1.5; font-size: 14px; }
+        body { font-family: 'Poppins', sans-serif; color: #333; line-height: 1.5; font-size: 14px; }
         .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
         .header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
         .header h1 { margin: 0; color: #4f46e5; font-size: 36px; }
