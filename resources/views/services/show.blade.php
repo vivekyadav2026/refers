@@ -193,6 +193,8 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
     $enableDomain = (\App\Models\Setting::get_val('enable_domain_charge', '1') == '1') && $service->requires_domain;
     $domainInCharge = (float) \App\Models\Setting::get_val('domain_in_charge_amount', '599');
     $domainComCharge = (float) \App\Models\Setting::get_val('domain_com_charge_amount', '999');
+    $supportPhone = \App\Models\Setting::get_val('support_phone', '+91 8287121769');
+    $cleanPhone = preg_replace('/[^0-9]/', '', $supportPhone);
 @endphp
 
 <div x-data="{ 
@@ -570,7 +572,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                                     Secure Sign In
                                 </a>
                             </div>
-                            <a href="https://wa.me/919999999999?text=Hi, I am interested in {{ urlencode($service->name) }}" target="_blank"
+                            <a href="https://wa.me/{{ $cleanPhone }}?text=https://sksolutionss.com/%20Hi%20SK%20Solutions%20team,%20I%20need%20help%20-%20Interested%20in%20{{ urlencode($service->name) }}" target="_blank"
                                class="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
                                 <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Inquire via WhatsApp
                             </a>

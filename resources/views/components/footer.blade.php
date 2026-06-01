@@ -1,3 +1,7 @@
+@php
+    $supportPhone = \App\Models\Setting::get_val('support_phone', '+91 8287121769');
+    $cleanPhone = preg_replace('/[^0-9]/', '', $supportPhone);
+@endphp
 <footer class="bg-white text-slate-500 pt-16 pb-8 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
@@ -10,7 +14,7 @@
                     We deliver high-quality digital solutions to help you scale your business efficiently. Join our partner network and grow with us.
                 </p>
                 <div class="flex items-center gap-4 mt-6">
-                    <a href="https://wa.me/919999999999" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-colors text-slate-500">
+                    <a href="https://wa.me/{{ $cleanPhone }}?text=https://sksolutionss.com/%20Hi%20SK%20Solutions%20team,%20I%20need%20help" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-colors text-slate-500">
                         <i data-lucide="message-circle" class="w-5 h-5"></i>
                     </a>
                     <a href="#" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors text-slate-500">

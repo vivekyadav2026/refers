@@ -275,7 +275,7 @@ select.input-field {
           </h2>
 
           {{-- WhatsApp Card --}}
-          <a href="https://wa.me/{{ $cleanPhone }}?text=Hi Sir SK Solutions team, I need help"
+          <a href="https://wa.me/{{ $cleanPhone }}?text=https://sksolutionss.com/%20Hi%20SK%20Solutions%20team,%20I%20need%20help"
              target="_blank"
              class="flex items-center gap-4 sm:gap-5 p-5 sm:p-6 rounded-[24px] bg-gradient-to-br from-emerald-550 from-emerald-500 via-emerald-600 to-teal-700 text-white hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 mb-5 group relative overflow-hidden shadow-xl shadow-emerald-500/10">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(255,255,255,0.2),transparent_60%)] pointer-events-none"></div>
