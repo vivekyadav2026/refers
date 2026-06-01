@@ -216,7 +216,7 @@ select.input-field {
     </div>
 </header>
 
-<div class="bg-[#FAFAFA] min-h-screen pb-16">
+<div class="bg-slate-50 min-h-screen pb-16">
 
   {{-- ══════ HERO ══════ --}}
   <div class="relative pt-3 pb-8 sm:pt-5 sm:pb-10 overflow-hidden bg-white border-b border-slate-100">

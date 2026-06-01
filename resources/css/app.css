@@ -8,4 +8,16 @@
 @theme {
     --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Global Background Color Override (slate-50 is used extensively for app backgrounds) */
+    --color-slate-50: #F5F6F8;
+
+    /* Custom shadow colors using #E9ECEF and #DDE1E6 */
+    --shadow-sm: 0 1px 2px 0 #E9ECEF;
+    --shadow: 0 1px 3px 0 #DDE1E6, 0 1px 2px -1px #E9ECEF;
+    --shadow-md: 0 4px 6px -1px #DDE1E6, 0 2px 4px -2px #E9ECEF;
+    --shadow-lg: 0 10px 15px -3px #DDE1E6, 0 4px 6px -4px #E9ECEF;
+    --shadow-xl: 0 20px 25px -5px #DDE1E6, 0 8px 10px -6px #E9ECEF;
+    --shadow-2xl: 0 25px 50px -12px #DDE1E6;
+    --shadow-inner: inset 0 2px 4px 0 #E9ECEF;
 }

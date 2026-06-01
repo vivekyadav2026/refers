@@ -191,7 +191,7 @@
                                 </div>
                                 <select name="business_type" class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all font-medium appearance-none">
                                     <option value="">-- Select Business Type --</option>
-                                    @foreach($categories as $category)
+                                    {{-- @foreach($categories as $category)
                                         <optgroup label="{{ $category->name }}">
                                             @if($category->subcategories->count() > 0)
                                                 @foreach($category->subcategories as $sub)
@@ -201,7 +201,16 @@
                                                 <option value="{{ $category->name }}" {{ auth()->user()->business_type == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
                                             @endif
                                         </optgroup>
+                                    @endforeach --}}
+                                    @foreach(['Grocery Store', 'Kirana Store', 'Supermarket', 'Dairy Shop', 'Sweet Shop', 'Bakery', 'Fruits & Vegetables Shop', 'Mobile Shop', 'Mobile Accessories Shop', 'Computer & Laptop Shop', 'Electronics Store', 'Electrical Shop', 'Hardware Store', 'Paint Shop', 'Sanitary & Bath Fittings Shop', 'Building Material Store', 'Furniture Shop', 'Mattress Shop', 'Home Decor Shop', 'Gift Shop', 'Stationery Shop', 'Book Store', 'Toy Shop', 'Sports Shop', 'Garments Shop', "Men's Wear Shop", "Women's Wear Shop", 'Kids Wear Shop', 'Footwear Shop', 'Jewellery Shop', 'Cosmetic Shop', 'Medical Store', 'Optical Shop', 'Pet Shop', 'Automobile Parts Shop', 'Bike Accessories Shop', 'Car Accessories Shop', 'Tyre Shop', 'Agricultural Equipment Shop', 'Seed & Fertilizer Shop'] as $cat)
+                                        <option value="{{ $cat }}" {{ auth()->user()->business_type == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                                     @endforeach
+                                    
+                                    <optgroup label="Services Categories">
+                                        @foreach(['Travel Agency', 'Tour Operator', 'Taxi Service', 'Car Rental Service', 'Packers & Movers', 'Courier Service', 'Event Management', 'Wedding Planner', 'Catering Service', 'Photography Service', 'Videography Service', 'Printing Service', 'GST Consultant', 'CA Services', 'Legal Services', 'Insurance Consultant', 'Real Estate Consultant', 'Property Dealer', 'Interior Designer', 'Architect', 'Construction Contractor', 'Security Guard Service', 'Housekeeping Service', 'Pest Control Service', 'Cleaning Service', 'AC Repair Service', 'Refrigerator Repair', 'Washing Machine Repair', 'Electrician Service', 'Plumber Service', 'Carpenter Service', 'CCTV Installation', 'Computer Repair Service', 'Mobile Repair Service', 'Beauty Parlour', 'Salon Service', 'Spa & Wellness Center', 'Gym & Fitness Center', 'Yoga Classes', 'Coaching Institute', 'Tuition Center', 'Driving School', 'Nursing Service', 'Ambulance Service', 'Diagnostic Lab', 'Vehicle Service Center', 'Water Tank Cleaning Service', 'Others'] as $cat)
+                                            <option value="{{ $cat }}" {{ auth()->user()->business_type == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                        @endforeach
+                                    </optgroup>
                                 </select>
                                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 top-10 pointer-events-none"></i>
                             </div>

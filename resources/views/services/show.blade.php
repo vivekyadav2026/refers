@@ -427,7 +427,7 @@ body {
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <div class="text-[15px] font-[800]" :class="domainChoice === 'in' ? 'text-emerald-700' : 'text-slate-900'" x-text="'+ ₹' + domainInCharge"></div>
+                                            <div class="text-[15px] font-[800]" :class="domainChoice === 'in' ? 'text-emerald-700' : 'text-slate-900'" x-text="'₹' + domainInCharge"></div>
                                         </div>
                                         
                                         <!-- Active Indicator -->
@@ -451,7 +451,7 @@ body {
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <div class="text-[15px] font-[800]" :class="domainChoice === 'com' ? 'text-emerald-700' : 'text-slate-900'" x-text="'+ ₹' + domainComCharge"></div>
+                                            <div class="text-[15px] font-[800]" :class="domainChoice === 'com' ? 'text-emerald-700' : 'text-slate-900'" x-text="'₹' + domainComCharge"></div>
                                         </div>
                                         
                                         <!-- Active Indicator -->
@@ -489,7 +489,7 @@ body {
 
                         <!-- TOTAL SUMMARY ON MAIN PAGE -->
                         <div class="mb-6 bg-slate-50 rounded-[16px] border border-slate-100 p-5 shadow-[0_4px_15px_rgba(0,0,0,0.02)]">
-                            <label class="block text-[11px] font-[800] text-slate-800 mb-4 tracking-wider uppercase flex items-center gap-1.5"><i data-lucide="receipt" class="w-3.5 h-3.5 text-slate-400"></i> Order Summary</label>
+                            <label class="block text-[11px] font-[800] text-slate-800 mb-4 tracking-wider uppercase flex items-center gap-1.5"><i data-lucide="indian-rupee" class="w-3.5 h-3.5 text-slate-400"></i> Order Summary</label>
                             
                             <div class="space-y-3">
                                 <div class="flex justify-between items-center text-[14px]">
@@ -499,13 +499,13 @@ body {
                                 <template x-if="enableDomain">
                                     <div class="flex justify-between items-center text-[14px]">
                                         <span class="text-slate-500 font-medium">Domain <span class="text-[10px] uppercase font-bold tracking-wide" x-text="domainChoice === 'in' ? '(.in)' : (domainChoice === 'com' ? '(.com)' : '')"></span></span>
-                                        <span class="text-slate-700 font-[800]" x-text="domainChargeAmount > 0 ? '+ ₹' + domainChargeAmount.toLocaleString('en-IN') : 'Free'"></span>
+                                        <span class="text-slate-700 font-[800]" x-text="domainChargeAmount > 0 ? '₹' + domainChargeAmount.toLocaleString('en-IN') : 'Free'"></span>
                                     </div>
                                 </template>
                                 <template x-if="enableGst">
                                     <div class="flex justify-between items-center text-[14px]">
                                         <span class="text-slate-500 font-medium" x-text="'GST (' + gstPercent + '%)'"></span>
-                                        <span class="text-slate-700 font-[800]" x-text="'+ ₹' + gstAmount.toLocaleString('en-IN')"></span>
+                                        <span class="text-slate-700 font-[800]" x-text="'₹' + gstAmount.toLocaleString('en-IN')"></span>
                                     </div>
                                 </template>
                             </div>

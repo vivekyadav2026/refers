@@ -59,7 +59,7 @@ body {
     </div>
 </header>
 
-<div class="bg-[#FAFAFA] min-h-screen pb-24" x-data="{ activeSection: 'All' }">
+<div class="bg-slate-50 min-h-screen pb-24" x-data="{ activeSection: 'All' }">
     {{-- ══════ HERO ══════ --}}
     <div class="relative pt-6 pb-10 sm:pt-10 sm:pb-12 overflow-hidden bg-white border-b border-slate-100">
         {{-- Precision Grid Overlay --}}
@@ -108,8 +108,15 @@ body {
                          class="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-indigo-200/50 transition-all duration-300">
                         
                         {{-- Image Wrapper --}}
-                        <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
-                            <img src="{{ Storage::url($portfolio->image) }}" alt="{{ $portfolio->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 flex items-center justify-center">
+                            @if($portfolio->image)
+                                <img src="{{ Storage::url($portfolio->image) }}" alt="{{ $portfolio->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="flex flex-col items-center justify-center text-slate-300">
+                                    <i data-lucide="image" class="w-12 h-12 mb-2"></i>
+                                    <span class="text-xs font-semibold uppercase tracking-wider">{{ $portfolio->name }}</span>
+                                </div>
+                            @endif
                             
                             {{-- Hover Overlay --}}
                             @if($portfolio->link)

@@ -285,7 +285,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category</label>
-                        <select name="category" id="serviceCategory"
+                        {{-- <select name="category" id="serviceCategory"
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
                             <option value="">Select a Category...</option>
                             @foreach($categories as $parent)
@@ -296,7 +296,9 @@
                                     @endforeach
                                 </optgroup>
                             @endforeach
-                        </select>
+                        </select> --}}
+                        <input type="text" name="category" id="serviceCategory" placeholder="Enter custom category"
+                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image (For Details Page)</label>
