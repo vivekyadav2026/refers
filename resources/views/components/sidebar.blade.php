@@ -24,6 +24,7 @@
             ['route'=>'admin.withdrawals','icon'=>'banknote','label'=>'Withdrawals'],
             ['route'=>'admin.leads','icon'=>'target','label'=>'Lead Management'],
             ['route'=>'admin.kyc','icon'=>'shield-check','label'=>'KYC Approvals'],
+            ['route'=>'admin.notifications.create','icon'=>'send','label'=>'Send Notifications'],
             ['route'=>'admin.services','icon'=>'box','label'=>'Services Catalog'],
             ['route'=>'admin.training.index','icon'=>'graduation-cap','label'=>'Training Center'],
             ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'],

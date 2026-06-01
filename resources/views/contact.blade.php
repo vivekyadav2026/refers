@@ -136,15 +136,20 @@ select.input-field {
         <!-- Right actions -->
         <div class="flex items-center gap-3">
             <!-- Notification bell -->
+            <!-- Notification bell -->
+            @auth
+            @php $unread = auth()->user()->unreadNotifications->take(10); @endphp
             <div class="relative" x-data="{ open: false }" @click.away="open = false">
                 <button @click="open = !open" class="relative p-2 rounded-full hover:bg-violet-50 transition-colors" type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                     </svg>
+                    @if($unread->count() > 0)
                     <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
+                    @endif
                 </button>
 
-                <!-- Notification Dropdown -->
+                <!-- Dropdown -->
                 <div x-show="open"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
@@ -156,32 +161,51 @@ select.input-field {
                      style="display:none">
                     <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                         <span class="text-xs font-black text-gray-800">Notifications</span>
-                        <span class="text-[10px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">2 new</span>
+                        @if($unread->count() > 0)
+                        <span class="text-[10px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">{{ $unread->count() }} new</span>
+                        @endif
                     </div>
-                    <div class="divide-y divide-gray-50">
-                        <div class="p-3 flex gap-3 hover:bg-gray-50 transition-colors">
-                            <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
-                                <svg class="w-4 h-4 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-[11px] font-bold text-gray-800">Welcome to SK Solutions!</p>
-                                <p class="text-[10px] text-gray-500 mt-0.5">Scale your business with premium digital services.</p>
-                                <p class="text-[9px] text-gray-400 mt-1">Just now</p>
-                            </div>
+                    <div class="divide-y divide-gray-50 max-h-80 overflow-y-auto">
+                        @forelse($unread as $notif)
+                        <form method="POST" action="{{ route('notifications.read', $notif->id) }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="w-full text-left p-3 flex gap-3 hover:bg-gray-50 transition-colors bg-transparent border-0 cursor-pointer">
+                                <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                                    <svg class="w-4 h-4 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[11px] font-bold text-gray-800 truncate">{{ $notif->data['title'] ?? 'Notification' }}</p>
+                                    <p class="text-[10px] text-gray-500 mt-0.5 line-clamp-2 leading-relaxed">{{ $notif->data['message'] ?? '' }}</p>
+                                    <p class="text-[9px] text-gray-400 mt-1 font-medium">{{ $notif->created_at->diffForHumans() }}</p>
+                                </div>
+                            </button>
+                        </form>
+                        @empty
+                        <div class="p-6 text-center">
+                            <p class="text-xs font-bold text-slate-500">All caught up!</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">No new notifications</p>
                         </div>
-                        <div class="p-3 flex gap-3 hover:bg-gray-50 transition-colors">
-                            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                                <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                            </div>
-                            <div>
-                                <p class="text-[11px] font-bold text-gray-800">Special Offer!</p>
-                                <p class="text-[10px] text-gray-500 mt-0.5">15% off your first mobile app. Use: <b>APPS15</b></p>
-                                <p class="text-[9px] text-gray-400 mt-1">2 hours ago</p>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
+            @else
+            <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" class="relative p-2 rounded-full hover:bg-violet-50 transition-colors" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </button>
+                <div x-show="open" class="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-violet-100 z-50 overflow-hidden" style="display:none">
+                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                        <span class="text-xs font-black text-gray-800">Notifications</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <p class="text-xs font-bold text-gray-500">Log in to view notifications</p>
+                    </div>
+                </div>
+            </div>
+            @endauth
 
             @if(auth('admin')->check() || auth('partner')->check() || auth('customer')->check())
                 <!-- User avatar -->

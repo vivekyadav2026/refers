@@ -66,11 +66,14 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
 
         <!-- Right Actions -->
         <div class="flex items-center gap-4">
-            <!-- Notification Bell -->
+            @auth
+            @php $unread = auth()->user()->unreadNotifications->take(10); @endphp
             <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
                 <button type="button" @click="notifOpen = !notifOpen" class="p-2 text-slate-700 hover:text-indigo-800 transition-colors relative focus:outline-none rounded-full hover:bg-slate-100">
                     <i data-lucide="bell" class="w-6 h-6"></i>
+                    @if($unread->count() > 0)
                     <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+                    @endif
                 </button>
                 <div x-show="notifOpen"
                      x-transition:enter="transition ease-out duration-200"
@@ -83,22 +86,49 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                      style="display:none">
                      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/50">
                          <span class="text-sm font-black text-slate-800">Notifications</span>
-                         <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-black">2 new</span>
+                         @if($unread->count() > 0)
+                         <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-black">{{ $unread->count() }} new</span>
+                         @endif
                      </div>
                      <div class="max-h-[300px] overflow-y-auto divide-y divide-slate-50">
-                         <div class="p-4 hover:bg-slate-50 transition-colors flex items-start gap-3">
-                             <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 shrink-0">
-                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                             </div>
-                             <div>
-                                 <div class="text-xs font-bold text-slate-900">Welcome to SK Solutions!</div>
-                                 <div class="text-[15px] text-slate-500 font-[400] mt-0.5">Explore our premium digital agency services and scale your business today.</div>
-                                 <div class="text-[9px] text-slate-400 mt-1">Just now</div>
-                             </div>
+                         @forelse($unread as $notif)
+                         <form method="POST" action="{{ route('notifications.read', $notif->id) }}" class="m-0">
+                             @csrf
+                             <button type="submit" class="w-full text-left p-4 hover:bg-slate-50 transition-colors flex items-start gap-3 bg-transparent border-0 cursor-pointer">
+                                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 shrink-0">
+                                     <i data-lucide="bell" class="w-4 h-4"></i>
+                                 </div>
+                                 <div class="min-w-0 flex-1">
+                                     <div class="text-xs font-bold text-slate-900 truncate">{{ $notif->data['title'] ?? 'Notification' }}</div>
+                                     <div class="text-[15px] text-slate-500 font-[400] mt-0.5 line-clamp-2 leading-relaxed">{{ $notif->data['message'] ?? '' }}</div>
+                                     <div class="text-[9px] text-slate-400 mt-1">{{ $notif->created_at->diffForHumans() }}</div>
+                                 </div>
+                             </button>
+                         </form>
+                         @empty
+                         <div class="p-6 text-center">
+                             <p class="text-xs font-bold text-slate-500">All caught up!</p>
+                             <p class="text-[10px] text-slate-400 mt-0.5">No new notifications</p>
                          </div>
+                         @endforelse
                      </div>
                 </div>
             </div>
+            @else
+            <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+                <button type="button" @click="notifOpen = !notifOpen" class="p-2 text-slate-700 hover:text-indigo-800 transition-colors relative focus:outline-none rounded-full hover:bg-slate-100">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                </button>
+                <div x-show="notifOpen" class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 z-50 overflow-hidden" style="display:none">
+                    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50">
+                        <span class="text-sm font-black text-slate-800">Notifications</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <p class="text-xs font-bold text-slate-500">Log in to view notifications</p>
+                    </div>
+                </div>
+            </div>
+            @endauth
 
             @auth
                 @php

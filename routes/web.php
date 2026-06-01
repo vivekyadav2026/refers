@@ -407,6 +407,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
 
     Route::get('/settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'store'])->name('settings.store');
+
+    // Admin: Custom Notifications
+    Route::get('/send-notifications', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'create'])->name('notifications.create');
+    Route::post('/send-notifications', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'store'])->name('notifications.store');
 });
 
 // ─── NOTIFICATIONS ────────────────────────────────────────────────────────
