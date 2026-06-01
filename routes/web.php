@@ -19,10 +19,32 @@ use App\Models\Service;
 
 Route::get('/', function () {
     $banners = \App\Models\Banner::where('is_active', true)->latest()->get();
-    $popularServices = \App\Models\Service::where('is_active', true)->where('is_popular', true)->take(4)->get();
-    $servicesByCategory = \App\Models\Service::where('is_active', true)->get()->groupBy('category');
+    
+    $orderedSlugs = [
+        'e-commerce-website-design-development',
+        'informative-website-design-development',
+        'e-commerce-mobile-app-development',
+        'grocery-mobile-app-development',
+        'food-delivery-mobile-app-development',
+        'meta-ads',
+        'google-ads',
+        'seo-search-engine-optimization',
+        'reels-video-editing'
+    ];
+
+    $services = \App\Models\Service::where('is_active', true)->get();
+    
+    // Sort by the predefined slug order
+    $services = $services->sortBy(function ($service) use ($orderedSlugs) {
+        $pos = array_search($service->slug, $orderedSlugs);
+        return $pos === false ? 999 : $pos;
+    });
+
+    $popularServices = $services->where('is_popular', true)->take(4);
+    $servicesByCategory = $services->groupBy('category');
     $categories = \App\Models\Service::where('is_active', true)->distinct()->pluck('category');
-    return view('welcome', compact('banners', 'popularServices', 'servicesByCategory', 'categories'));
+    
+    return view('welcome', compact('banners', 'popularServices', 'servicesByCategory', 'categories', 'services'));
 })->name('landing');
 
 // ─── REFERRAL LINK ────────────────────────────────────────────────────────
@@ -59,6 +81,24 @@ Route::get('/services', function () {
         });
     }
     $allSvcs = $query->get();
+    
+    $orderedSlugs = [
+        'e-commerce-website-design-development',
+        'informative-website-design-development',
+        'e-commerce-mobile-app-development',
+        'grocery-mobile-app-development',
+        'food-delivery-mobile-app-development',
+        'meta-ads',
+        'google-ads',
+        'seo-search-engine-optimization',
+        'reels-video-editing'
+    ];
+    
+    $allSvcs = $allSvcs->sortBy(function ($service) use ($orderedSlugs) {
+        $pos = array_search($service->slug, $orderedSlugs);
+        return $pos === false ? 999 : $pos;
+    });
+
     $allCategories = Service::where('is_active', true)->distinct()->pluck('category');
     return view('services.index', ['allSvcs' => $allSvcs, 'allCategories' => $allCategories, 'selectedCategory' => request('category')]);
 })->name('services.index');
@@ -87,7 +127,26 @@ Route::middleware(['auth:customer'])->prefix('customer')->name('customer.')->gro
         if (request('search')) {
             $query->where('name', 'like', '%' . request('search') . '%');
         }
-        $servicesByCategory = $query->orderBy('name')->get()->groupBy('category');
+        $services = $query->get();
+        
+        $orderedSlugs = [
+            'e-commerce-website-design-development',
+            'informative-website-design-development',
+            'e-commerce-mobile-app-development',
+            'grocery-mobile-app-development',
+            'food-delivery-mobile-app-development',
+            'meta-ads',
+            'google-ads',
+            'seo-search-engine-optimization',
+            'reels-video-editing'
+        ];
+        
+        $services = $services->sortBy(function ($service) use ($orderedSlugs) {
+            $pos = array_search($service->slug, $orderedSlugs);
+            return $pos === false ? 999 : $pos;
+        });
+
+        $servicesByCategory = $services->groupBy('category');
         $allCategories = \App\Models\Service::where('is_active', true)->distinct()->pluck('category');
         return view('customer.services', [
             'servicesByCategory' => $servicesByCategory,

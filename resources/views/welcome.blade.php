@@ -584,9 +584,9 @@ body {
         <!-- Services grid -->
         <div class="services-grid">
             @php
-                $allServices = $servicesByCategory->flatten(1);
+                $allServices = $services;
             @endphp
-            @foreach($allServices->take(8) as $service)
+            @foreach($allServices->take(9) as $service)
             <a href="{{ route('services.show', $service->slug) }}" class="svc-card">
                 <div class="svc-icon-wrap {{ $service->banner_image ? 'overflow-hidden' : '' }}" style="{{ $service->banner_image ? 'background: transparent;' : '' }}">
                     @if($service->banner_image)
