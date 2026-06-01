@@ -591,7 +591,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
             @php
                 $allServices = $services;
             @endphp
-            @foreach($allServices->take(9) as $service)
+            @foreach($allServices->take(8) as $service)
             <a href="{{ route('services.show', $service->slug) }}" class="svc-card">
                 <div class="svc-icon-wrap {{ $service->banner_image ? 'overflow-hidden' : '' }}" style="{{ $service->banner_image ? 'background: transparent;' : '' }}">
                     @if($service->banner_image)
