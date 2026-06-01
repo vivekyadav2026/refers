@@ -29,6 +29,10 @@ class Service extends Model
         'commission_type',
         'requires_domain',
         'pricing_matrix',
+        'enable_gst',
+        'gst_percent',
+        'domain_in_charge',
+        'domain_com_charge',
     ];
 
     protected $casts = [
@@ -36,6 +40,7 @@ class Service extends Model
         'is_active'  => 'boolean',
         'requires_domain' => 'boolean',
         'enable_platforms' => 'boolean',
+        'enable_gst' => 'boolean',
         'features'   => 'array',
         'plans'      => 'array',
         'platforms'  => 'array',
@@ -43,6 +48,9 @@ class Service extends Model
         'faqs'       => 'array',
         'min_price'  => 'decimal:2',
         'commission_rate' => 'decimal:2',
+        'gst_percent' => 'decimal:2',
+        'domain_in_charge' => 'decimal:2',
+        'domain_com_charge' => 'decimal:2',
     ];
 
     public function orders()

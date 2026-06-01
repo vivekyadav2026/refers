@@ -218,11 +218,11 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
     $defaultPlanKey = array_key_first($plans) ?? 'Basic';
     
     // Charges (Admin Toggles)
-    $enableGst = \App\Models\Setting::get_val('enable_gst', '1') == '1';
-    $gstPercent = (float) \App\Models\Setting::get_val('gst_percent', '18');
-    $enableDomain = (\App\Models\Setting::get_val('enable_domain_charge', '1') == '1') && $service->requires_domain;
-    $domainInCharge = (float) \App\Models\Setting::get_val('domain_in_charge_amount', '599');
-    $domainComCharge = (float) \App\Models\Setting::get_val('domain_com_charge_amount', '999');
+    $enableGst = (bool) $service->enable_gst;
+    $gstPercent = (float) ($service->gst_percent ?? 18.00);
+    $enableDomain = (bool) $service->requires_domain;
+    $domainInCharge = (float) ($service->domain_in_charge ?? 599.00);
+    $domainComCharge = (float) ($service->domain_com_charge ?? 999.00);
     $supportPhone = \App\Models\Setting::get_val('support_phone', '+91 8287121769');
     $cleanPhone = preg_replace('/[^0-9]/', '', $supportPhone);
 @endphp
@@ -584,10 +584,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                                     <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Phone Number *</label>
                                     <input type="tel" name="client_phone" required class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="+91 9999999999">
                                 </div>
-                                <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Project Requirements</label>
-                                    <textarea name="notes" rows="2" class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all resize-none" placeholder="Deliverables, details..."></textarea>
-                                </div>
+                              
                                 <button type="submit" class="w-full py-2.5 rounded-full text-[10px] font-black tracking-widest uppercase text-white bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-1.5 active:translate-y-0 cursor-pointer mt-1">
                                     <i data-lucide="send" class="w-3.5 h-3.5"></i> Submit Lead
                                 </button>

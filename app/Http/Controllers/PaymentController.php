@@ -273,20 +273,20 @@ class PaymentController extends Controller
 
         // Calculate domain charge if required and enabled
         $domainCharge = 0.0;
-        $enableDomain = (\App\Models\Setting::get_val('enable_domain_charge', '0') == '1') && $service->requires_domain;
+        $enableDomain = (bool) $service->requires_domain;
         if ($enableDomain && $request->domain_choice) {
             if ($request->domain_choice === 'in') {
-                $domainCharge = (float) \App\Models\Setting::get_val('domain_in_charge_amount', '599');
+                $domainCharge = (float) ($service->domain_in_charge ?? 599.00);
             } elseif ($request->domain_choice === 'com') {
-                $domainCharge = (float) \App\Models\Setting::get_val('domain_com_charge_amount', '999');
+                $domainCharge = (float) ($service->domain_com_charge ?? 999.00);
             }
         }
 
         // Calculate GST
         $gstAmount = 0.0;
-        $enableGst = \App\Models\Setting::get_val('enable_gst', '1') == '1';
+        $enableGst = (bool) $service->enable_gst;
         if ($enableGst) {
-            $gstPercent = (float) \App\Models\Setting::get_val('gst_percent', '18');
+            $gstPercent = (float) ($service->gst_percent ?? 18.00);
             $gstAmount = ($planPrice + $platformPrice) * ($gstPercent / 100);
         }
 

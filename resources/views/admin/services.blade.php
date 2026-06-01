@@ -162,6 +162,10 @@
                                 'is_popular'       => $service->is_popular,
                                 'is_active'        => $service->is_active,
                                 'requires_domain'  => $service->requires_domain,
+                                'enable_gst'       => $service->enable_gst,
+                                'gst_percent'      => $service->gst_percent,
+                                'domain_in_charge' => $service->domain_in_charge,
+                                'domain_com_charge'=> $service->domain_com_charge,
                                 'enable_platforms' => $service->enable_platforms,
                                 'platforms'        => $service->platforms ?? [],
                                 'plans'            => $service->plans ?? [],
@@ -377,34 +381,69 @@
                     </div>
                 </div>
 
-                <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 mb-2">
-                    <div class="flex items-center gap-6">
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <div class="relative flex items-center justify-center">
-                                <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="peer sr-only">
-                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
-                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                {{-- ── GST & DOMAIN CONFIGURATION ────────────────────────────── --}}
+                <div class="mt-8 mb-6">
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="percent" class="w-4 h-4 text-emerald-500"></i> GST & Domain Configuration
+                    </h4>
+                    <div class="bg-slate-50/50 p-5 rounded-2xl border border-slate-200/60 space-y-5">
+                        <!-- GST Config Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div class="flex items-center">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <div class="relative flex items-center justify-center shrink-0">
+                                        <input type="hidden" name="enable_gst" value="0">
+                                        <input type="checkbox" name="enable_gst" id="serviceEnableGst" value="1" class="peer sr-only">
+                                        <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all"></div>
+                                        <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                                    </div>
+                                    <span class="text-sm font-bold text-slate-700 group-hover:text-emerald-700 transition-colors">Calculate GST for this Service</span>
+                                </label>
                             </div>
-                            <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">🔥 Popular Service</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <div class="relative flex items-center justify-center">
-                                <input type="checkbox" name="is_active" id="serviceActive" value="1" class="peer sr-only">
-                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all"></div>
-                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">GST Percentage (%)</label>
+                                <input type="number" name="gst_percent" id="serviceGstPercent" min="0" max="100" step="0.1"
+                                    class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                    placeholder="18">
                             </div>
-                            <span class="text-sm font-bold text-slate-700 group-hover:text-emerald-700 transition-colors">✅ Published</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <div class="relative flex items-center justify-center">
-                                <input type="checkbox" name="requires_domain" id="serviceRequiresDomain" value="1" class="peer sr-only">
-                                <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
-                                <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                        </div>
+
+                        <hr class="border-slate-200/60">
+
+                        <!-- Domain Config Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                            <div class="flex items-center">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <div class="relative flex items-center justify-center shrink-0">
+                                        <input type="hidden" name="requires_domain" value="0">
+                                        <input type="checkbox" name="requires_domain" id="serviceRequiresDomain" value="1" class="peer sr-only">
+                                        <div class="w-5 h-5 border-2 border-slate-300 rounded-md peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all"></div>
+                                        <i data-lucide="check" class="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                                    </div>
+                                    <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">Requires Domain (Registration)</span>
+                                </label>
                             </div>
-                            <span class="text-sm font-bold text-slate-700 group-hover:text-indigo-700 transition-colors">🌐 Requires Domain</span>
-                        </label>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">.IN Domain Price (₹)</label>
+                                <input type="number" name="domain_in_charge" id="serviceDomainInCharge" min="0" step="0.1"
+                                    class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                    placeholder="599">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">.COM Domain Price (₹)</label>
+                                <input type="number" name="domain_com_charge" id="serviceDomainComCharge" min="0" step="0.1"
+                                    class="w-full border border-slate-200 bg-white text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none shadow-sm"
+                                    placeholder="999">
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Hidden inputs to preserve JS logic and set default states -->
+                <input type="hidden" name="is_popular" value="0">
+                <input type="checkbox" name="is_popular" id="servicePopular" value="1" class="hidden">
+                <input type="hidden" name="is_active" value="1">
+                <input type="checkbox" name="is_active" id="serviceActive" value="1" class="hidden" checked>
             </form>
         </div>
 
@@ -515,7 +554,11 @@ function openModal(service = null) {
         document.getElementById('servicePopular').checked  = service.is_popular ? true : false;
         document.getElementById('serviceActive').checked   = service.is_active ? true : false;
         document.getElementById('serviceRequiresDomain').checked = service.requires_domain ? true : false;
-
+        document.getElementById('serviceEnableGst').checked = service.enable_gst !== undefined ? (service.enable_gst ? true : false) : true;
+        document.getElementById('serviceGstPercent').value = service.gst_percent !== undefined ? service.gst_percent : '18.00';
+        document.getElementById('serviceDomainInCharge').value = service.domain_in_charge !== undefined ? service.domain_in_charge : '599.00';
+        document.getElementById('serviceDomainComCharge').value = service.domain_com_charge !== undefined ? service.domain_com_charge : '999.00';
+        
         window.dispatchEvent(new CustomEvent('load-service-pricing', { detail: service }));
 
         if (service.banner_image) {
@@ -530,6 +573,10 @@ function openModal(service = null) {
         document.getElementById('serviceIcon').value = 'box';
         document.getElementById('serviceActive').checked = true;
         document.getElementById('serviceRequiresDomain').checked = false;
+        document.getElementById('serviceEnableGst').checked = true;
+        document.getElementById('serviceGstPercent').value = '18.00';
+        document.getElementById('serviceDomainInCharge').value = '599.00';
+        document.getElementById('serviceDomainComCharge').value = '999.00';
         
         window.dispatchEvent(new CustomEvent('load-service-pricing', { detail: null }));
     }
