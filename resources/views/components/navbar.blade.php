@@ -147,7 +147,7 @@
                 <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="transform opacity-0 scale-95 translate-y-2" x-transition:enter-end="transform opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="transform opacity-100 scale-100 translate-y-0" x-transition:leave-end="transform opacity-0 scale-95 translate-y-2" class="absolute right-0 z-50 mt-3 w-56 origin-top-right rounded-3xl bg-white p-2 shadow-2xl border border-slate-100" style="display:none">
                     <div class="px-3 py-2 border-b border-slate-100 mb-1">
                         <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Signed in as</div>
-                        <div class="text-sm font-bold text-slate-900 truncate">{{ auth()->check() ? auth()->user()->email ?? auth()->user()->phone : '' }}</div>
+                        <div class="text-sm font-bold text-slate-900 truncate">{{ auth()->check() ? auth()->user()->name : '' }}</div>
                     </div>
                     @if(auth()->check() && auth()->user()->role === 'admin')
                         <a href="{{ route('admin.kyc') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold text-slate-700 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">
