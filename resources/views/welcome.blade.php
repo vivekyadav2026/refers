@@ -156,6 +156,7 @@ body {
 /* ── Service card ───────────────────────────────────────── */
 .svc-card {
     background: #fff;
+    border: none !important;
     border-radius: 14px;
     display: flex;
     flex-direction: column;
@@ -551,7 +552,7 @@ body {
 <!-- ═══════════════════════════════════════════════════════
      OUR SERVICES
 ════════════════════════════════════════════════════════ -->
-<section class="px-3 sm:px-5 lg:px-8 py-5 sm:py-8 lg:py-12 bg-white">
+<section class="px-3 sm:px-5 lg:px-8 py-5 sm:py-8 lg:py-12 bg-slate-50">
     <div class="max-w-5xl mx-auto">
 
         @php
