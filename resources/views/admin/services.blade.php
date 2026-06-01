@@ -300,7 +300,7 @@
                         <input type="text" name="category" id="serviceCategory" placeholder="Enter custom category"
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                     </div>
-                    <div>
+                    <div class="sm:col-span-2">
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Banner Image (For Details Page)</label>
                         <input type="file" name="banner_image" id="serviceBanner" accept="image/*"
                             class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
@@ -322,16 +322,7 @@
                             <div id="bannerPreviewFeedback" class="mt-2 text-[10px] font-bold hidden"></div>
                         </div>
                     </div>
-                    <div>
-                        <div class="flex justify-between items-center mb-1.5">
-                            <label class="block text-sm font-semibold text-slate-700">Lucide Icon Name</label>
-                            <a href="https://lucide.dev/icons" target="_blank" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-bold transition-colors">View Icons Library &rarr;</a>
-                        </div>
-                        <input type="text" name="icon" id="serviceIcon" value="box"
-                            class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-                            placeholder="e.g. globe, smartphone, palette">
-                        <span class="text-[10px] text-slate-400 font-bold block mt-1.5">Suggested: globe (web), code, smartphone (app), palette (design), megaphone (marketing), search (seo), file-text (writing), briefcase, server, shield.</span>
-                    </div>
+                    <input type="hidden" name="icon" id="serviceIcon" value="box">
                 </div>
 
                 <div class="mb-5">
