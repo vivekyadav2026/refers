@@ -2,3 +2,11 @@
 !.gitignore
 !banners/
 !banners/*
+!services/
+!services/*
+!portfolios/
+!portfolios/*
+!product_images/
+!product_images/*
+!business_logos/
+!business_logos/*
