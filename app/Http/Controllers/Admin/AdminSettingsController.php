@@ -19,7 +19,7 @@ class AdminSettingsController extends Controller
             'require_kyc' => Setting::get_val('require_kyc', 1),
             
             // Support & Billing Settings
-            'support_email' => Setting::get_val('support_email', 'support@sksolution.com'),
+            'support_email' => Setting::get_val('support_email', 'support@sksolutioss.com'),
             'support_phone' => Setting::get_val('support_phone', '+91 00000 00000'),
             'enable_gst' => Setting::get_val('enable_gst', 0),
             'gst_percent' => Setting::get_val('gst_percent', 18),

@@ -263,7 +263,7 @@ select.input-field {
       <div class="lg:col-span-2 space-y-6">
 
         @php
-            $supportEmail = \App\Models\Setting::get_val('support_email', 'support@sksolution.com');
+            $supportEmail = \App\Models\Setting::get_val('support_email', 'support@sksolutioss.com');
             $supportPhone = \App\Models\Setting::get_val('support_phone', '+91 8287121769');
             $cleanPhone = preg_replace('/[^0-9]/', '', $supportPhone);
         @endphp

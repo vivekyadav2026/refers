@@ -119,7 +119,7 @@
 
         <h2>Cancellation Policy</h2>
         <ul>
-            <li>Clients may request cancellation of services by providing a written notice via email to <a href="mailto:support@sksolutionss.in" style="color:#7c3aed; text-decoration:none;">support@sksolutionss.in</a>.</li>
+            <li>Clients may request cancellation of services by providing a written notice via email to <a href="mailto:support@sksolutioss.com" style="color:#7c3aed; text-decoration:none;">support@sksolutioss.com</a>.</li>
             <li>Cancellation requests for ongoing monthly services (SEO, Social Media Marketing, Google Ads, etc.) must be made at least <strong>7 days</strong> before the next billing cycle.</li>
             <li>Once a campaign/project has been initiated and resources are allocated, cancellation will not be possible for that billing cycle.</li>
         </ul>
@@ -145,7 +145,7 @@
         <div class="policy-contact">
             <h2>Contact Us</h2>
             <p>For cancellation or refund-related queries, please contact us at:</p>
-            <p>📩 <strong>Email:</strong> <a href="mailto:support@sksoutionss.in" style="color:#7c3aed; text-decoration:none;">support@sksoutionss.in</a></p>
+            <p>📩 <strong>Email:</strong> <a href="mailto:support@sksolutioss.com" style="color:#7c3aed; text-decoration:none;">support@sksolutioss.com</a></p>
             <p>📞 <strong>Phone:</strong> <a href="tel:+918287121769" style="color:#7c3aed; text-decoration:none;">+91 8287121769</a></p>
         </div>
     </div>

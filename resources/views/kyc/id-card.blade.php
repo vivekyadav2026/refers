@@ -147,7 +147,7 @@
 
         <div class="footer">
             This card is the property of SKSolutions Networks.<br>
-            If found, please return to support@sksolution.com
+            If found, please return to support@sksolutioss.com
         </div>
     </div>
 

@@ -26,7 +26,7 @@
                 <tr>
                     <td style="text-align: left;">
                         <h1>SK Solutions</h1>
-                        <p>123 Tech Lane, IT Park<br>Delhi, India<br>support@sksolutions.com</p>
+                        <p>123 Tech Lane, IT Park<br>Delhi, India<br>support@sksolutioss.com</p>
                     </td>
                     <td style="text-align: right;">
                         <h2 style="margin:0; color:#333;">INVOICE</h2>

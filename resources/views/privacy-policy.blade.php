@@ -179,7 +179,7 @@
             <li>Request deletion of your personal data.</li>
             <li>Object to processing for marketing purposes.</li>
         </ul>
-        <p>To exercise any of these rights, please email us at <a href="mailto:support@sksolutionss.in" style="color:#6366f1; text-decoration:none;">support@sksolutionss.in</a></p>
+        <p>To exercise any of these rights, please email us at <a href="mailto:support@sksolutioss.com" style="color:#6366f1; text-decoration:none;">support@sksolutioss.com</a></p>
 
         <h2>Third-Party Services and Links</h2>
         <p>Our website may contain links to third-party websites. We are not responsible for the privacy practices of those websites. Please review their privacy policies separately.</p>
@@ -199,7 +199,7 @@
         <div class="policy-contact">
             <h2>Contact Us</h2>
             <p>If you have any questions or concerns about this Privacy Policy, you can contact us:</p>
-            <p>📩 <strong>Email:</strong> <a href="mailto:support@sksoutionss.in" style="color:#6366f1; text-decoration:none;">support@sksoutionss.in</a></p>
+            <p>📩 <strong>Email:</strong> <a href="mailto:support@sksolutioss.com" style="color:#6366f1; text-decoration:none;">support@sksolutioss.com</a></p>
             <p>📞 <strong>Phone:</strong> <a href="tel:+918287121769" style="color:#6366f1; text-decoration:none;">+91 8287121769</a></p>
             <p style="font-size: 0.9rem; margin-top:15px; color:#64748b;">We aim to respond within 48 hours, though response times may vary based on the nature of the inquiry.</p>
         </div>

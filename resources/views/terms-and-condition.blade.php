@@ -157,7 +157,7 @@
         <div class="policy-contact">
             <h2>Contact Us</h2>
             <p>For any queries related to these terms, please contact us at:</p>
-            <p>📩 <strong>Email:</strong> <a href="mailto:support@sksoutionss.in" style="color:#7c3aed; text-decoration:none;">support@sksoutionss.in</a></p>
+            <p>📩 <strong>Email:</strong> <a href="mailto:support@sksolutioss.com" style="color:#7c3aed; text-decoration:none;">support@sksolutioss.com</a></p>
             <p>📞 <strong>Phone:</strong> <a href="tel:+918287121769" style="color:#7c3aed; text-decoration:none;">+91 8287121769</a></p>
         </div>
     </div>
