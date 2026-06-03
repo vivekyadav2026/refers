@@ -381,7 +381,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                                 type="button"
                                 @click="selectedPlan = '{{ addslashes($planKey) }}'"
                                 :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
-                                class="flex-1 py-2 px-3 rounded-lg text-[13px] font-[600] uppercase tracking-wide transition-all whitespace-nowrap">
+                                class="flex-1 py-2 px-3 rounded-lg text-[13px] font-[600] uppercase tracking-wide transition-all whitespace-nowrap shrink-0">
                                 <span x-text="selectedPlanData['{{ addslashes($planKey) }}']?.name || '{{ $planKey }}'"></span>
                             </button>
                             @endforeach
@@ -635,7 +635,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                                 <template x-if="enablePlatforms && selectedPlatformIndex != null && platformsData[selectedPlatformIndex]">
                                     <div class="border-t border-slate-100 pt-3 mt-3">
                                         <div class="flex items-center justify-between text-sm">
-                                            <span class="text-slate-700 font-medium flex items-center gap-2"><i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-500"></i> Platform: <span x-text="platformsData[selectedPlatformIndex].name"></span></span>
+                                            <span class="text-slate-700 font-medium flex items-center gap-2"> Platform: <span x-text="platformsData[selectedPlatformIndex].name"></span></span>
                                             <span x-show="!pricingMatrix || Object.keys(pricingMatrix).length === 0" class="font-bold text-slate-700" x-text="platformsData[selectedPlatformIndex].price > 0 ? '+ ₹' + Number(platformsData[selectedPlatformIndex].price).toLocaleString('en-IN') : 'Included'"></span>
                                             <span x-show="pricingMatrix && Object.keys(pricingMatrix).length > 0" class="font-bold text-slate-700 text-[10px] uppercase text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded">Selected</span>
                                         </div>
