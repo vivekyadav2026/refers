@@ -523,7 +523,11 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                             
                             <div class="flex justify-between items-center text-[20px] font-black text-emerald-700 border-t-2 border-dashed border-slate-200 pt-4 mt-4">
                                 <span>Total Price</span>
-                                                 <!-- Action Buttons -->
+                                <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
                         @auth
                             @if(auth()->user()->isCustomer())
                             <button type="button" @click="buyNowModal = true"
@@ -579,11 +583,6 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                                 <i data-lucide="message-circle" class="w-4 h-4"></i> Inquire via WhatsApp
                             </a>
                         @endauth
-                    </div>
-                </div>"></i> Inquire via WhatsApp
-                            </a>
-                        @endauth
-
                     </div>
                 </div>
 
