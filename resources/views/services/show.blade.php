@@ -182,12 +182,12 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                             default   => route('customer.dashboard'),
                         };
                     @endphp
-                    <a href="{{ $dashUrl }}" class="inline-flex items-center gap-2 bg-[#0d1f0b] text-balck px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-[#0d1f0b] transition-all hover:-translate-y-0.5 active:translate-y-0">
+                    <a href="{{ $dashUrl }}" class="inline-flex items-center gap-2 bg-[#0d1f0b] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-[#0d1f0b] transition-all hover:-translate-y-0.5 active:translate-y-0">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 hover:text-indigo-800 transition-colors px-3 py-2">Log in</a>
-                    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 bg-[#0d1f0b] text-black px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-[#0d1f0b] transition-all hover:-translate-y-0.5 active:translate-y-0">
+                    <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 bg-[#0d1f0b] text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:bg-[#0d1f0b] transition-all hover:-translate-y-0.5 active:translate-y-0">
                         Explore Services <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
                 @endauth
@@ -208,9 +208,9 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
     // Fallback legacy plan if no plans set
     if (!$hasPlan) {
         $plans = [
-            'basic'    => ['name' => 'Basic', 'price' => $service->min_price, 'description' => $service->short_description, 'delivery' => $service->delivery_timeline ?? '', 'features' => $service->features ?? [], 'emoji' => '🌱'],
-            'standard' => ['name' => 'Standard', 'price' => $service->min_price * 1.5, 'description' => 'Standard package with more features', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '⭐'],
-            'premium'  => ['name' => 'Premium', 'price' => $service->min_price * 2.5, 'description' => 'Premium package — everything included', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => '👑'],
+            'basic'    => ['name' => 'Basic', 'price' => $service->min_price, 'description' => $service->short_description, 'delivery' => $service->delivery_timeline ?? '', 'features' => $service->features ?? [], 'emoji' => ''],
+            'standard' => ['name' => 'Standard', 'price' => $service->min_price * 1.5, 'description' => 'Standard package with more features', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => ''],
+            'premium'  => ['name' => 'Premium', 'price' => $service->min_price * 2.5, 'description' => 'Premium package — everything included', 'delivery' => '', 'features' => $service->features ?? [], 'emoji' => ''],
         ];
     }
     
@@ -278,53 +278,40 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
      @processing-end.window="isProcessing = false"
      class="bg-white min-h-screen relative overflow-hidden">
 
-    <!-- Ambient blobs -->
-    <div class="absolute top-20 left-10 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute top-[400px] right-20 w-[450px] h-[450px] bg-purple-200/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-40 left-1/4 w-[350px] h-[350px] bg-blue-200/20 rounded-full blur-3xl pointer-events-none"></div>
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-28 lg:pb-16 relative z-10">
 
         {{-- BREADCRUMBS --}}
-        <nav class="flex items-center gap-2.5 text-[11px] font-bold text-slate-400 mb-8 uppercase tracking-widest relative z-10">
-            <a href="{{ url('/') }}" class="hover:text-indigo-800 transition-colors flex items-center gap-1.5">
-                <i data-lucide="home" class="w-3.5 h-3.5"></i> Home
-            </a>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300"></i>
-            <a href="{{ route('services.index') }}" class="hover:text-indigo-800 transition-colors">Services</a>
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300"></i>
-            <span class="text-indigo-800 font-extrabold">{{ $service->name }}</span>
+        <nav class="flex items-center gap-2 text-[11px] font-[600] text-slate-400 mb-8 uppercase tracking-wider relative z-10 w-full overflow-hidden">
+            <a href="{{ url('/') }}" class="hover:text-slate-800 transition-colors shrink-0">Home</a>
+            <span class="text-slate-300">/</span>
+            <a href="{{ route('services.index') }}" class="hover:text-slate-800 transition-colors shrink-0">Services</a>
+            <span class="text-slate-300">/</span>
+            <span class="text-slate-800 truncate">{{ $service->name }}</span>
         </nav>
 
         {{-- HERO --}}
-        <div class="mb-6 max-w-4xl relative z-10">
+        <div class="mb-12 max-w-4xl relative z-10">
             @if($service->category || $service->is_popular)
-            <div class="flex flex-wrap items-center gap-2 mb-3">
+            <div class="flex flex-wrap items-center gap-2 mb-5">
                 @if($service->category)
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-blue-200/40 text-blue-700 text-[9px] font-bold uppercase tracking-wider">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-wider">
                     <i data-lucide="{{ $service->icon ?? 'box' }}" class="w-3 h-3"></i> {{ $service->category }}
                 </span>
                 @endif
                 @if($service->is_popular)
-                <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/40 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                    🔥 Hot Selling Service
+                <span class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-md">
+                    Popular
                 </span>
                 @endif
             </div>
             @endif
-            <h1 class="text-[20px] font-[600] text-slate-900 tracking-tight leading-tight mb-3">
-                {{ $service->name }} (<span class="capitalize" x-text="selectedPlanData[selectedPlan]?.name || selectedPlan"></span>)
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-[800] text-slate-900 tracking-tight leading-[1.15] mb-5">
+                {{ $service->name }} <span class="text-slate-400 font-[400]">(<span class="capitalize" x-text="selectedPlanData[selectedPlan]?.name || selectedPlan"></span>)</span>
             </h1>
             @if($service->short_description)
-            <p class="text-[15px] text-slate-500 font-[400] font-medium leading-relaxed max-w-2xl">
+            <p class="text-[16px] sm:text-[18px] text-slate-500 font-[400] leading-relaxed">
                 {{ $service->short_description }}
             </p>
-            @endif
-            @if(count($plans) > 0)
-            <div class="mt-4 flex items-center gap-3">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider" x-text="selectedPlan === '{{ $defaultPlanKey }}' ? 'Starting from' : 'Selected Plan Price'"></span>
-                <!-- <span class="text-[32px] font-[700] text-indigo-700" x-text="'₹' + Number(selectedPlanData[selectedPlan]?.price || 0).toLocaleString('en-IN')"></span> -->
-            </div>
             @endif
         </div>
 
@@ -336,11 +323,9 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
 
                 {{-- ABOUT CARD --}}
                 @if($service->description)
-                <div class="bg-white rounded-[16px] p-5 sm:p-6 lg:p-7 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] relative overflow-hidden transition-all duration-300 hover:shadow-md">
-                    <h3 class="text-[20px] font-[600] text-slate-900 mb-3 tracking-tight flex items-center gap-2">
-                        <span class="w-1 h-5 bg-indigo-600 rounded-full"></span> About This Service
-                    </h3>
-                    <div class="prose prose-slate max-w-none text-slate-600 font-medium leading-relaxed text-xs sm:text-sm space-y-3 font-sans">
+                <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200">
+                    <h3 class="text-[18px] sm:text-[20px] font-[700] text-slate-900 mb-5 tracking-tight">About This Service</h3>
+                    <div class="prose prose-slate max-w-none text-slate-600 font-[400] leading-relaxed text-[15px] sm:text-[16px] space-y-4">
                         {!! nl2br(e($service->description)) !!}
                     </div>
                 </div>
@@ -348,14 +333,9 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
 
                 {{-- REQUIREMENTS CARD --}}
                 @if($service->requirements_text)
-                <div class="bg-indigo-50/10 rounded-[16px] p-5 sm:p-6 lg:p-7 border border-indigo-100/50 relative overflow-hidden transition-all duration-300 hover:shadow-sm">
-                    <h3 class="text-[20px] font-[600] text-indigo-950 mb-2.5 tracking-tight flex items-center gap-2">
-                        <div class="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 shadow-sm shadow-indigo-100/30">
-                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                        </div>
-                        What We Need From You
-                    </h3>
-                    <div class="text-indigo-900/85 font-medium text-xs sm:text-[13px] leading-relaxed space-y-2 font-sans pl-0.5">
+                <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 mt-6">
+                    <h3 class="text-[18px] sm:text-[20px] font-[700] text-slate-900 mb-5 tracking-tight">What We Need From You</h3>
+                    <div class="text-slate-600 font-[400] leading-relaxed text-[15px] sm:text-[16px] space-y-4">
                         {!! nl2br(e($service->requirements_text)) !!}
                     </div>
                 </div>
@@ -368,22 +348,21 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
 
                 {{-- ── PLATFORM SELECTOR ──────────────────────────── --}}
                 <template x-if="enablePlatforms && platformsData.length > 0">
-                    <div class="bg-white rounded-[16px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] p-5 sm:p-6">
-                        <h4 class="text-[17px] font-[600] text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-indigo-500"></i> Select Platform</h4>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h4 class="text-[16px] font-[700] text-slate-900 mb-4">Select Platform</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <template x-for="(platform, index) in platformsData" :key="index">
-                                <label class="relative flex cursor-pointer rounded-xl p-4 shadow-sm focus:outline-none transition-all"
-                                    :class="selectedPlatformIndex == index ? 'border border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500' : 'border border-slate-200 bg-white hover:border-indigo-400'">
+                                <label class="relative flex cursor-pointer rounded-xl p-4 transition-all"
+                                    :class="selectedPlatformIndex == index ? 'border-2 border-blue-600 bg-blue-50/50' : 'border border-slate-200 bg-white hover:border-slate-300'">
                                     <input type="radio" name="platform_choice" class="sr-only" :value="index" x-model="selectedPlatformIndex">
                                     <div class="flex w-full items-center justify-between">
                                         <div class="flex items-center">
                                             <div class="text-sm">
-                                                <p x-text="platform.name" class="font-bold text-slate-900"></p>
-                                                <p x-show="platform.price > 0 && (!pricingMatrix || Object.keys(pricingMatrix).length === 0)" x-text="'+ ₹' + Number(platform.price).toLocaleString('en-IN')" class="text-xs text-slate-500 font-semibold"></p>
-                                                <p x-show="platform.price <= 0 && (!pricingMatrix || Object.keys(pricingMatrix).length === 0)" class="text-xs text-slate-500 font-semibold">Included</p>
+                                                <p x-text="platform.name" class="font-[600] text-slate-900"></p>
+                                                <p x-show="platform.price > 0 && (!pricingMatrix || Object.keys(pricingMatrix).length === 0)" x-text="'+ ₹' + Number(platform.price).toLocaleString('en-IN')" class="text-[13px] text-slate-500 mt-0.5"></p>
+                                                <p x-show="platform.price <= 0 && (!pricingMatrix || Object.keys(pricingMatrix).length === 0)" class="text-[13px] text-slate-500 mt-0.5">Included</p>
                                             </div>
                                         </div>
-                                        <svg x-show="selectedPlatformIndex == index" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-indigo-600"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
                                     </div>
                                 </label>
                             </template>
@@ -392,56 +371,51 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                 </template>
 
                 {{-- ── PLAN SELECTOR CARD ──────────────────────────── --}}
-                <div class="bg-white rounded-[16px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.015)] overflow-hidden">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden sticky top-24">
 
-                    <!-- Plan Tabs -->
-                    <div class="flex border-b border-slate-100 bg-slate-100 overflow-x-auto">
-                        @foreach($plans as $planKey => $planMeta)
-                        <button
-                            type="button"
-                            @click="selectedPlan = '{{ addslashes($planKey) }}'"
-                            :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'plan-tab-btn active text-[#0d1f0b] font-[600] bg-white border-b-2 border-[#0d1f0b]' : 'plan-tab-btn text-slate-500 font-bold hover:text-slate-700 hover:bg-slate-100'"
-                            class="flex-1 min-w-fit px-4 py-4 text-[17px] uppercase tracking-wider relative transition-all font-[600] whitespace-nowrap">
-                            {{ $planMeta['emoji'] ?? '' }} <span class="capitalize" x-text="selectedPlanData['{{ addslashes($planKey) }}']?.name || '{{ $planKey }}'"></span>
-                        </button>
-                        @endforeach
+                    <!-- Plan Segmented Control -->
+                    <div class="p-6 pb-4 border-b border-slate-100">
+                        <div class="flex bg-slate-100 p-1.5 rounded-xl w-full">
+                            @foreach($plans as $planKey => $planMeta)
+                            <button
+                                type="button"
+                                @click="selectedPlan = '{{ addslashes($planKey) }}'"
+                                :class="selectedPlan === '{{ addslashes($planKey) }}' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+                                class="flex-1 py-2 px-3 rounded-lg text-[13px] font-[600] uppercase tracking-wide transition-all whitespace-nowrap">
+                                <span x-text="selectedPlanData['{{ addslashes($planKey) }}']?.name || '{{ $planKey }}'"></span>
+                            </button>
+                            @endforeach
+                        </div>
                     </div>
 
                     <!-- Plan Content (Alpine driven) -->
-                    <div class="p-5 sm:p-6">
-
+                    <div class="p-6">
                         <!-- Price + Description -->
-                        <div class="mb-5">
-                            <div class="flex items-end gap-2 mb-1">
-                                <span class="text-[32px] font-[700] text-slate-900" x-text="'₹' + subtotal.toLocaleString('en-IN')"></span>
-                            </div>
-                            <p class="text-[15px] text-slate-500 font-[400] font-medium leading-relaxed" x-text="selectedPlanData[selectedPlan]?.description || ''"></p>
+                        <div class="mb-6">
+                            <div class="text-[36px] font-[800] text-slate-900 tracking-tight leading-none mb-3" x-text="'₹' + subtotal.toLocaleString('en-IN')"></div>
+                            <p class="text-[15px] text-slate-500 font-[400] leading-relaxed" x-text="selectedPlanData[selectedPlan]?.description || ''"></p>
                         </div>
 
                         <!-- Delivery -->
-                        <div class="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100" x-show="selectedPlanData[selectedPlan]?.delivery">
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
-                                    <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                                </div>
-                                <div>
-                                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Delivery</div>
-                                    <div class="text-xs font-black text-slate-800" x-text="selectedPlanData[selectedPlan]?.delivery"></div>
-                                </div>
+                        <div class="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100" x-show="selectedPlanData[selectedPlan]?.delivery">
+                            <i data-lucide="clock" class="w-5 h-5 text-slate-400"></i>
+                            <div>
+                                <div class="text-[11px] font-[600] text-slate-500 uppercase tracking-wider mb-0.5">Delivery</div>
+                                <div class="text-[14px] font-[600] text-slate-900" x-text="selectedPlanData[selectedPlan]?.delivery"></div>
                             </div>
                         </div>
 
                         <!-- Features List -->
-                        <div class="mb-5 space-y-2" x-show="selectedPlanData[selectedPlan]?.features?.length">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-3">Package Details</div>
-                            <template x-for="feature in (selectedPlanData[selectedPlan]?.features || [])" :key="feature">
-                                <div class="flex items-start gap-2.5">
-                                    <div class="w-4 h-4 rounded-full  text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                                        <i data-lucide="check" class="w-2.5 h-2.5" stroke-width="3"></i>
+                        <div class="mb-8" x-show="selectedPlanData[selectedPlan]?.features?.length">
+                            <div class="text-[11px] font-[700] text-slate-900 uppercase tracking-wider mb-4">What's included</div>
+                            <div class="space-y-3">
+                                <template x-for="feature in (selectedPlanData[selectedPlan]?.features || [])" :key="feature">
+                                    <div class="flex items-start gap-3">
+                                        <i data-lucide="check" class="w-5 h-5 text-blue-600 shrink-0"></i>
+                                        <span class="text-[15px] text-slate-600 font-[400]" x-text="feature"></span>
                                     </div>
-                                    <span class="text-[15px] text-slate-700 font-[400] leading-snug" x-text="feature"></span>
-                                </div>
-                            </template>
+                                </template>
+                            </div>
                         </div>
 
                         <!-- DOMAIN SELECTION ON MAIN PAGE -->
@@ -549,59 +523,64 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                             
                             <div class="flex justify-between items-center text-[20px] font-black text-emerald-700 border-t-2 border-dashed border-slate-200 pt-4 mt-4">
                                 <span>Total Price</span>
-                                <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
+                                                 <!-- Action Buttons -->
                         @auth
                             @if(auth()->user()->isCustomer())
                             <button type="button" @click="buyNowModal = true"
-                                class="w-full py-3.5 rounded-[16px] text-[18px] font-[600] tracking-wide text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+                                class="w-full py-3.5 mt-2 rounded-xl text-[16px] font-[600] tracking-wide text-white bg-blue-600 hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm">
                                 <i data-lucide="zap" class="w-4 h-4"></i>
                                 Order Now — <span x-text="'₹' + finalTotal.toLocaleString('en-IN')"></span>
                             </button>
                             @endif
 
                             @if(auth()->user()->isPartner() || auth()->user()->isAdmin())
-                            <div class="flex items-center gap-3 mb-4 text-[9px] text-slate-400 uppercase tracking-widest font-black">
+                            <div class="flex items-center gap-3 mb-5 mt-6 text-[11px] text-slate-400 uppercase tracking-wider font-[600]">
                                 <div class="h-px bg-slate-100 flex-1"></div>
                                 <span>Submit Lead</span>
                                 <div class="h-px bg-slate-100 flex-1"></div>
                             </div>
-                                <form action="{{ route('partner.leads.store') }}" method="POST" class="space-y-3 font-sans">
+                                <form action="{{ route('partner.leads.store') }}" method="POST" class="space-y-4 font-sans">
                                     @csrf
                                     <input type="hidden" name="service_needed" value="{{ $service->name }}">
                                     <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
                                     <template x-if="enablePlatforms && selectedPlatformIndex != null">
-                                        <input type="hidden" name="platform_choice" :value="platformsData[selectedPlatformIndex]?.name">
+                                        <input type="hidden" name="platform_choice" :value="platformsData[selectedPlatformIndex].name">
                                     </template>
+                                    <template x-if="enableDomain">
+                                        <input type="hidden" name="domain_choice" :value="domainChoice">
+                                    </template>
+                                    
                                     <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Full Name *</label>
-                                    <input type="text" name="client_name" required class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="e.g. Rahul Sharma">
-                                </div>
-                                <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Client Phone Number *</label>
-                                    <input type="tel" name="client_phone" required class="w-full px-3.5 py-2.5 rounded-full border border-slate-200 text-slate-800 text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all" placeholder="+91 9999999999">
-                                </div>
-                              
-                                <button type="submit" class="w-full py-2.5 rounded-full text-[10px] font-black tracking-widest uppercase text-white bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all hover:-translate-y-0.5 flex items-center justify-center gap-1.5 active:translate-y-0 cursor-pointer mt-1">
-                                    <i data-lucide="send" class="w-3.5 h-3.5"></i> Submit Lead
-                                </button>
-                            </form>
+                                        <label class="block text-[12px] font-[600] text-slate-700 mb-1.5">Client Name *</label>
+                                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[14px] bg-white transition-all outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[12px] font-[600] text-slate-700 mb-1.5">Client Phone *</label>
+                                        <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[14px] bg-white transition-all outline-none">
+                                    </div>
+                                    <button type="submit" class="w-full py-3.5 mt-2 rounded-xl text-[16px] font-[600] tracking-wide text-white bg-slate-900 hover:bg-slate-800 transition-colors flex justify-center items-center gap-2 cursor-pointer shadow-sm">
+                                        <i data-lucide="send" class="w-4 h-4"></i> Submit Lead
+                                    </button>
+                                </form>
                             @endif
                         @else
-                            <div class="bg-slate-50 border border-slate-200 rounded-[16px] p-5 text-center mb-4">
-                                <i data-lucide="lock" class="w-7 h-7 text-slate-400 mx-auto mb-2.5"></i>
-                                <h4 class="text-sm font-black text-slate-800 mb-1">Sign In to Order</h4>
-                                <p class="text-[15px] text-slate-500 font-[400] leading-normal mb-4 font-semibold">Sign in to purchase or submit client leads.</p>
-                                <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-1.5 w-full py-3 bg-[#0d1f0b] text-black font-[600] text-[18px] tracking-wider rounded-full hover:bg-[#0d1f0b] shadow-md shadow-[#20C20E]/20 transition-all hover:-translate-y-0.5">
-                                    Secure Sign In
+                            <div class="bg-slate-50 border border-slate-100 rounded-xl p-6 text-center mb-4 mt-4">
+                                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-100">
+                                    <i data-lucide="lock" class="w-4 h-4 text-slate-400"></i>
+                                </div>
+                                <h4 class="text-[16px] font-[600] text-slate-900 mb-1">Sign In to Order</h4>
+                                <p class="text-[14px] text-slate-500 font-[400] leading-relaxed mb-5">Sign in to purchase or submit client leads.</p>
+                                <a href="{{ route('login') }}" class="w-full py-3.5 rounded-xl text-[15px] font-[600] text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                                    Secure Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>
                                 </a>
                             </div>
                             <a href="https://wa.me/{{ $cleanPhone }}?text=https://sksolutionss.com/%20Hi%20SK%20Solutions%20team,%20I%20need%20help%20-%20Interested%20in%20{{ urlencode($service->name) }}" target="_blank"
-                               class="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
-                                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Inquire via WhatsApp
+                               class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-[14px] font-[600] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i> Inquire via WhatsApp
+                            </a>
+                        @endauth
+                    </div>
+                </div>"></i> Inquire via WhatsApp
                             </a>
                         @endauth
 

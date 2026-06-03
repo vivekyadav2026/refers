@@ -102,7 +102,7 @@
 <{{ $tag }} {!! $href !!} class="bg-white flex flex-col items-center justify-center group hover:bg-violet-50/30 transition-all duration-300 min-h-[220px] p-6 text-center rounded-2xl shadow-md hover:shadow-xl hover:shadow-violet-500/10 border border-violet-100/50 hover:-translate-y-1 relative w-full" style="font-family:'Poppins', sans-serif;">
     
     @if($service->is_popular)
-        <div class="absolute top-3 right-3 z-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md shadow-violet-500/25">🔥 Top</div>
+        <div class="absolute top-3 right-3 z-10 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md shadow-violet-500/25">Top</div>
     @endif
     
     <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white/50" style="background: {{ $bg }}">
