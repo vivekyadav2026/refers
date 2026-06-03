@@ -26,8 +26,8 @@
     <!-- Header -->
     <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">Users Management</h1>
-            <p class="text-slate-500 mt-1">Manage customers, partners, view their performance, and handle KYC approvals.</p>
+            <h1 class="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">{{ $pageTitle ?? 'Users Management' }}</h1>
+            <p class="text-slate-500 mt-1">Manage {{ strtolower($pageTitle ?? 'Users') }}, view their performance, and handle KYC approvals.</p>
         </div>
         <div class="mt-3 sm:mt-0">
             <a href="{{ route('admin.users.create') }}"

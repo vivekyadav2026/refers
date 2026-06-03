@@ -24,6 +24,12 @@
             Back to Orders
         </a>
         <div class="flex gap-2">
+            @if(in_array($order->status, ['paid', 'processing', 'in_progress', 'completed']))
+            <a href="{{ route('admin.orders.invoice', $order) }}" target="_blank"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-medium rounded-xl border border-indigo-200 transition-colors">
+                <i data-lucide="download" class="w-4 h-4"></i> Invoice
+            </a>
+            @endif
             <a href="{{ route('admin.orders.edit', $order) }}"
                class="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 text-sm font-medium rounded-xl border border-amber-200 transition-colors">
                 <i data-lucide="pencil" class="w-4 h-4"></i> Edit

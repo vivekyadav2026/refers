@@ -73,6 +73,11 @@
                     <div class="text-lg font-black text-slate-900">₹{{ number_format($order->amount) }}</div>
                 </div>
                 <div class="flex gap-2">
+                    @if(in_array($order->status, ['paid', 'processing', 'in_progress', 'completed']))
+                    <a href="{{ route('customer.orders.invoice', $order) }}" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black text-indigo-700 bg-indigo-50 border border-indigo-200 hover:border-indigo-300 hover:bg-indigo-100 transition-all active:scale-95">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> Invoice
+                    </a>
+                    @endif
                     @if($order->status === 'pending')
                     <a href="{{ route('payment.create', $order) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-sm transition-all active:scale-95">
                         <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Pay
@@ -117,6 +122,11 @@
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-5 pt-5 border-t border-slate-100">
+                @if(in_array($order->status, ['paid', 'processing', 'in_progress', 'completed']))
+                <a href="{{ route('customer.orders.invoice', $order) }}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 transition-all uppercase tracking-wider text-xs">
+                    <i data-lucide="download" class="w-4 h-4"></i> Invoice
+                </a>
+                @endif
                 <a href="{{ route('customer.order.show', $order) }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-black text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-blue-300 hover:text-blue-600 transition-all uppercase tracking-wider text-xs">
                     <i data-lucide="eye" class="w-4 h-4"></i> View Details
                 </a>

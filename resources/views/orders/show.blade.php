@@ -82,8 +82,13 @@
 
 @section('content')
 
+@php
+    $role = auth()->user()->isPartner() ? 'partner' : (auth()->user()->isAdmin() ? 'admin' : 'customer');
+    $ordersRoute = $role === 'partner' ? route('partner.orders') : ($role === 'admin' ? route('admin.orders') : route('customer.orders'));
+    $invoiceRoute = $role === 'partner' ? route('partner.orders.invoice', $order) : ($role === 'admin' ? route('admin.orders.invoice', $order) : route('customer.orders.invoice', $order));
+@endphp
 {{-- Back Link --}}
-<a href="{{ route('partner.orders') }}" class="page-back">
+<a href="{{ $ordersRoute }}" class="page-back">
     <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Orders
 </a>
 
@@ -112,8 +117,8 @@
                 <i data-lucide="credit-card" class="w-4 h-4"></i> Pay Now
             </a>
         @endif
-        @if(in_array($order->status, ['paid','completed']))
-            <a href="{{ route('partner.orders.invoice', $order) }}" target="_blank" class="btn-outline">
+        @if(in_array($order->status, ['paid', 'processing', 'in_progress', 'completed']))
+            <a href="{{ $invoiceRoute }}" target="_blank" class="btn-outline">
                 <i data-lucide="download" class="w-4 h-4"></i> Download Invoice
             </a>
         @endif
@@ -304,15 +309,18 @@
                         <i data-lucide="credit-card" class="w-4 h-4"></i> Complete Payment
                     </a>
                 @endif
-                @if(in_array($order->status, ['paid','completed']))
-                    <a href="{{ route('partner.orders.invoice', $order) }}" target="_blank" class="btn-outline" style="justify-content:center;">
+                @if(in_array($order->status, ['paid', 'processing', 'in_progress', 'completed']))
+                    <a href="{{ $invoiceRoute }}" target="_blank" class="btn-outline" style="justify-content:center;">
                         <i data-lucide="file-down" class="w-4 h-4"></i> Download Invoice PDF
                     </a>
                 @endif
-                <a href="{{ route('partner.orders') }}" class="btn-outline" style="justify-content:center;">
+                <a href="{{ $ordersRoute }}" class="btn-outline" style="justify-content:center;">
                     <i data-lucide="list" class="w-4 h-4"></i> All My Orders
                 </a>
-                <a href="{{ route('partner.services') }}" class="btn-outline" style="justify-content:center;">
+                @php
+                    $servicesRoute = $role === 'partner' ? route('partner.services') : route('customer.services.index');
+                @endphp
+                <a href="{{ $servicesRoute }}" class="btn-outline" style="justify-content:center;">
                     <i data-lucide="shopping-bag" class="w-4 h-4"></i> Place New Order
                 </a>
                 @if($order->status === 'pending')
@@ -330,9 +338,15 @@
                 <i data-lucide="headphones" class="w-8 h-8" style="color:#c7d2fe;margin-bottom:.75rem;"></i>
                 <p style="font-size:.875rem;font-weight:700;color:#fff;margin:0 0 .4rem;">Need Help?</p>
                 <p style="font-size:.78rem;color:#c7d2fe;margin:0 0 1rem;">Raise a support ticket for any issues with this order.</p>
-                <a href="{{ route('partner.tickets.create') }}" style="display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:.5rem;font-size:.8rem;font-weight:700;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i> Open Ticket
-                </a>
+                @if($role === 'partner')
+                    <a href="{{ route('partner.tickets.create') }}" style="display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:.5rem;font-size:.8rem;font-weight:700;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i> Open Ticket
+                    </a>
+                @else
+                    <a href="{{ route('contact') }}" style="display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:.5rem;font-size:.8rem;font-weight:700;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">
+                        <i data-lucide="mail" class="w-4 h-4"></i> Contact Support
+                    </a>
+                @endif
             </div>
         </div>
 

@@ -21,7 +21,15 @@ class CartController extends Controller
             return $item->service->min_price * $item->quantity;
         });
 
-        return view('cart.index', compact('cartItems', 'total'));
+        $activeCoupons = Coupon::where('is_active', true)
+            ->where(function($query) {
+                $query->whereNull('expires_at')
+                      ->orWhere('expires_at', '>', now());
+            })
+            ->with('service')
+            ->get();
+
+        return view('cart.index', compact('cartItems', 'total', 'activeCoupons'));
     }
 
     /**
@@ -84,14 +92,15 @@ class CartController extends Controller
             return $item->service->min_price * $item->quantity;
         });
 
-        $categories = \App\Models\BusinessCategory::whereNull('parent_id')
-                        ->with(['subcategories' => function($q) {
-                            $q->where('is_active', true);
-                        }])
-                        ->where('is_active', true)
-                        ->get();
+        $activeCoupons = Coupon::where('is_active', true)
+            ->where(function($query) {
+                $query->whereNull('expires_at')
+                      ->orWhere('expires_at', '>', now());
+            })
+            ->with('service')
+            ->get();
 
-        return view('cart.checkout', compact('cartItems', 'total', 'categories'));
+        return view('cart.checkout', compact('cartItems', 'total', 'activeCoupons'));
     }
 
     /**
@@ -124,11 +133,40 @@ class CartController extends Controller
         $couponCode = $request->input('coupon_code');
         if ($couponCode) {
             $coupon = Coupon::where('code', $couponCode)->first();
-            if ($coupon && $coupon->isValid($total)) {
-                $discountAmount = $coupon->calculateDiscount($total);
-                $total -= $discountAmount;
-                // Increment coupon uses
-                $coupon->increment('current_uses');
+            if ($coupon) {
+                if ($coupon->service_id) {
+                    // Check if the specific service is in the cart
+                    $matchingItems = $cartItems->filter(function ($item) use ($coupon) {
+                        return $item->service_id == $coupon->service_id;
+                    });
+                    
+                    if ($matchingItems->isNotEmpty()) {
+                        $matchingTotal = $matchingItems->sum(function ($item) {
+                            return $item->service->min_price * $item->quantity;
+                        });
+                        
+                        if ($coupon->isValid($matchingTotal, $coupon->service_id)) {
+                            $discountAmount = $coupon->calculateDiscount($matchingTotal, $coupon->service_id);
+                            $total -= $discountAmount;
+                            $coupon->increment('current_uses');
+                        } else {
+                            return back()->withInput()->with('error', 'Coupon code is invalid or does not meet the minimum amount for the specific service.');
+                        }
+                    } else {
+                        return back()->withInput()->with('error', 'Coupon code "' . $couponCode . '" is only valid for the service: ' . ($coupon->service->name ?? 'selected service') . '.');
+                    }
+                } else {
+                    // General coupon
+                    if ($coupon->isValid($total)) {
+                        $discountAmount = $coupon->calculateDiscount($total);
+                        $total -= $discountAmount;
+                        $coupon->increment('current_uses');
+                    } else {
+                        return back()->withInput()->with('error', 'Coupon code is invalid or does not meet the minimum amount.');
+                    }
+                }
+            } else {
+                return back()->withInput()->with('error', 'Invalid coupon code.');
             }
         }
 

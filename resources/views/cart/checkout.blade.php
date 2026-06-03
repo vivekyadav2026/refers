@@ -67,20 +67,9 @@
                     {{-- Business Type --}}
                     <div class="md:col-span-2">
                         <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Business Type</label>
-                        <select name="business_type" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all">
-                            <option value="">Select business type</option>
-                            @foreach($categories as $category)
-                                <optgroup label="{{ $category->name }}">
-                                    @if($category->subcategories->count() > 0)
-                                        @foreach($category->subcategories as $sub)
-                                            <option value="{{ $sub->name }}" {{ old('business_type') === $sub->name ? 'selected' : '' }}>{{ $sub->name }}</option>
-                                        @endforeach
-                                    @else
-                                        <option value="{{ $category->name }}" {{ old('business_type') === $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
-                                    @endif
-                                </optgroup>
-                            @endforeach
-                        </select>
+                        <input type="text" name="business_type" value="{{ old('business_type') }}" 
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none transition-all"
+                               placeholder="e.g. E-commerce, Retail, Agency">
                     </div>
 
                     {{-- Project Requirements --}}
@@ -134,9 +123,39 @@
                 {{-- Coupon Code --}}
                 <div class="mb-6">
                     <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Have a Coupon?</label>
-                    <div class="flex gap-2">
-                        <input type="text" name="coupon_code" placeholder="Enter code" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none uppercase">
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" id="coupon_input" name="coupon_code" value="{{ old('coupon_code') }}" placeholder="Enter code" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-slate-50 outline-none uppercase font-mono tracking-wider">
                     </div>
+                    
+                    @if($activeCoupons->count() > 0)
+                        <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Available Coupons</p>
+                            @foreach($activeCoupons as $ac)
+                                <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-2.5 flex items-center justify-between gap-2 text-xs">
+                                    <div class="min-w-0">
+                                        <button type="button" onclick="document.getElementById('coupon_input').value='{{ $ac->code }}'" class="font-bold text-indigo-750 hover:underline font-mono uppercase tracking-wider block text-left">
+                                            {{ $ac->code }}
+                                        </button>
+                                        <p class="text-[10px] text-slate-500 font-semibold mt-0.5 truncate">
+                                            @if($ac->discount_type == 'percent')
+                                                {{ $ac->discount_value }}% Off
+                                            @else
+                                                ₹{{ number_format($ac->discount_value) }} Off
+                                            @endif
+                                            @if($ac->service)
+                                                on {{ $ac->service->name }}
+                                            @else
+                                                on all services
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <button type="button" onclick="document.getElementById('coupon_input').value='{{ $ac->code }}'" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-2.5 py-1 text-[10px] font-bold shadow-sm transition-colors shrink-0">
+                                        Apply
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-600/20 hover:-translate-y-0.5">

@@ -78,8 +78,21 @@ class OrderController extends Controller
 
     public function invoice(Order $order)
     {
-        if ($order->user_id !== auth()->id() && $order->lead?->partner_id !== auth()->id()) {
-            abort(403);
+        $user = auth()->user();
+        $isAllowed = false;
+        
+        if ($user) {
+            if (in_array($user->role, ['admin', 'superadmin'])) {
+                $isAllowed = true;
+            } elseif ($order->user_id === $user->id) {
+                $isAllowed = true;
+            } elseif ($order->lead && $order->lead->partner_id === $user->id) {
+                $isAllowed = true;
+            }
+        }
+
+        if (!$isAllowed) {
+            abort(403, 'You do not have permission to view this invoice.');
         }
 
         $pdf = Pdf::loadView('orders.pdf_invoice', compact('order'));

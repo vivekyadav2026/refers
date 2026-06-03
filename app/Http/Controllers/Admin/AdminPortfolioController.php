@@ -9,26 +9,34 @@ class AdminPortfolioController extends Controller
 {
     public function index()
     {
-        $portfolios = \App\Models\Portfolio::latest()->get();
-        $categories = \App\Models\BusinessCategory::with('subcategories')->whereNull('parent_id')->get();
-        return view('admin.portfolios.index', compact('portfolios', 'categories'));
+        $portfolios = \App\Models\Portfolio::with('service')->latest()->get();
+        $services = \App\Models\Service::where('is_active', true)->orderBy('name')->get();
+        return view('admin.portfolios.index', compact('portfolios', 'services'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'section' => 'required|string|max:255',
+            'service_id' => 'nullable|exists:services,id',
             'name' => 'required|string|max:255',
             'link' => 'nullable|string',
+            'youtube_url' => 'nullable|string',
+            'google_drive_url' => 'nullable|string',
             'image' => 'nullable|image|max:5120',
         ]);
 
         $path = $request->hasFile('image') ? $request->file('image')->store('portfolios', 'public') : null;
 
+        $service = $request->service_id ? \App\Models\Service::find($request->service_id) : null;
+        $sectionName = $service ? $service->name : 'General';
+
         \App\Models\Portfolio::create([
-            'section' => $request->section,
+            'service_id' => $request->service_id,
+            'section' => $sectionName,
             'name' => $request->name,
             'link' => $request->link,
+            'youtube_url' => $request->youtube_url,
+            'google_drive_url' => $request->google_drive_url,
             'image' => $path,
             'is_active' => true,
         ]);
@@ -39,9 +47,11 @@ class AdminPortfolioController extends Controller
     public function update(Request $request, \App\Models\Portfolio $portfolio)
     {
         $request->validate([
-            'section' => 'required|string|max:255',
+            'service_id' => 'nullable|exists:services,id',
             'name' => 'required|string|max:255',
             'link' => 'nullable|string',
+            'youtube_url' => 'nullable|string',
+            'google_drive_url' => 'nullable|string',
             'image' => 'nullable|image|max:5120',
         ]);
 
@@ -52,9 +62,15 @@ class AdminPortfolioController extends Controller
             $portfolio->image = $request->file('image')->store('portfolios', 'public');
         }
 
-        $portfolio->section = $request->section;
+        $service = $request->service_id ? \App\Models\Service::find($request->service_id) : null;
+        $sectionName = $service ? $service->name : 'General';
+
+        $portfolio->service_id = $request->service_id;
+        $portfolio->section = $sectionName;
         $portfolio->name = $request->name;
         $portfolio->link = $request->link;
+        $portfolio->youtube_url = $request->youtube_url;
+        $portfolio->google_drive_url = $request->google_drive_url;
         $portfolio->save();
 
         return back()->with('success', 'Portfolio item updated successfully.');

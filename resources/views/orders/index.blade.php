@@ -193,7 +193,12 @@
                             </td>
                             <td style="color:#64748b;">{{ $order->created_at->diffForHumans() }}</td>
                             <td style="text-align:right;">
-                                <a href="{{ route('partner.orders.show', $order) }}" class="btn-view">
+                                @php
+                                    $viewRoute = auth()->user()->isPartner()
+                                        ? route('partner.orders.show', $order)
+                                        : route('customer.order.show', $order);
+                                @endphp
+                                <a href="{{ $viewRoute }}" class="btn-view">
                                     <i data-lucide="eye" class="w-3 h-3"></i> View
                                 </a>
                                 @if($order->status === 'pending')
@@ -201,8 +206,13 @@
                                         <i data-lucide="credit-card" class="w-3 h-3"></i> Pay
                                     </a>
                                 @endif
-                                @if($order->status === 'paid' || $order->status === 'completed')
-                                    <a href="{{ route('partner.orders.invoice', $order) }}" target="_blank" class="btn-pay" style="background:#ede9fe;color:#4c1d95;">
+                                @if(in_array($order->status, ['paid', 'processing', 'in_progress', 'completed']))
+                                    @php
+                                        $invRoute = auth()->user()->isPartner() 
+                                            ? route('partner.orders.invoice', $order) 
+                                            : route('customer.orders.invoice', $order);
+                                    @endphp
+                                    <a href="{{ $invRoute }}" target="_blank" class="btn-pay" style="background:#ede9fe;color:#4c1d95;">
                                         <i data-lucide="download" class="w-3 h-3"></i> Invoice
                                     </a>
                                 @endif

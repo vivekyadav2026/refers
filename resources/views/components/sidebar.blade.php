@@ -16,9 +16,10 @@
         <li class="text-[11px] font-black text-slate-400 uppercase tracking-widest px-3 py-2 mt-2">Admin Control Panel</li>
         @foreach([
             ['route'=>'admin.dashboard','icon'=>'layout-dashboard','label'=>'Dashboard'],
-            ['route'=>'admin.users','icon'=>'users','label'=>'Users Management'],
+            ['route'=>'admin.customers','icon'=>'users','label'=>'Customers'],
+            ['route'=>'admin.partners','icon'=>'briefcase','label'=>'Partners'],
             ['route'=>'admin.orders','icon'=>'shopping-bag','label'=>'All Orders'],
-            ['route'=>'admin.post-payments.index','icon'=>'file-text','label'=>'Project Submissions'],
+            ['route'=>'admin.post-payments.index','icon'=>'file-text','label'=>'Customer Detail Forms'],
             ['route'=>'admin.commissions','icon'=>'coins','label'=>'Commissions'],
             ['route'=>'admin.tickets','icon'=>'message-square','label'=>'Support Tickets'],
             ['route'=>'admin.withdrawals','icon'=>'banknote','label'=>'Withdrawals'],
@@ -29,11 +30,8 @@
             ['route'=>'admin.training.index','icon'=>'graduation-cap','label'=>'Training Center'],
             ['route'=>'admin.banners.index','icon'=>'image','label'=>'Banners System'],
             ['route'=>'admin.portfolios.index','icon'=>'briefcase','label'=>'Portfolio Manager'],
-            ['route'=>'admin.business-categories.index','icon'=>'layers','label'=>'Business Categories'],
-            ['route'=>'admin.cms.index','icon'=>'file-text','label'=>'CMS Content'],
             ['route'=>'admin.settings','icon'=>'settings','label'=>'Global Settings'],
             ['route'=>'admin.coupons.index','icon'=>'tag','label'=>'Coupons Manager'],
-            ['route'=>'admin.marketing.index','icon'=>'image','label'=>'Marketing Assets'],
             ] as $item)
         <li>
             <a href="{{ route($item['route']) }}" class="group flex items-center gap-x-3.5 rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-200 {{ request()->routeIs($item['route']) ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 -translate-y-0.5' : 'text-slate-600 hover:bg-blue-50/60 hover:text-blue-700' }}">
@@ -100,7 +98,6 @@
             ['route'=>'partner.withdrawals','icon'=>'wallet','label'=>'Wallet & Payouts'],
             ['route'=>'partner.tickets','icon'=>'headphones','label'=>'Support Desk'],
             ['route'=>'partner.training','icon'=>'graduation-cap','label'=>'Training Center'],
-            ['route'=>'partner.marketing','icon'=>'image','label'=>'Marketing Assets'],
             ['route'=>'partner.kyc','icon'=>'shield-check','label'=>'KYC & Agreements'],
             ['route'=>'partner.profile','icon'=>'user','label'=>'Account Settings'],
         ] as $item)

@@ -107,7 +107,15 @@ Route::get('/portfolio', [\App\Http\Controllers\PortfolioController::class, 'ind
 
 Route::get('/services/{slug}', function ($slug) {
     $service = Service::where('slug', $slug)->firstOrFail();
-    return view('services.show', ['service' => $service]);
+    $activeCoupons = \App\Models\Coupon::where('is_active', true)
+        ->where(function($q) use ($service) {
+            $q->whereNull('service_id')->orWhere('service_id', $service->id);
+        })
+        ->where(function($q) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+        })
+        ->get();
+    return view('services.show', ['service' => $service, 'activeCoupons' => $activeCoupons]);
 })->name('services.show')->middleware('auth:customer,partner,admin');
 
 // ─── CUSTOMER ROUTES ──────────────────────────────────────────────────────
@@ -115,6 +123,7 @@ Route::middleware(['auth:customer'])->prefix('customer')->name('customer.')->gro
     Route::get('/dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [CustomerDashboardController::class, 'orders'])->name('orders');
     Route::get('/orders/{order}', [CustomerDashboardController::class, 'orderShow'])->name('order.show');
+    Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderController::class, 'invoice'])->name('orders.invoice');
     Route::get('/profile', [CustomerDashboardController::class, 'profile'])->name('profile');
     Route::put('/profile', [CustomerDashboardController::class, 'updateProfile'])->name('profile.update');
 
@@ -311,6 +320,8 @@ Route::post('/contact', function (\Illuminate\Http\Request $r) {
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users');
+    Route::get('/customers', [AdminUserController::class, 'customers'])->name('customers');
+    Route::get('/partners', [AdminUserController::class, 'partners'])->name('partners');
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
@@ -343,12 +354,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::post('/banners/{banner}/toggle', [\App\Http\Controllers\Admin\AdminBannerController::class, 'toggle'])->name('banners.toggle');
     Route::delete('/banners/{banner}', [\App\Http\Controllers\Admin\AdminBannerController::class, 'destroy'])->name('banners.destroy');
 
-    // Admin: CMS
-    Route::get('/cms', [\App\Http\Controllers\Admin\AdminCmsController::class, 'index'])->name('cms.index');
-    Route::post('/cms', [\App\Http\Controllers\Admin\AdminCmsController::class, 'store'])->name('cms.store');
-    Route::get('/cms/{cms}/edit', [\App\Http\Controllers\Admin\AdminCmsController::class, 'edit'])->name('cms.edit');
-    Route::put('/cms/{cms}', [\App\Http\Controllers\Admin\AdminCmsController::class, 'update'])->name('cms.update');
-    Route::delete('/cms/{cms}', [\App\Http\Controllers\Admin\AdminCmsController::class, 'destroy'])->name('cms.destroy');
+
 
     // Admin: Orders
     Route::get('/orders', [\App\Http\Controllers\Admin\AdminOrderController::class, 'index'])->name('orders');
@@ -357,6 +363,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::put('/orders/{order}', [\App\Http\Controllers\Admin\AdminOrderController::class, 'update'])->name('orders.update');
     Route::post('/orders/{order}/status', [\App\Http\Controllers\Admin\AdminOrderController::class, 'status'])->name('orders.status');
     Route::delete('/orders/{order}', [\App\Http\Controllers\Admin\AdminOrderController::class, 'destroy'])->name('orders.destroy');
+    Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderController::class, 'invoice'])->name('orders.invoice');
 
     // Admin: Post-Payments
     Route::get('/post-payments', [\App\Http\Controllers\Admin\AdminPostPaymentController::class, 'index'])->name('post-payments.index');
@@ -398,9 +405,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::resource('portfolios', \App\Http\Controllers\Admin\AdminPortfolioController::class);
     Route::post('/portfolios/{portfolio}/toggle', [\App\Http\Controllers\Admin\AdminPortfolioController::class, 'toggle'])->name('portfolios.toggle');
 
-    // Admin: Business Categories
-    Route::resource('business-categories', \App\Http\Controllers\Admin\AdminBusinessCategoryController::class);
-    Route::post('/business-categories/{category}/toggle', [\App\Http\Controllers\Admin\AdminBusinessCategoryController::class, 'toggle'])->name('business-categories.toggle');
+
 
     // Admin: Coupons
     Route::resource('coupons', \App\Http\Controllers\Admin\AdminCouponController::class);

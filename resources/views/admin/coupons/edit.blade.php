@@ -41,6 +41,17 @@
                 @error('discount_value') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Applicable Service <span class="text-slate-400">(Optional - leave empty for all services)</span></label>
+                <select name="service_id" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-indigo-500 bg-slate-50">
+                    <option value="">All Services</option>
+                    @foreach($services as $service)
+                        <option value="{{ $service->id }}" {{ old('service_id', $coupon->service_id) == $service->id ? 'selected' : '' }}>{{ $service->name }}</option>
+                    @endforeach
+                </select>
+                @error('service_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
             <div>
                 <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Min Order Amount <span class="text-slate-400">(Optional)</span></label>
                 <input type="number" step="0.01" name="min_order_amount" value="{{ old('min_order_amount', $coupon->min_order_amount) }}" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:ring-2 focus:ring-indigo-500 bg-slate-50">

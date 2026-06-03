@@ -10,13 +10,14 @@ class AdminCouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::latest()->paginate(10);
+        $coupons = Coupon::with('service')->latest()->paginate(10);
         return view('admin.coupons.index', compact('coupons'));
     }
 
     public function create()
     {
-        return view('admin.coupons.create');
+        $services = \App\Models\Service::where('is_active', true)->orderBy('name')->get();
+        return view('admin.coupons.create', compact('services'));
     }
 
     public function store(Request $request)
@@ -28,10 +29,15 @@ class AdminCouponController extends Controller
             'min_order_amount' => 'nullable|numeric|min:0',
             'max_uses' => 'nullable|integer|min:1',
             'expires_at' => 'nullable|date',
+            'service_id' => 'nullable|exists:services,id',
         ]);
 
         $data = $request->all();
         $data['is_active'] = $request->has('is_active');
+        $data['service_id'] = $request->filled('service_id') ? $request->service_id : null;
+        $data['expires_at'] = $request->filled('expires_at') ? $request->expires_at : null;
+        $data['min_order_amount'] = $request->filled('min_order_amount') ? $request->min_order_amount : null;
+        $data['max_uses'] = $request->filled('max_uses') ? $request->max_uses : null;
         
         Coupon::create($data);
 
@@ -40,7 +46,8 @@ class AdminCouponController extends Controller
 
     public function edit(Coupon $coupon)
     {
-        return view('admin.coupons.edit', compact('coupon'));
+        $services = \App\Models\Service::where('is_active', true)->orderBy('name')->get();
+        return view('admin.coupons.edit', compact('coupon', 'services'));
     }
 
     public function update(Request $request, Coupon $coupon)
@@ -52,10 +59,15 @@ class AdminCouponController extends Controller
             'min_order_amount' => 'nullable|numeric|min:0',
             'max_uses' => 'nullable|integer|min:1',
             'expires_at' => 'nullable|date',
+            'service_id' => 'nullable|exists:services,id',
         ]);
 
         $data = $request->all();
         $data['is_active'] = $request->has('is_active');
+        $data['service_id'] = $request->filled('service_id') ? $request->service_id : null;
+        $data['expires_at'] = $request->filled('expires_at') ? $request->expires_at : null;
+        $data['min_order_amount'] = $request->filled('min_order_amount') ? $request->min_order_amount : null;
+        $data['max_uses'] = $request->filled('max_uses') ? $request->max_uses : null;
         
         $coupon->update($data);
 

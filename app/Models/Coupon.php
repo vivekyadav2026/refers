@@ -18,6 +18,7 @@ class Coupon extends Model
         'current_uses',
         'expires_at',
         'is_active',
+        'service_id',
     ];
 
     protected $casts = [
@@ -25,10 +26,15 @@ class Coupon extends Model
         'is_active' => 'boolean',
     ];
 
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
     /**
-     * Check if the coupon is valid for a given amount.
+     * Check if the coupon is valid for a given amount and service.
      */
-    public function isValid($amount = 0)
+    public function isValid($amount = 0, $serviceId = null)
     {
         if (!$this->is_active) {
             return false;
@@ -46,15 +52,20 @@ class Coupon extends Model
             return false;
         }
 
+        // If coupon is service-specific, check if service matches
+        if ($this->service_id && $serviceId && $this->service_id != $serviceId) {
+            return false;
+        }
+
         return true;
     }
 
     /**
      * Calculate the discount amount.
      */
-    public function calculateDiscount($amount)
+    public function calculateDiscount($amount, $serviceId = null)
     {
-        if (!$this->isValid($amount)) {
+        if (!$this->isValid($amount, $serviceId)) {
             return 0;
         }
 

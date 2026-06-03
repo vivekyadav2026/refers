@@ -31,6 +31,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Code</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Discount</th>
+                    <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Applicable Service</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Usage</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Expires</th>
                     <th scope="col" class="px-6 py-4 font-semibold tracking-wider">Status</th>
@@ -51,6 +52,17 @@
                         @endif
                         @if($coupon->min_order_amount)
                             <div class="text-xs text-slate-400 font-normal mt-0.5">Min: ₹{{ number_format($coupon->min_order_amount, 2) }}</div>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 text-slate-600 text-xs">
+                        @if($coupon->service)
+                            <span class="inline-flex items-center bg-indigo-50 border border-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-bold">
+                                {{ $coupon->service->name }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+                                All Services
+                            </span>
                         @endif
                     </td>
                     <td class="px-6 py-4 text-slate-600">
@@ -87,7 +99,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                    <td colspan="7" class="px-6 py-12 text-center text-slate-500">
                         <i data-lucide="tag" class="w-8 h-8 mx-auto text-slate-300 mb-3"></i>
                         <p>No coupons found.</p>
                     </td>

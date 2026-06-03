@@ -25,7 +25,7 @@
     </div>
 
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 mb-8 sm:mb-10">
         <!-- Card 1: Total Revenue -->
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1">
             <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
@@ -54,6 +54,21 @@
             </div>
             <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 relative z-10">Active V-Partners</h3>
             <div class="text-3xl font-black text-slate-900 relative z-10">{{ $activePartners }}</div>
+        </div>
+
+        <!-- Card 2.5: Total Customers -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group hover:border-blue-300 transition-all duration-300 hover:-translate-y-1">
+            <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-100 text-blue-600 flex items-center justify-center border border-blue-200 group-hover:scale-110 transition-transform duration-300">
+                    <i data-lucide="user-check" class="w-7 h-7"></i>
+                </div>
+                <div class="flex items-center gap-1 text-[11px] font-black text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full shadow-xs uppercase tracking-wider">
+                    Clients
+                </div>
+            </div>
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1 relative z-10">Total Customers</h3>
+            <div class="text-3xl font-black text-slate-900 relative z-10">{{ $totalCustomers }}</div>
         </div>
 
         <!-- Card 3: Pending Leads -->

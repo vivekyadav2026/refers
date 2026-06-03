@@ -10,7 +10,19 @@ use App\Models\Referral;
 class AdminUserController extends Controller
 {
     // ─── LIST ────────────────────────────────────────────────────────────────
-    public function index(Request $request)
+    public function customers(Request $request)
+    {
+        $request->merge(['role' => 'customer']);
+        return $this->index($request, 'Customers');
+    }
+
+    public function partners(Request $request)
+    {
+        $request->merge(['role' => 'partner']);
+        return $this->index($request, 'Partners');
+    }
+
+    public function index(Request $request, $pageTitle = 'User Management')
     {
         $query = User::withCount(['leads', 'referrals'])
             ->with('wallet')
@@ -46,7 +58,7 @@ class AdminUserController extends Controller
         $suspendedCount = User::where('status', 'suspended')->count();
 
         return view('admin.users', compact(
-            'users', 'totalPartners', 'activePartners', 'kycPending', 'suspendedCount'
+            'users', 'totalPartners', 'activePartners', 'kycPending', 'suspendedCount', 'pageTitle'
         ));
     }
 

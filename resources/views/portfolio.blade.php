@@ -84,76 +84,102 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
     </div>
 
     {{-- ══════ PORTFOLIO CONTENT ══════ --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         
-        @if($portfolios->count() > 0)
-            {{-- Filtering Tabs --}}
-            <div class="flex flex-wrap items-center justify-center gap-2 mb-10">
-                <button @click="activeSection = 'All'"
-                        :class="activeSection === 'All' ? 'bg-indigo-800 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'"
-                        class="px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 active:scale-95">
-                    All Projects
-                </button>
-                @foreach($sections as $section)
-                    <button @click="activeSection = '{{ addslashes($section) }}'"
-                            :class="activeSection === '{{ addslashes($section) }}' ? 'bg-indigo-800 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'"
-                            class="px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 active:scale-95">
-                        {{ $section }}
-                    </button>
-                @endforeach
-            </div>
-
-            {{-- Portfolio Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                @foreach($portfolios as $portfolio)
-                    <div x-show="activeSection === 'All' || activeSection === '{{ addslashes($portfolio->section) }}'"
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 translate-y-4"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         class="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-indigo-200/50 transition-all duration-300">
-                        
-                        {{-- Image Wrapper --}}
-                        <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 flex items-center justify-center">
-                            @if($portfolio->image)
-                                <img src="{{ Storage::url($portfolio->image) }}" alt="{{ $portfolio->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <div class="flex flex-col items-center justify-center text-slate-300">
-                                    <i data-lucide="image" class="w-12 h-12 mb-2"></i>
-                                    <span class="text-xs font-semibold uppercase tracking-wider">{{ $portfolio->name }}</span>
+        @if($groupedPortfolios->count() > 0)
+            <div class="space-y-4" x-data="{ activeCategory: null }">
+                @foreach($groupedPortfolios as $categoryName => $items)
+                    <div x-data="{ open: false }" class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden transition-all duration-300 hover:border-indigo-100 hover:shadow-md">
+                        <!-- Accordion Header -->
+                        <button @click="open = !open" 
+                                class="w-full px-6 py-5 flex items-center justify-between bg-white hover:bg-slate-50/50 transition-colors text-left focus:outline-none">
+                            <div class="flex items-center gap-4">
+                                <span class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-655 flex items-center justify-center font-bold text-indigo-600 shrink-0">
+                                    <i data-lucide="folder" class="w-5 h-5"></i>
+                                </span>
+                                <div>
+                                    <h3 class="text-base sm:text-lg font-black text-slate-800 tracking-tight leading-none">{{ $categoryName }}</h3>
+                                    <p class="text-xs text-slate-500 font-semibold mt-1.5">{{ $items->count() }} {{ Str::plural('Project', $items->count()) }}</p>
                                 </div>
-                            @endif
+                            </div>
+                            <!-- Chevron Icon -->
+                            <span class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 transition-all duration-300"
+                                  :class="open ? 'rotate-180 bg-indigo-50 text-indigo-600' : ''">
+                                <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                            </span>
+                        </button>
+
+                        <!-- Accordion Body -->
+                        <div x-show="open" 
+                             style="display: none;"
+                             x-transition:enter="transition ease-out duration-250"
+                             x-transition:enter-start="opacity-0 -translate-y-2"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             class="border-t border-slate-100 bg-slate-50/40 p-6">
                             
-                            {{-- Hover Overlay --}}
-                            @if($portfolio->link)
-                            <div class="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                                <a href="{{ $portfolio->link }}" target="_blank" class="w-12 h-12 rounded-full bg-white text-indigo-800 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all">
-                                    <i data-lucide="external-link" class="w-5 h-5"></i>
-                                </a>
-                            </div>
-                            @endif
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                @foreach($items as $portfolio)
+                                    <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm flex flex-col justify-between transition-all hover:shadow-md hover:border-slate-200">
+                                        <div class="space-y-4">
+                                            <!-- Name -->
+                                            <h4 class="text-base font-black text-slate-900 tracking-tight">{{ $portfolio->name }}</h4>
+                                            
+                                            <!-- Image (Optional) -->
+                                            @if($portfolio->image)
+                                                <div class="relative rounded-xl overflow-hidden bg-slate-150 aspect-video border border-slate-100">
+                                                    <img src="{{ Storage::url($portfolio->image) }}" alt="{{ $portfolio->name }}" class="w-full h-full object-cover">
+                                                </div>
+                                            @endif
 
-                            {{-- Badge --}}
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-indigo-800 text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">
-                                {{ $portfolio->section }}
-                            </div>
-                        </div>
+                                            <!-- YouTube Video (Optional) -->
+                                            @if($portfolio->youtube_url)
+                                                @php
+                                                    $ytEmbed = $portfolio->youtube_url;
+                                                    if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $portfolio->youtube_url, $match)) {
+                                                        $ytEmbed = "https://www.youtube.com/embed/" . $match[1];
+                                                    }
+                                                @endphp
+                                                <div class="rounded-xl overflow-hidden border border-slate-100 aspect-video bg-black shadow-sm">
+                                                    <iframe src="{{ $ytEmbed }}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                                </div>
+                                            @endif
 
-                        {{-- Details --}}
-                        <div class="p-5">
-                            <h3 class="text-lg font-black text-slate-900 truncate tracking-tight">{{ $portfolio->name }}</h3>
-                            @if($portfolio->link)
-                                <a href="{{ $portfolio->link }}" target="_blank" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 mt-2 inline-flex items-center gap-1 group/link transition-colors">
-                                    Visit Project <i data-lucide="arrow-right" class="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform"></i>
-                                </a>
-                            @endif
+                                            <!-- Google Drive Video (Optional) -->
+                                            @if($portfolio->google_drive_url)
+                                                @php
+                                                    $gdEmbed = $portfolio->google_drive_url;
+                                                    if (preg_match('/file\/d\/([a-zA-Z0-9_-]+)/', $portfolio->google_drive_url, $match)) {
+                                                        $gdEmbed = "https://drive.google.com/file/d/" . $match[1] . "/preview";
+                                                    } elseif (preg_match('/id=([a-zA-Z0-9_-]+)/', $portfolio->google_drive_url, $match)) {
+                                                        $gdEmbed = "https://drive.google.com/file/d/" . $match[1] . "/preview";
+                                                    }
+                                                @endphp
+                                                <div class="rounded-xl overflow-hidden border border-slate-100 aspect-video bg-black shadow-sm">
+                                                    <iframe src="{{ $gdEmbed }}" class="w-full h-full" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Website Link (Optional) -->
+                                        @if($portfolio->link)
+                                            <div class="mt-4 pt-4 border-t border-slate-100 flex justify-end">
+                                                <a href="{{ $portfolio->link }}" target="_blank" 
+                                                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-150/70 text-indigo-700 hover:text-indigo-800 rounded-xl text-xs font-bold transition-colors">
+                                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Visit Website
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         @else
-            <div class="text-center py-20">
-                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-5 text-slate-400">
-                    <i data-lucide="folder-open" class="w-10 h-10"></i>
+            <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-5 text-slate-400">
+                    <i data-lucide="folder-open" class="w-10 h-10 text-indigo-500"></i>
                 </div>
                 <h3 class="text-xl font-bold text-slate-900 mb-2">Our Portfolio is Updating</h3>
                 <p class="text-sm text-slate-500 font-medium">We are currently curating our best work to display here. Check back soon!</p>

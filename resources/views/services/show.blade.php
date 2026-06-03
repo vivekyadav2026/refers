@@ -270,8 +270,36 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
         if (this.domainChoice === 'com') return this.domainComCharge;
         return 0;
     },
+    couponCode: '',
+    couponDiscount: 0,
+    couponError: '',
+    couponApplied: false,
+    couponsData: {{ Js::from($activeCoupons->map(function($c) { return ['code'=>$c->code,'type'=>$c->discount_type,'value'=>(float)$c->discount_value,'min'=>(float)($c->min_order_amount ?? 0),'service_id'=>$c->service_id]; })->values()) }},
+    applyCoupon() {
+        const code = this.couponCode.trim().toUpperCase();
+        if (!code) { this.couponError = 'Please enter a coupon code.'; return; }
+        const coupon = this.couponsData.find(c => c.code.toUpperCase() === code);
+        if (!coupon) { this.couponError = 'Invalid coupon code.'; this.couponApplied = false; this.couponDiscount = 0; return; }
+        const base = this.subtotal + this.gstAmount + this.domainChargeAmount;
+        if (coupon.min > 0 && base < coupon.min) { this.couponError = 'Min order ₹' + coupon.min + ' required.'; this.couponApplied = false; this.couponDiscount = 0; return; }
+        if (coupon.type === 'percent') {
+            this.couponDiscount = Math.round(base * coupon.value / 100);
+        } else {
+            this.couponDiscount = Math.min(coupon.value, base);
+        }
+        this.couponApplied = true;
+        this.couponError = '';
+        this.couponCode = coupon.code;
+    },
+    removeCoupon() {
+        this.couponApplied = false;
+        this.couponDiscount = 0;
+        this.couponCode = '';
+        this.couponError = '';
+    },
     get finalTotal() {
-        return this.subtotal + this.gstAmount + this.domainChargeAmount;
+        const base = this.subtotal + this.gstAmount + this.domainChargeAmount;
+        return Math.max(0, base - (this.couponApplied ? this.couponDiscount : 0));
     }
 }"
      @processing-start.window="isProcessing = true"
@@ -662,6 +690,58 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                                 </div>
                             </div>
                             
+                            <!-- Coupon Section -->
+                            <div class="pt-3 pb-2 mt-3 border-t border-slate-100">
+                                @if($activeCoupons->count() > 0)
+                                <div class="mb-4">
+                                    <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Available Coupons</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($activeCoupons as $ac)
+                                        <button type="button"
+                                            @click="couponCode='{{ $ac->code }}'; applyCoupon()"
+                                            :class="couponApplied && couponCode === '{{ $ac->code }}' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'"
+                                            class="inline-flex items-center gap-2 border rounded-md px-3 py-1.5 transition-all">
+                                            <span class="text-[11px] font-mono font-bold uppercase tracking-wide">{{ $ac->code }}</span>
+                                            <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 text-slate-600"
+                                                :class="couponApplied && couponCode === '{{ $ac->code }}' ? 'bg-emerald-100 text-emerald-700' : ''">
+                                                @if($ac->discount_type == 'percent') {{ $ac->discount_value }}% off @else ₹{{ number_format($ac->discount_value) }} off @endif
+                                            </span>
+                                        </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="flex items-stretch gap-2">
+                                    <div class="relative flex-1">
+                                        <input type="text" x-model="couponCode" placeholder="Enter coupon code"
+                                            :disabled="couponApplied"
+                                            :class="couponApplied ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : (couponError ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-white')"
+                                            class="w-full h-[42px] px-3 rounded-lg border text-sm font-medium uppercase tracking-wide placeholder:normal-case placeholder:tracking-normal placeholder:font-normal focus:ring-2 focus:ring-slate-200 focus:border-slate-400 transition-all outline-none disabled:opacity-100"
+                                            @keydown.enter.prevent="applyCoupon()">
+                                    </div>
+                                    <button type="button" @click="couponApplied ? removeCoupon() : applyCoupon()"
+                                        :class="couponApplied ? 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-300' : 'bg-slate-900 hover:bg-slate-800 text-white border border-transparent'"
+                                        class="px-5 h-[42px] rounded-lg text-sm font-semibold transition-colors shrink-0 flex items-center justify-center min-w-[90px]"
+                                        x-text="couponApplied ? 'Remove' : 'Apply'">
+                                    </button>
+                                </div>
+                                <div class="mt-2 min-h-[20px] px-1">
+                                    <p x-show="couponError" x-text="couponError" style="display: none;" class="text-[11px] text-red-500 font-medium"></p>
+                                    <p x-show="couponApplied" style="display: none;" class="text-[11px] text-emerald-600 font-medium">✓ Coupon applied! You save ₹<span x-text="couponDiscount"></span></p>
+                                </div>
+                            </div>
+
+                            <!-- Coupon Discount Row -->
+                            <template x-if="couponApplied && couponDiscount > 0">
+                                <div class="flex items-center justify-between bg-emerald-50 rounded-[12px] border border-emerald-100 p-3 mb-2">
+                                    <span class="text-sm font-bold text-emerald-800 flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        Coupon: <span class="font-mono uppercase" x-text="couponCode"></span>
+                                    </span>
+                                    <span class="text-sm font-black text-emerald-700" x-text="'- ₹' + couponDiscount.toLocaleString('en-IN')"></span>
+                                </div>
+                            </template>
+
                             <!-- Total -->
                             <div class="flex items-center justify-between bg-indigo-50 rounded-[12px] border border-indigo-100 p-3 mb-0">
                                 <span class="text-sm font-black text-indigo-900">Total Amount</span>
@@ -672,6 +752,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                         <form id="buyNowForm" class="px-4 sm:px-5 pt-2 pb-5 max-h-[80vh] overflow-y-auto">
                             @csrf
                             <input type="hidden" name="service_id" value="{{ $service->id }}">
+                            <input type="hidden" name="coupon_code" x-bind:value="couponApplied ? couponCode : ''">
                             <input type="hidden" name="plan_selected" x-bind:value="selectedPlan">
                             <input type="hidden" name="plan_price" x-bind:value="finalTotal">
                             <template x-if="enablePlatforms && selectedPlatformIndex != null && platformsData[selectedPlatformIndex]">

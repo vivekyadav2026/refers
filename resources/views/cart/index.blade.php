@@ -22,8 +22,33 @@
 </div>
 @endif
 
+@if($activeCoupons->count() > 0)
+<div class="mb-6 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-purple-50 px-5 py-4">
+    <div class="flex items-center gap-2 mb-3">
+        <span class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+            <i data-lucide="tag" class="w-4 h-4 text-indigo-600"></i>
+        </span>
+        <p class="text-sm font-black text-indigo-800 tracking-tight">Available Coupons – Use at Checkout!</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        @foreach($activeCoupons as $ac)
+        <div class="inline-flex items-center gap-2 bg-white border border-indigo-200 rounded-xl pl-3 pr-2 py-1.5 shadow-sm">
+            <span class="font-mono font-black text-xs text-indigo-800 tracking-widest">{{ $ac->code }}</span>
+            <span class="text-[10px] text-slate-500 font-semibold">
+                @if($ac->discount_type == 'percent') {{ $ac->discount_value }}% Off
+                @else ₹{{ number_format($ac->discount_value) }} Off
+                @endif
+                @if($ac->service) · {{ $ac->service->name }} only @endif
+            </span>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 @if($cartItems->count())
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
     {{-- Cart Items --}}
     <div class="lg:col-span-2 space-y-4">
         @foreach($cartItems as $item)
@@ -92,9 +117,6 @@
     </div>
     <h3 class="text-xl font-bold text-slate-900 mb-2">Your cart is empty</h3>
     <p class="text-slate-500 mb-6">Browse our services and add them to your cart to get started.</p>
-    <!-- <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-colors">
-        <i data-lucide="grid-3x3" class="w-4 h-4"></i> Browse Services
-    </a> -->
 </div>
 @endif
 

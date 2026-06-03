@@ -44,17 +44,12 @@
                     @csrf
                     <div class="space-y-5">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category/Section <span class="text-red-500">*</span></label>
-                            <select name="section" required
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Category <span class="text-red-500">*</span></label>
+                            <select name="service_id" required
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
-                                <option value="">Select a Category/Section...</option>
-                                @foreach($categories as $parent)
-                                    <optgroup label="{{ $parent->name }}">
-                                        <option value="{{ $parent->name }}">{{ $parent->name }} (Parent)</option>
-                                        @foreach($parent->subcategories as $sub)
-                                            <option value="{{ $sub->name }}">{{ $sub->name }}</option>
-                                        @endforeach
-                                    </optgroup>
+                                <option value="">Select a Service...</option>
+                                @foreach($services as $service)
+                                    <option value="{{ $service->id }}">{{ $service->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -66,6 +61,16 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Target Link (Optional)</label>
                             <input type="text" name="link" placeholder="https://example.com" 
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">YouTube Video Link (Optional)</label>
+                            <input type="text" name="youtube_url" placeholder="https://www.youtube.com/watch?v=..." 
+                                class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Google Drive Video Link (Optional)</label>
+                            <input type="text" name="google_drive_url" placeholder="https://drive.google.com/file/d/.../view" 
                                 class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
                         </div>
                         <div>
@@ -123,12 +128,24 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="text-sm font-bold text-slate-900">{{ $portfolio->name }}</div>
-                                        <div class="text-xs font-semibold text-indigo-600 mb-1 inline-block bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">{{ $portfolio->section }}</div>
-                                        @if($portfolio->link)
-                                            <a href="{{ $portfolio->link }}" target="_blank" class="text-xs text-slate-500 hover:text-indigo-600 hover:underline mt-1 flex items-center gap-1">
-                                                <i data-lucide="link" class="w-3 h-3"></i> View Link
-                                            </a>
-                                        @endif
+                                        <div class="text-xs font-semibold text-indigo-600 mb-1 inline-block bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">{{ $portfolio->service->name ?? $portfolio->section }}</div>
+                                        <div class="flex flex-wrap gap-2 mt-1">
+                                            @if($portfolio->link)
+                                                <a href="{{ $portfolio->link }}" target="_blank" class="text-xs text-slate-500 hover:text-indigo-600 hover:underline flex items-center gap-1">
+                                                    <i data-lucide="link" class="w-3 h-3"></i> Website
+                                                </a>
+                                            @endif
+                                            @if($portfolio->youtube_url)
+                                                <a href="{{ $portfolio->youtube_url }}" target="_blank" class="text-xs text-slate-500 hover:text-indigo-600 hover:underline flex items-center gap-1">
+                                                    <i data-lucide="video" class="w-3 h-3"></i> YouTube
+                                                </a>
+                                            @endif
+                                            @if($portfolio->google_drive_url)
+                                                <a href="{{ $portfolio->google_drive_url }}" target="_blank" class="text-xs text-slate-500 hover:text-indigo-600 hover:underline flex items-center gap-1">
+                                                    <i data-lucide="hard-drive" class="w-3 h-3"></i> Drive Video
+                                                </a>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <form action="{{ route('admin.portfolios.toggle', $portfolio) }}" method="POST">
@@ -169,16 +186,11 @@
                                                         @method('PUT')
                                                         <div class="space-y-4">
                                                             <div>
-                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Category/Section</label>
-                                                                <select name="section" required class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
-                                                                    <option value="">Select a Category/Section...</option>
-                                                                    @foreach($categories as $parent)
-                                                                        <optgroup label="{{ $parent->name }}">
-                                                                            <option value="{{ $parent->name }}" {{ $portfolio->section == $parent->name ? 'selected' : '' }}>{{ $parent->name }} (Parent)</option>
-                                                                            @foreach($parent->subcategories as $sub)
-                                                                                <option value="{{ $sub->name }}" {{ $portfolio->section == $sub->name ? 'selected' : '' }}>{{ $sub->name }}</option>
-                                                                            @endforeach
-                                                                        </optgroup>
+                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Service Category</label>
+                                                                <select name="service_id" required class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                                    <option value="">Select a Service...</option>
+                                                                    @foreach($services as $service)
+                                                                        <option value="{{ $service->id }}" {{ $portfolio->service_id == $service->id ? 'selected' : '' }}>{{ $service->name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
@@ -189,6 +201,14 @@
                                                             <div>
                                                                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Target Link</label>
                                                                 <input type="text" name="link" value="{{ $portfolio->link }}" class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">YouTube Video Link (Optional)</label>
+                                                                <input type="text" name="youtube_url" value="{{ $portfolio->youtube_url }}" class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Google Drive Video Link (Optional)</label>
+                                                                <input type="text" name="google_drive_url" value="{{ $portfolio->google_drive_url }}" class="w-full border border-slate-200 bg-slate-50 text-slate-900 text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none">
                                                             </div>
                                                             <div>
                                                                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Update Image (Optional)</label>

@@ -9,6 +9,8 @@ use App\Models\Setting;
 use App\Models\PartnerReferral;
 use Razorpay\Api\Api;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderInvoiceMail;
 
 class PaymentController extends Controller
 {
@@ -98,6 +100,9 @@ class PaymentController extends Controller
 
             // Notify admin
             $this->notifyAdmin($order);
+
+            // Send Invoice Email to Customer and Admin
+            $this->emailInvoice($order);
 
             $customer = \Illuminate\Support\Facades\Auth::guard('customer')->user();
             $partner  = \Illuminate\Support\Facades\Auth::guard('partner')->user();
@@ -218,6 +223,27 @@ class PaymentController extends Controller
         }
     }
 
+    /**
+     * Email Invoice to Customer and Admin
+     */
+    private function emailInvoice(Order $order)
+    {
+        try {
+            $customerEmail = $order->user->email ?? $order->customer_email;
+            $adminEmails = \App\Models\User::where('role', 'admin')->pluck('email')->toArray();
+            
+            if ($customerEmail) {
+                $mail = Mail::to($customerEmail);
+                if (!empty($adminEmails)) {
+                    $mail->cc($adminEmails);
+                }
+                $mail->queue(new OrderInvoiceMail($order));
+            }
+        } catch (\Exception $e) {
+            Log::error('Invoice email failed: ' . $e->getMessage());
+        }
+    }
+
     public function buyNow(Request $request)
     {
         $request->validate([
@@ -292,6 +318,25 @@ class PaymentController extends Controller
 
         $total = $planPrice + $platformPrice + $gstAmount + $domainCharge;
 
+        // Apply coupon discount if provided
+        $couponDiscount = 0.0;
+        $appliedCoupon = null;
+        if ($request->filled('coupon_code')) {
+            $coupon = \App\Models\Coupon::where('code', strtoupper(trim($request->coupon_code)))
+                ->where('is_active', true)
+                ->where(function($q) { $q->whereNull('expires_at')->orWhere('expires_at', '>', now()); })
+                ->where(function($q) use ($service) { $q->whereNull('service_id')->orWhere('service_id', $service->id); })
+                ->first();
+            if ($coupon) {
+                if ($coupon->discount_type === 'percent') {
+                    $couponDiscount = round($total * $coupon->discount_value / 100, 2);
+                } else {
+                    $couponDiscount = min((float)$coupon->discount_value, $total);
+                }
+                $total = max(0, $total - $couponDiscount);
+                $appliedCoupon = $coupon;
+            }
+        }
         // Resolve the referring partner with proper fallback chain
         $referredByPartner = session('ref_partner_id')
             ?? request()->cookie('ref_partner_id')
@@ -354,7 +399,14 @@ class PaymentController extends Controller
             'domain_choice' => $request->domain_choice,
             'domain_charge' => $domainCharge,
             'gst_amount' => $gstAmount,
+            'coupon_code' => $appliedCoupon ? $appliedCoupon->code : null,
+            'coupon_discount' => $couponDiscount,
         ]);
+
+        // Increment coupon usage
+        if ($appliedCoupon) {
+            $appliedCoupon->increment('used_count');
+        }
 
         // Create business details if domain name is submitted
         if ($enableDomain && $request->filled('domain_name')) {

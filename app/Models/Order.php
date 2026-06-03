@@ -23,6 +23,7 @@ class Order extends Model
         'company_name', 'business_type', 'file_upload',
         'razorpay_order_id', 'razorpay_payment_id', 'referred_by_partner',
         'platform_choice', 'platform_price', 'domain_choice', 'domain_charge', 'gst_amount',
+        'coupon_code', 'coupon_discount',
     ];
 
     public function lead()
