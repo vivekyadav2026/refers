@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-3xl mx-auto">
+<div class="py-8 w-full max-w-3xl mx-auto">
     {{-- Flash alerts --}}
     @if(session('success'))
         <div class="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-5 py-4 text-sm font-medium shadow-sm">

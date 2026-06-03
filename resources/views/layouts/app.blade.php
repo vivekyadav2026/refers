@@ -214,6 +214,22 @@
         /* ── FORCE TEXT WRAP IN TIGHT CELLS ─────────────────────── */
         .allow-wrap { white-space: normal !important; }
 
+        /* Styled thin scrollbars for tables */
+        .overflow-x-auto::-webkit-scrollbar {
+            height: 6px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
         /* Ensure all inputs placeholders are not bold */
         ::placeholder {
             font-weight: 400 !important;
@@ -258,7 +274,7 @@
 
                 <!-- Main Content -->
                 <main class="py-6 sm:py-10 flex-1">
-                    <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div class="px-4 sm:px-6 lg:px-8 max-w-9xl mx-auto">
                         @yield('content')
                     </div>
                 </main>
