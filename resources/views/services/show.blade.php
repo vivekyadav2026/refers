@@ -613,7 +613,7 @@ html, body, p, div, span, h1, h2, h3, h4, h5, h6, a, button, input, select, text
                         <div class="px-4 sm:px-5 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <div>
                                 <h3 class="text-[18px] font-[600] text-slate-900 flex items-center gap-2" id="modal-title">
-                                    <i data-lucide="zap" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600"></i> Order Summary
+                                    Order Summary
                                 </h3>
                                 <p class="text-[13px] text-slate-500 font-[500] mt-0.5">Review your package details</p>
                             </div>
